@@ -20,4 +20,4 @@ Shuni ta’kidlab o’tish joizki, ushbu xat butun hamjamiyat nomidan yozilgani 
 Bizning asosiy maqsad, bu O’zbek IT segmentida dastur va qamrovlar kengaytirish, hamda foydalanuvchilar uchun qulaylik va abstraksiyalar yaratishdir. Umid qilamizki, birgalikda sizning dasturingiz foydalanuvchilar uchun ishlatishga yanada qulay va imkon qadar oson qilishga erishamiz.
 
 Hurmat ila, Xinux va O'zbek Floss hamjamiyati.
-(@from developers@floss.uz to info@yt.uz)
+(@from developers@floss.uz @to info@yt.uz)
