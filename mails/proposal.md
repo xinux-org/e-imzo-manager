@@ -13,7 +13,7 @@ Keling, birga kelishilgan holda sizning E-IMZO dasturingiz shu berilgan ikki yec
 
 Hamda, biz sizlarga optsional 3 chi yechim ham taklif qilamiz, lekin ishonamizki bu sizlar uchun yoqimli bo’lmaydi.
 
-3. E-IMZO dasturi revers injineriya qilinadi va Java arxiv tarkibi o’rganilib chiqiladi. Natijalar va izlanishlar albatta foydalanuvchilar bilan Xinux hamjamiyatining GitHub sahifasida ochiqlanadi. Ushbu natijadaga asoslangan holda keyinchalik paket va platformalar uchun qo’llab quvvatlanishlar ishlab chiqiladi.
+3. E-IMZO dasturi revers injineriya qilinadi va Java arxiv tarkibi o’rganilib chiqiladi. Natijalar va izlanishlar albatta foydalanuvchilar bilan Xinux hamjamiyatining GitHub sahifasida ochiqlanadi. Ushbu natijaga asoslangan holda keyinchalik paket va platformalar uchun qo’llab quvvatlanishlar ishlab chiqiladi.
 
 Shuni ta’kidlab o’tish joizki, ushbu xat butun hamjamiyat nomidan yozilgani sababi bilan, xat tarkibi GitHub ning xinux-org/e-imzo sahifasida hamjamiyat a’zolari bilan ushbu holat yozasidan habar va dalolat berish maqsadida ulashiladi. Shu bilan birgalikda, qabul qilinadigan xat va natijalar ham ushbu repozitoriyada ochiqlanadi va hamjamiyat bilan baham ko’riladi.
 
