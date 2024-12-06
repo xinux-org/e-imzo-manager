@@ -1,6 +1,6 @@
 # E-IMZO dasturchilariga taklif xat
 
-Assalomu alaykum hurmatli E-IMZO dasturchilari. Men Sohibjon, hamda, O’zbekistonda Linux'ga qaratilgan keng hamjamiyatlardan birining yurutuvchisiman. Ishonchim komil, o’zbek tilini tushunasizlar va ushbu xatning ruscha tarjimasini yozib o’tirishim shart emas.
+Assalomu alaykum hurmatli E-IMZO dasturchilari. Men Orzklv, hamda, O’zbekistonda Linux'ga qaratilgan keng hamjamiyatlardan birining yurutuvchisiman. Ishonchim komil, o’zbek tilini tushunasizlar va ushbu xatning ruscha tarjimasini yozib o’tirishim shart emas.
 
 Ushbu xatni yozishimdan asosiy maqsad Linux foydalanuvchilari orasida sizlarning E-IMZO dasturingizga nisbatan o’sib borayotgan talabdir. Agar sizlarning web sahifalaringizga yuzlanadigan bo’lsak, MacOS va Linux foydalanuvchi uchun .jar (Java dasturlash tilini ishga tushuruvchi arxiv) fayl taklif qilasizlar. Ammo, shu ikki platforma uchun biron hamjamiyat a’zolari, uchinchi shaxs tomonidan qilingan yechimlardan boshqa hech narsa yo’qdir (masalan, debian va ubuntu paketlar). Holbuki, sizning dasturlaringiz xususiyatlarini tushunmasdan turib to’liq biron paket ishlab chiqish juda ko’p savollar keltirib chiqaradi.
 
