@@ -1,4 +1,4 @@
-# Mail to E-Imzo
+# E-IMZO dasturchilariga taklif xat
 
 Assalomu alaykum hurmatli E-IMZO dasturchilari. Men Sohibjon, hamda, O’zbekistonda Linux ga qaratilgan keng hamjamiyatlardan birini yurutuvchisiman. Ishonchim komil, o’zbek tilini tushunasizlar va ushbu xatning ruscha tarjimasini yozib o’tirishim shart emas.
 
