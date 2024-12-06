@@ -17,7 +17,7 @@ Hamda, biz sizlarga ixtiyoriy 3 chi yechim ham taklif qilamiz, lekin ishonamizki
 
 Shuni ta’kidlab o’tish joizki, ushbu xat butun hamjamiyat nomidan yozilgani sababi bilan, xat matni GitHub ning [xinux-org/e-imzo]("https://github.com/xinux-org/e-imzo") sahifasida hamjamiyat a’zolari bilan ushbu holati yuzasidan xabar va dalolat berish maqsadida ulashildi. Shu bilan birgalikda, qabul qilinadigan xat va natijalar ham ushbu repozitoriyada ochiqlanadi va hamjamiyat bilan baham ko’riladi.
 
-Bizning asosiy maqsad, bu O’zbek IT segmentida dastur va qamrovlar kengaytirish, hamda foydalanuvchilar uchun qulaylik va abstraksiyalar yaratishdir. Umid qilamizki, birgalikda sizning dasturingizni foydalanuvchilar uchun ishlatishga yanada qulay va imkon qadar oson qilishga erishamiz.
+Bizning asosiy maqsad, bu O’zbek IT segmentida dastur va qamrovlar kengaytirish, hamda foydalanuvchilar uchun qulaylik va abstraksiyalar yaratishdir. Umid qilamizki, sizning dasturingizni foydalanuvchilar uchun ishlatishga yanada qulay va imkon qadar oson qilishga birgalikda erishamiz.
 
 Hurmat ila, Xinux va O'zbek Floss hamjamiyati.
 (@from developers@floss.uz @to info@yt.uz)
