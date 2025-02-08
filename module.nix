@@ -8,6 +8,14 @@ flake: {
   cfg = config.services.e-imzo;
   pkg = flake.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
+  args = {cfg}: let
+    id =
+      if cfg.id-card
+      then "--id-card"
+      else "";
+  in
+    lib.strings.concatStringsSep " " [id];
+
   # Systemd service
   service = lib.mkIf cfg.enable {
     users.users.${cfg.user} = {
@@ -30,7 +38,7 @@ flake: {
         User = cfg.user;
         Group = cfg.group;
         Restart = "always";
-        ExecStart = "${lib.getBin cfg.package}/bin/e-imzo";
+        ExecStart = "${lib.getBin cfg.package}/bin/e-imzo ${args {inherit cfg;}}";
         StateDirectory = "/media";
         StateDirectoryMode = "0750";
 
