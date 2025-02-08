@@ -4,7 +4,7 @@ Documentation is still WIP, patience my friends!!!
 
 ## Imperative distro retards
 
-Read: .github/guides/README.txt
+Read e-imzo devs provided doc: [README.txt](.github/guides/README.txt)
 
 ## Options
 
