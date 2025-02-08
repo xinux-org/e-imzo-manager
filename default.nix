@@ -1,18 +1,43 @@
-{
-  gnutar,
-  jre,
-  curl,
-  pkgs ? import <nixpkgs> {},
-  ...
-}: let
+{pkgs ? import <nixpkgs> {}, ...}: let
   lib = pkgs.lib;
+
+  ext =
 
   exec = pkgs.writeShellScript "e-imzo" ''
     # Change working directory to script
     cd "$(dirname "$0")/../lib"
 
-    # Start the damned server
-    ${pkgs.jre8} -Xms512M -Xmx2048M -jar ../lib/E-IMZO.jar
+    # Let's parse these args like a pro
+    POSITIONAL_ARGS=()
+
+    # While params go brrr...
+    while [[ $# -gt 0 ]]; do
+      case $1 in
+        -id|--id-card)
+          IDCARD=YES
+          shift # past argument
+          ;;
+        -*|--*)
+          echo "Unknown option or parameter: $1"
+          exit 1
+          ;;
+        *)
+          POSITIONAL_ARGS+=("$1") # save positional arg
+          shift # past argument
+          ;;
+      esac
+    done
+
+    ls -la ${pkgs.pcsclite.lib}/lib
+
+    # Start the damned server depending on args
+    # if [[ -n $IDCARD ]]; then
+    #   ${pkgs.jre8} -Xms512M -Xmx2048M -Dsun.security.smartcardio.library= -jar ../lib/E-IMZO.jar
+    # else
+    #   ${pkgs.jre8} -Xms512M -Xmx2048M -jar ../lib/E-IMZO.jar
+    # fi
+
+
   '';
 in
   pkgs.stdenv.mkDerivation rec {
@@ -30,6 +55,11 @@ in
 
       # Just in case for networking
       curl
+
+      # ID Card dependencies
+      ccid
+      pcsclite
+      pcsc-tools
     ];
 
     installPhase = ''
@@ -51,7 +81,7 @@ in
 
     meta = with lib; {
       homepage = "https://e-imzo.soliq.uz";
-      description = "E-IMZO for uzbek web key signing.";
+      description = "E-IMZO for uzbek state web key signing.";
       licencse = lib.licenses.unfree;
       platforms = with platforms; linux ++ darwin;
       # mainProgram = "e-imzo";

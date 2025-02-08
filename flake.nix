@@ -35,6 +35,6 @@
     )
     // {
       # Overlay module
-      # nixosModules.kerio-control-vpnclient = import ./module.nix self;
+      nixosModules.e-imzo = import ./module.nix self;
     };
 }
