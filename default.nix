@@ -1,7 +1,15 @@
 {pkgs ? import <nixpkgs> {}, ...}: let
   lib = pkgs.lib;
 
-  # ext = ;
+  isApple = builtins.elem pkgs.system [
+    "aarch64-darwin"
+    "x86_64-darwin"
+  ];
+
+  ext =
+    if isApple
+    then ".dylib"
+    else ".so";
 
   exec = pkgs.writeShellScript "e-imzo" ''
     # Change working directory to script
@@ -28,14 +36,12 @@
       esac
     done
 
-    ls -la ${pkgs.pcsclite.lib}/lib
-
     # Start the damned server depending on args
-    # if [[ -n $IDCARD ]]; then
-    #   ${pkgs.jre8} -Xms512M -Xmx2048M -Dsun.security.smartcardio.library= -jar ../lib/E-IMZO.jar
-    # else
-    #   ${pkgs.jre8} -Xms512M -Xmx2048M -jar ../lib/E-IMZO.jar
-    # fi
+    if [[ -n $IDCARD ]]; then
+      ${pkgs.jre8} -Xms512M -Xmx2048M -Dsun.security.smartcardio.library=${pkgs.pcsclite.lib}/lib/libpcsclite.${ext} -jar ../lib/E-IMZO.jar
+    else
+      ${pkgs.jre8} -Xms512M -Xmx2048M -jar ../lib/E-IMZO.jar
+    fi
 
 
   '';
