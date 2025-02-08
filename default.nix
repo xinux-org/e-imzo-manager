@@ -38,9 +38,9 @@
 
     # Start the damned server depending on args
     if [[ -n $IDCARD ]]; then
-      ${pkgs.jre8}/bin/java -Xms512M -Xmx2048M -Dsun.security.smartcardio.library=${pkgs.pcsclite.lib}/lib/libpcsclite.${ext} -jar ../lib/E-IMZO.jar
+      ${pkgs.jre8}/bin/java -Dsun.security.smartcardio.library=${pkgs.pcsclite.lib}/lib/libpcsclite.${ext} -jar ../lib/E-IMZO.jar
     else
-      ${pkgs.jre8}/bin/java -Xms512M -Xmx2048M -jar ../lib/E-IMZO.jar
+      ${pkgs.jre8}/bin/java -jar ../lib/E-IMZO.jar
     fi
 
 
