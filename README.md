@@ -2,6 +2,10 @@
 
 Documentation is still WIP, patience my friends!!!
 
+## Imperative distro retards
+
+Read: .github/guides/README.txt
+
 ## Options
 
 ```nix
