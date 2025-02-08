@@ -1,7 +1,7 @@
 {pkgs ? import <nixpkgs> {}, ...}: let
   lib = pkgs.lib;
 
-  ext =
+  # ext = ;
 
   exec = pkgs.writeShellScript "e-imzo" ''
     # Change working directory to script
