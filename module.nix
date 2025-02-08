@@ -78,9 +78,6 @@ flake: {
       };
 
       # preStart = ''
-      #   installedConfigFile="${config.services.xinux.bot.dataDir}/Config/options.json"
-      #   install -d -m750 ${config.services.xinux.bot.dataDir}/Config
-      #   rm -f "$installedConfigFile" && install -m640 ${configFile} "$installedConfigFile"
       # '';
     };
   };
