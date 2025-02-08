@@ -26,11 +26,11 @@ Documentation is still WIP, patience my friends!!!
 
     # User for launching service
     # => Optional
-    user = "";
+    user = "negir";
 
     # Group of user for launching service
     # => Optional
-    group = "";
+    group = "negirlar";
 
     # E-IMZO custom package
     # => Optional
