@@ -23,7 +23,7 @@ This is Uzbek Xinux community (nix users mostly) member's effort on packaging E-
 
 ## Guides & Use
 
-This project effort provides you both E-IMZO as a package and ready to use nix modules. In order to get started, you need to add this flake to your own config:
+This project effort provides you both E-IMZO as a package and ready to use nix modules. Also, don't forget to read [browser](#browser) section because, without it your browser will refuse to communicate with the service as E-IMZO uses unverified SSL certification (guess someone couldn't afford normal enterprise SSL certificate). In order to get started, you need to add this flake to your own config:
 
 ### Package
 
@@ -42,9 +42,11 @@ inputs.e-imzo.packages.x86-64-darwin.default
 inputs.e-imzo.packages.aarch64-darwin.default
 ```
 
-Yes, technically you can run this software in your **MacOS** too~!
+Yes, technically you can run this software in your **MacOS** too if you have `Nix package manager` installed in it. Nix darwin modules might be added in the future, stay tuned!
 
 ### Service Module (configuration use)
+
+In order to make use of this project's modules, you **must have** your own nix configuration flake! Afterwards, you can get started by adding this project to your own configuration flake like this:
 
 ```nix
 # In your configuration repo flake.nix
@@ -53,7 +55,9 @@ Yes, technically you can run this software in your **MacOS** too~!
 }
 ```
 
-And now,
+Afterwards, you need to
+
+### Browers (must read in any case)
 
 ## Thanks
 
@@ -68,7 +72,7 @@ To whoever participated in packaging a closed source piece of shit.
 
 ## License
 
-This project is licensed under the CC4 license due to stricted use of [Soliq.uz](https://soliq.uz)'es policy - see the [LICENSE](license) file for details.
+This project is licensed under the CC-BY-4.0 license due to stricted use of [Soliq.uz](https://soliq.uz)'es policy - see the [LICENSE](license) file for details.
 
 <p align="center">
     <img src=".github/assets/footer.png" alt="Xinux'es {E-IMZO}">
