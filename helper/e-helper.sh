@@ -38,7 +38,7 @@ if [ -d "/media" ]; then
 else
 	_log "warn" "Whoops, '/media' folder doesn't exist, I'm gonna create it!"
 	_log "warn" "You may probably need to type password as whatever after '/' is system path."
-	# sudo mkdir -p /media
+	sudo mkdir -p /media
 fi
 
 if [ -d "/media/DSKEYS" ]; then
@@ -50,7 +50,7 @@ else
 	echo
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
 		_log "trace" "Ok! I'll create /media/DSKEYS directory for you to store your own keys in your device!"
-		# sudo mkdir -p /media/DSKEYS
+		sudo mkdir -p /media/DSKEYS
 	elif [[ $REPLY =~ ^[Nn]$ ]]; then
 		_log "warn" "Ok! However, remember that, when you mount your flash drive, you should mount it to /media path"
 		_log "warn" "and your flash drive should include 'DSKEYS' folder with keys inside it."
@@ -60,7 +60,7 @@ else
 		exit 0
 	else
 		_log "warn" "Ok, I kinda didn't understand it, but I'll count it as yes -> device!"
-		# sudo mkdir -p /media/DSKEYS
+		sudo mkdir -p /media/DSKEYS
 	fi
 fi
 
