@@ -20,3 +20,6 @@ jobs:
 
       - name: Build nix package
         run: nix build .
+
+      - name: Build helper package
+        run: nix build .#e-helper
