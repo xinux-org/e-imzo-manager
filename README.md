@@ -23,7 +23,7 @@ This is Uzbek Xinux community (nix users mostly) member's effort on packaging E-
 
 ## Guides & Use
 
-This project effort provides you both E-IMZO as a package and ready to use nix modules. Also, don't forget to read [browser](#browser) section because, without it your browser will refuse to communicate with the service as E-IMZO uses unverified SSL certification (guess someone couldn't afford normal enterprise SSL certificate). In order to get started, you need to add this flake to your own config:
+This project effort provides you both E-IMZO as a package and ready to use nix modules. Also, don't forget to read [browser](#browers-must-read-in-any-case) section because, without it your browser will refuse to communicate with the service as E-IMZO uses unverified SSL certification (guess someone couldn't afford normal enterprise SSL certificate). In order to get started, you need to add this flake to your own config:
 
 ### Package
 
@@ -55,9 +55,88 @@ In order to make use of this project's modules, you **must have** your own nix c
 }
 ```
 
-Afterwards, you need to
+Afterwards, you need to import the module and use it! You can import the module literally anywhere of your configuration as shown in example below:
+
+```nix
+# flake.nix -> nixosConfigurations as an example:
+{
+  outputs =
+    { self
+    , nixpkgs
+    , nixpkgs-unstable
+    , home-manager
+    , flake-utils
+    , ...
+    } @ inputs:
+    {
+      nixosConfigurations = {
+        "Example" = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs outputs; };
+          modules = [
+            inputs.e-imzo.nixosModules.e-imzo
+            ./nixos/example/configuration.nix
+          ];
+        };
+      };
+    };
+}
+
+# ./nixos/example/configuration.nix anhwhere of your configuration
+{
+  services.e-imzo = {
+    enable = true;
+  };
+}
+```
+
+or if you broke your configurations into parts (modules), you can do this:
+
+```nix
+# ./anywhere/modules/nixos/e-imzo.nix
+{ inputs, ... }: {
+{
+  imports = [inputs.e-imzo.nixosModules.e-imzo];
+
+  services.e-imzo = {
+    enable = true;
+  };
+}
+```
+
+You can refer to [available options](#available-options) section for more available features/options/settings~!
 
 ### Browers (must read in any case)
+
+### Available Options
+
+Please, refer to the example nix showcase below for more information:
+
+```nix
+{
+  # Here are available options
+  services.e-imzo = {
+    # Enable Toggle
+    # => Mandatory
+    enable = true;
+
+    # ID Card support (experimental)
+    # => Optional
+    id-card = false;
+
+    # User for launching service
+    # => Optional
+    user = "negir";
+
+    # Group of user for launching service
+    # => Optional
+    group = "negirlar";
+
+    # E-IMZO custom package
+    # => Optional
+    package = pkgs.<?>;
+  };
+}
+```
 
 ## Thanks
 
