@@ -39,7 +39,7 @@ flake: {
         Group = cfg.group;
         Restart = "always";
         ExecStart = "${lib.getBin cfg.package}/bin/e-imzo ${args {inherit cfg;}}";
-        StateDirectory = "/media";
+        StateDirectory = cfg.user;
         StateDirectoryMode = "0750";
 
         # Hardening
@@ -85,11 +85,11 @@ flake: {
         UMask = "0027";
       };
 
-      preStart = ''
-        if [ ! -d /media ]; then
-          mkdir -p /media;
-        fi
-      '';
+      # preStart = ''
+      #   if [ ! -d /media ]; then
+      #     mkdir -p /media;
+      #   fi
+      # '';
     };
   };
 in {
