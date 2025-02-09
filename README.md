@@ -130,7 +130,7 @@ sudo systemctl restart e-imzo
 
 ### Browers (must read in any case)
 
-Long story short, service runs websocket at `https://127.0.0.1:64443/` with untrusted SSL certificate. The problem is, whenever a website tries to approach the service, your browser will deny/ignore requests due to service's unverified SSL. You just need to open `https://127.0.0.1:64443/` once in your default browser and add its certificates to trusted, so other windows (website that use e-imzo) can connect to websockets. If you don't understand what I'm explaining, just [click this](https://letmegooglethat.com/?q=trust+website+certificate+in+browser)
+Long story short, service runs websocket at `https://127.0.0.1:64443/` with untrusted SSL certificate. The problem is, whenever a website tries to approach the service, your browser will deny/ignore requests due to service's unverified SSL. You just need to open `https://127.0.0.1:64443/` once in your default browser and add its certificates to trusted, so other windows (website that use e-imzo) can connect to websockets. If you don't understand what I'm explaining, just [click this](https://letmegooglethat.com/?q=trust+website+certificate+in+browser).
 
 ### Available Options
 
