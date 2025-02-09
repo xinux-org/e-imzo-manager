@@ -176,7 +176,7 @@ To whoever participated in packaging a closed source piece of shit.
 
 ## License
 
-This project is licensed under the CC-BY-4.0 license due to stricted use of [Soliq.uz](https://soliq.uz)'es policy - see the [LICENSE](license) file for details.
+This project is licensed under the CC-BY-4.0 license due to stricted use of [Soliq.uz](https://soliq.uz)'es policy - see the [LICENSE](LICENSE) file for details.
 
 <p align="center">
     <img src=".github/assets/footer.png" alt="Xinux'es {E-IMZO}">
