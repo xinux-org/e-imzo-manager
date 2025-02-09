@@ -79,8 +79,7 @@ Afterwards, you need to import the module and use it! You can import the module 
     { self
     , nixpkgs
     , nixpkgs-unstable
-    , home-manager
-    , flake-utils
+    , e-imzo # <-- don't forget
     , ...
     } @ inputs:
     {
