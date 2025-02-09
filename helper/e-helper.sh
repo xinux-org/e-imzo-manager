@@ -64,7 +64,8 @@ else
 	fi
 fi
 
-_log "trace" "Good! We create all necessary folders, now you need to copy paste your keys to designated path."
-_log "trace" "I'll open the 'DSKEYS' folder for you in your default file manager in 3 seconds! "
+_log "trace" "Good! We created all necessary folders, now you need to copy-paste your keys to designated path."
+_log "trace" "I'll open the 'DSKEYS' folder for you in your default file manager in 3 seconds!"
+_log "trace" "For your information, the location is: '/media/DSKEYS'."
 sleep 3
 xdg-open /media/DSKEYS
