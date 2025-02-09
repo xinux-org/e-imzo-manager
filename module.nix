@@ -52,7 +52,7 @@ flake: {
         DevicePolicy = "strict";
         IPAddressAllow = "localhost";
         LockPersonality = true;
-        MemoryDenyWriteExecute = true;
+        # MemoryDenyWriteExecute = true;
         NoNewPrivileges = true;
         PrivateDevices = true;
         PrivateTmp = true;
@@ -85,8 +85,11 @@ flake: {
         UMask = "0027";
       };
 
-      # preStart = ''
-      # '';
+      preStart = ''
+        if [ ! -d /media ]; then
+          mkdir -p /media;
+        fi
+      '';
     };
   };
 in {
