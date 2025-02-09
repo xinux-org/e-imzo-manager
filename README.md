@@ -23,7 +23,7 @@ This is Uzbek Xinux community (nix users mostly) member's effort on packaging E-
 
 ## Guides & Use
 
-This project effort provides you both E-IMZO as a package and ready to use nix modules. Also, don't forget to read [browser](#browers-must-read-in-any-case) section because, without it your browser will refuse to communicate with the service as E-IMZO uses unverified SSL certification (guess someone couldn't afford normal enterprise SSL certificate). In order to get started, you need to add this flake to your own config:
+This project effort provides you both E-IMZO as a package and ready to use nix modules. Also, don't forget to read [browser](#browsers-must-read-in-any-case) section because, without it your browser will refuse to communicate with the service as E-IMZO uses unverified SSL certification (guess someone couldn't afford normal enterprise SSL certificate). In order to get started, you need to add this flake to your own config:
 
 ### Package
 
@@ -127,7 +127,7 @@ nix run github:xinux-org/e-imzo#e-helper
 sudo systemctl restart e-imzo
 ```
 
-### Browers (must read in any case)
+### Browsers (must read in any case)
 
 Long story short, service runs websocket at `https://127.0.0.1:64443/` with untrusted SSL certificate. The problem is, whenever a website tries to approach the service, your browser will deny/ignore requests due to service's unverified SSL. You just need to open `https://127.0.0.1:64443/` once in your default browser and add its certificates to trusted, so other windows (website that use e-imzo) can connect to websockets. If you don't understand what I'm explaining, just [click this](https://letmegooglethat.com/?q=trust+website+certificate+in+browser).
 
