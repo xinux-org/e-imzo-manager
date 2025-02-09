@@ -30,6 +30,10 @@ This project effort provides you both E-IMZO as a package and ready to use nix m
 If you want to use the package one time, you can easily call the package via `nix run`:
 
 ```shell
+# Bootstrap necessary directories/files before start
+nix run github:xinux-org/e-imzo#e-helper
+
+# Start the e-imzo server
 nix run github:xinux-org/e-imzo
 ```
 
@@ -52,6 +56,17 @@ In order to make use of this project's modules, you **must have** your own nix c
 # In your configuration repo flake.nix
 {
   inputs.e-imzo.url = "github:xinux-org/e-imzo";
+
+  # Or
+
+  inputs = {
+    ...
+
+    # E-IMZO project flake
+    e-imzo.url = "github:xinux-org/e-imzo";
+
+    ...
+  };
 }
 ```
 
@@ -81,7 +96,7 @@ Afterwards, you need to import the module and use it! You can import the module 
     };
 }
 
-# ./nixos/example/configuration.nix anhwhere of your configuration
+# ./nixos/example/configuration.nix anywhere of your configuration
 {
   services.e-imzo = {
     enable = true;
@@ -89,7 +104,7 @@ Afterwards, you need to import the module and use it! You can import the module 
 }
 ```
 
-or if you broke your configurations into parts (modules), you can do this:
+or if you broke your configurations into parts (modules), you can write your own mini-module like this:
 
 ```nix
 # ./anywhere/modules/nixos/e-imzo.nix
@@ -103,9 +118,19 @@ or if you broke your configurations into parts (modules), you can do this:
 }
 ```
 
-You can refer to [available options](#available-options) section for more available features/options/settings~!
+You can refer to [available options](#available-options) section for more available features/options/settings~! Finally, please run this command to finish your setup and perform some initialization steps:
+
+```shell
+# Bootstrap necessary directories/files
+nix run github:xinux-org/e-imzo#e-helper
+
+# Restart service to include all files
+sudo systemctl restart e-imzo
+```
 
 ### Browers (must read in any case)
+
+Long story short, service runs websocket at `https://127.0.0.1:64443/` with untrusted SSL certificate. The problem is, whenever a website tries to approach the service, your browser will deny/ignore requests due to service's unverified SSL. You just need to open `https://127.0.0.1:64443/` once in your default browser and add its certificates to trusted, so other windows (website that use e-imzo) can connect to websockets. If you don't understand what I'm explaining, just [click this](https://letmegooglethat.com/?q=trust+website+certificate+in+browser)
 
 ### Available Options
 
@@ -156,44 +181,3 @@ This project is licensed under the CC-BY-4.0 license due to stricted use of [Sol
 <p align="center">
     <img src=".github/assets/footer.png" alt="Xinux'es {E-IMZO}">
 </p>
-
-## Imperative distro retards
-
-Read e-imzo devs provided doc: [README.txt](.github/guides/README.txt)
-
-## Options
-
-```nix
-# In your flake.nix
-{
-  inputs.e-imzo.url = "github:xinux-org/e-imzo";
-}
-
-# Somewhere in your nix configs
-{
-  imports = [inputs.e-imzo.nixosModules.e-imzo];
-
-  # Here are available options
-  services.e-imzo = {
-    # Enable Toggle
-    # => Mandatory
-    enable = true;
-
-    # ID Card support (experimental)
-    # => Optional
-    id-card = false;
-
-    # User for launching service
-    # => Optional
-    user = "negir";
-
-    # Group of user for launching service
-    # => Optional
-    group = "negirlar";
-
-    # E-IMZO custom package
-    # => Optional
-    package = pkgs.<?>;
-  };
-}
-```

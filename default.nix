@@ -43,7 +43,7 @@
       ${pkgs.jre8}/bin/java -jar ../lib/E-IMZO.jar
     fi
 
-
+    exit 0
   '';
 in
   pkgs.stdenv.mkDerivation rec {

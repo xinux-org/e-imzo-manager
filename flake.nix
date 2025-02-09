@@ -22,15 +22,21 @@
     (
       system: let
         pkgs = nixpkgs.legacyPackages.${system};
+
+        packages = {
+          default = packages.e-imzo;
+          e-imzo = pkgs.callPackage ./. {inherit pkgs;};
+          e-helper = pkgs.callPackage ./helper {inherit pkgs;};
+        };
       in {
+        # Output package
+        inherit packages;
+
         # Nix script formatter
         formatter = pkgs.alejandra;
 
         # Development environment
         devShells.default = import ./shell.nix {inherit pkgs;};
-
-        # Output package
-        packages.default = pkgs.callPackage ./. {};
       }
     )
     // {

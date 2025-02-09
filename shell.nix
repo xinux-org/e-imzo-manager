@@ -14,6 +14,7 @@ pkgs.stdenv.mkDerivation {
 
   nativeBuildInputs = with pkgs; [
     nixd
+    shfmt
     statix
     deadnix
     alejandra
