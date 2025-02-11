@@ -40,61 +40,15 @@ flake: {
 
       serviceConfig = {
         Type = "simple";
-        # User = cfg.user;
-        # Group = cfg.group;
         Restart = "always";
+        RestartSec=1;
         ExecStart = "${lib.getBin cfg.package}/bin/e-imzo ${args {inherit cfg;}}";
-        # StateDirectory = cfg.user;
-        # StateDirectoryMode = "0750";
 
         # Hardening
-        CapabilityBoundingSet = [
-          "AF_NETLINK"
-          "AF_INET"
-          "AF_INET6"
-        ];
-        DeviceAllow = ["/dev/stdin r"];
-        DevicePolicy = "strict";
-        IPAddressAllow = "localhost";
-        LockPersonality = true;
-        # MemoryDenyWriteExecute = true;
-        NoNewPrivileges = true;
-        PrivateDevices = true;
-        PrivateTmp = true;
-        PrivateUsers = true;
-        ProtectClock = true;
-        ProtectControlGroups = true;
-        ProtectHome = true;
-        ProtectHostname = true;
-        ProtectKernelLogs = true;
-        ProtectKernelModules = true;
-        ProtectKernelTunables = true;
-        ProtectSystem = "strict";
-        ReadOnlyPaths = ["/"];
-        RemoveIPC = true;
-        RestrictAddressFamilies = [
-          "AF_NETLINK"
-          "AF_INET"
-          "AF_INET6"
-        ];
-        RestrictNamespaces = true;
-        RestrictRealtime = true;
-        RestrictSUIDSGID = true;
-        SystemCallArchitectures = "native";
-        SystemCallFilter = [
-          "@system-service"
-          "~@privileged"
-          "~@resources"
-          "@pkey"
-        ];
-        UMask = "0027";
-      };
+        NoNewPrivileges=true;
+        SystemCallArchitectures="native";
 
-      # preStart = ''
-      #   if [ ! -d /media ]; then
-      #     mkdir -p /media;
-      #   fi
-      # '';
+      };
     };
   };
 in {
