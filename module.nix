@@ -8,6 +8,9 @@ flake: {
   cfg = config.services.e-imzo;
   pkg = flake.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
+  # Single name for everything
+  name = "e-imzo";
+
   args = {cfg}: let
     id =
       if cfg.id-card
@@ -18,29 +21,31 @@ flake: {
 
   # Systemd service
   service = lib.mkIf cfg.enable {
-    users.users.${cfg.user} = {
+    users.users.${name} = {
       description = "E-IMZO service daemon user";
       isSystemUser = true;
-      group = cfg.group;
+      group = name;
     };
 
-    users.groups.${cfg.group} = {};
+    users.groups.${name} = {};
 
-    systemd.services.e-imzo = {
+    systemd.user.services.${name} = {
+      enable = true;
       description = "E-IMZO, uzbek state web signing service";
       documentation = ["https://github.com/xinux-org/e-imzo"];
 
-      after = ["network-online.target"];
-      wants = ["network-online.target"];
-      wantedBy = ["multi-user.target"];
+      after = ["network-online.target" "graphical.target"];
+      wants = ["network-online.target" "graphical.target"];
+      wantedBy = ["default.target"];
 
       serviceConfig = {
-        User = cfg.user;
-        Group = cfg.group;
+        Type = "simple";
+        # User = cfg.user;
+        # Group = cfg.group;
         Restart = "always";
         ExecStart = "${lib.getBin cfg.package}/bin/e-imzo ${args {inherit cfg;}}";
-        StateDirectory = cfg.user;
-        StateDirectoryMode = "0750";
+        # StateDirectory = cfg.user;
+        # StateDirectoryMode = "0750";
 
         # Hardening
         CapabilityBoundingSet = [
@@ -107,17 +112,17 @@ in {
         '';
       };
 
-      user = mkOption {
-        type = types.str;
-        default = "e-imzo";
-        description = "User for running service + accessing keys";
-      };
+      # user = mkOption {
+      #   type = types.str;
+      #   default = "e-imzo";
+      #   description = "User for running service + accessing keys";
+      # };
 
-      group = mkOption {
-        type = types.str;
-        default = "e-imzo";
-        description = "Group for running service + accessing keys";
-      };
+      # group = mkOption {
+      #   type = types.str;
+      #   default = "e-imzo";
+      #   description = "Group for running service + accessing keys";
+      # };
 
       package = mkOption {
         type = types.package;
