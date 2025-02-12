@@ -41,13 +41,12 @@ flake: {
       serviceConfig = {
         Type = "simple";
         Restart = "always";
-        RestartSec=1;
+        RestartSec = 1;
         ExecStart = "${lib.getBin cfg.package}/bin/e-imzo ${args {inherit cfg;}}";
 
         # Hardening
-        NoNewPrivileges=true;
-        SystemCallArchitectures="native";
-
+        NoNewPrivileges = true;
+        SystemCallArchitectures = "native";
       };
     };
   };
