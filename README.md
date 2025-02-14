@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-    <h3 align="center">Various project templates for faster bootstrapping with Nix.</h3>
+    <h3 align="center">Nix effort for E-IMZO service.</h3>
 </p>
 
 <p align="center">
