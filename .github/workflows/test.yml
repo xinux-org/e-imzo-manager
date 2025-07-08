@@ -16,8 +16,11 @@ jobs:
       - name: Cache Nix store
         uses: DeterminateSystems/magic-nix-cache-action@main
 
-      - name: Check up flake configuration
-        run: nix flake check --all-systems --show-trace
+      - name: Check flake x86_64-linux host
+        run: nix flake check --system x86_64-linux --show-trace
+
+      - name: Check flake aarch64-linux 
+        run: nix flake check --system aarch64-linux --show-trace
 
   test-project:
     runs-on: ubuntu-latest
