@@ -1,0 +1,6 @@
+data/com.belmoussaoui.GtkRustTemplate.desktop.in.in
+data/com.belmoussaoui.GtkRustTemplate.gschema.xml.in
+data/com.belmoussaoui.GtkRustTemplate.metainfo.xml.in.in
+data/resources/ui/shortcuts.ui
+src/app.rs
+src/main.rs
