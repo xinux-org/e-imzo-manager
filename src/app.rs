@@ -35,7 +35,7 @@ impl SimpleComponent for App {
             section! {
                 "_Preferences" => PreferencesAction,
                 "_Keyboard" => ShortcutsAction,
-                "_About GTK Rust Template" => AboutAction,
+                "_About E-IMZO Manager" => AboutAction,
             }
         }
     }
