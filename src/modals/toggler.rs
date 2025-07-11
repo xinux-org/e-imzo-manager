@@ -1,7 +1,8 @@
 // The Toggler page
-use relm4::{gtk};
 use crate::app::AppMsg;
-// use gtk::prelude::{BoxExt, ButtonExt, OrientableExt};
+use gtk::prelude::WidgetExt;
+use relm4::gtk;
+use relm4::gtk::prelude::{BoxExt, ButtonExt, OrientableExt};
 use relm4::{ComponentParts, ComponentSender, RelmWidgetExt, SimpleComponent};
 
 pub struct TogglerModel {
@@ -35,7 +36,7 @@ impl SimpleComponent for TogglerModel {
                 #[watch]
                 set_label: &format!("Toggle: {}", model.toggle),
                 set_margin_all: 5,
-            }
+            },
         }
     }
 
@@ -59,4 +60,3 @@ impl SimpleComponent for TogglerModel {
         }
     }
 }
-

@@ -1,7 +1,7 @@
 // The Counter page
-use relm4::{gtk};
 use crate::app::AppMsg;
-// use gtk::prelude::{BoxExt, ButtonExt, OrientableExt};
+use relm4::{gtk};
+use relm4::gtk::prelude::{OrientableExt, BoxExt, ButtonExt};
 use relm4::{ComponentParts, ComponentSender, RelmWidgetExt, SimpleComponent};
 
 pub struct CounterModel {

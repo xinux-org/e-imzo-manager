@@ -2,7 +2,7 @@ use adw::prelude::{AdwApplicationWindowExt, IsA, NavigationPageExt, ToValue};
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw, gtk, main_application, Component, ComponentController, ComponentParts, ComponentSender,
-     SimpleComponent,
+    Controller, SimpleComponent,
 };
 use std::convert::identity;
 
@@ -16,10 +16,13 @@ use crate::modals::about::AboutDialog;
 use crate::modals::content::CounterModel;
 use crate::modals::toggler::TogglerModel;
 
-pub(super) struct App {}
+pub(super) struct App {
+    _counter: Controller<CounterModel>,
+    _toggler: Controller<TogglerModel>,
+}
 
 #[derive(Debug)]
-pub(super) enum AppMsg {
+pub enum AppMsg {
     Quit,
 }
 
@@ -50,6 +53,7 @@ impl SimpleComponent for App {
         main_window = adw::ApplicationWindow::new(&main_application()) {
 
             set_visible: true,
+            set_size_request: (350, 500),
             set_default_size: (2200, 2000), // width and height
 
             connect_close_request[sender] => move |_| {
@@ -83,56 +87,37 @@ impl SimpleComponent for App {
                     }
                 },
 
-                gtk::Label {
-                    set_label: "Hello asdasdasdasdasdasd!",
-                    add_css_class: "title-header",
-                    set_vexpand: true,
-                },
-
-                gtk::Label {
-                    set_label: "Hello world!",
-                    add_css_class: "title-header",
-                    set_vexpand: true,
-                },
-                gtk::Label {
-                    set_label: "Hello world!",
-                    add_css_class: "title-header",
-                    set_vexpand: true,
-                },
-                gtk::Label {
-                    set_label: "Hello world!",
-                    add_css_class: "title-header",
-                    set_vexpand: true,
-                },
-
-            },
-            #[name(split_view)]
-            adw::NavigationSplitView {
-                #[wrap(Some)]
-                set_sidebar = &adw::NavigationPage {
-                    set_title: "Sidebar",
-
+                #[name(split_view)]
+                adw::NavigationSplitView {
                     #[wrap(Some)]
-                    set_child = &adw::ToolbarView {
-                        add_top_bar = &adw::HeaderBar {},
+                    set_sidebar = &adw::NavigationPage {
+                        set_title: "Sidebar",
 
                         #[wrap(Some)]
-                        set_content = &gtk::StackSidebar {
-                            set_stack: &stack,
+                        set_child = &adw::ToolbarView {
+                            // add_top_bar = &adw::HeaderBar {},
+
+                            #[wrap(Some)]
+                            set_content = &gtk::StackSidebar {
+                                set_stack: &stack,
+                            },
+                        },
+                    },
+
+                    #[wrap(Some)]
+                    set_content = &adw::NavigationPage {
+                        set_title: "Content",
+
+                        #[wrap(Some)]
+                        set_child = &adw::ToolbarView {
+                            // add_top_bar = &adw::HeaderBar {},
+                            set_content: Some(&stack),
+
                         },
                     },
                 },
-
-                set_content = &adw::NavigationPage {
-                    set_title: "Content",
-
-                    #[wrap(Some)]
-                    set_child = &adw::ToolbarView {
-                        add_top_bar = &adw::HeaderBar {},
-                        set_content: Some(&stack),
-                    },
-                },
             },
+
 
             add_breakpoint = bp_with_setters(
                 adw::Breakpoint::new(
@@ -162,17 +147,18 @@ impl SimpleComponent for App {
         let counter = CounterModel::builder()
             .launch(init.0)
             .forward(sender.input_sender(), identity);
+
         let toggler = TogglerModel::builder()
-            .builder()
             .launch(init.1)
             .forward(sender.input_sender(), identity);
+
+        let widgets = view_output!();
 
         let model = Self {
             _counter: counter,
             _toggler: toggler,
         };
 
-        let widgets = view_output!();
         widgets.load_window_size();
         widgets.stack.connect_visible_child_notify({
             let split_view = widgets.split_view.clone();
@@ -197,7 +183,6 @@ impl SimpleComponent for App {
         actions.add_action(shortcuts_action);
         actions.add_action(about_action);
         actions.register_for_widget(&widgets.main_window);
-
 
         ComponentParts { model, widgets }
     }
@@ -247,4 +232,3 @@ impl AppWidgets {
         }
     }
 }
-
