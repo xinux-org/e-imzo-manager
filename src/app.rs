@@ -53,8 +53,9 @@ impl SimpleComponent for App {
         main_window = adw::ApplicationWindow::new(&main_application()) {
 
             set_visible: true,
-            set_size_request: (350, 500),
-            set_default_size: (2200, 2000), // width and height
+            // width and height below
+            set_size_request: (800, 800),
+            set_default_size: (900, 900),
 
             connect_close_request[sender] => move |_| {
                 sender.input(AppMsg::Quit);
@@ -77,6 +78,7 @@ impl SimpleComponent for App {
                     None
                 },
 
+            // #[root]
             gtk::Box {
                 set_orientation: gtk::Orientation::Vertical,
 
@@ -89,6 +91,9 @@ impl SimpleComponent for App {
 
                 #[name(split_view)]
                 adw::NavigationSplitView {
+                    set_vexpand: true,
+                    set_hexpand: true,
+
                     #[wrap(Some)]
                     set_sidebar = &adw::NavigationPage {
                         set_title: "Sidebar",
