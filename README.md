@@ -108,3 +108,9 @@ Join the GNOME and gtk-rs community!
 
 - [Podcasts](https://gitlab.gnome.org/World/podcasts)
 - [Shortwave](https://gitlab.gnome.org/World/Shortwave)
+
+
+## Development
+```
+export GTK_DEBUG=interactive
+```

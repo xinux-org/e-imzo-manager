@@ -1,7 +1,10 @@
+use adw::prelude::{AdwApplicationWindowExt, IsA, NavigationPageExt, ToValue};
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
-    adw, gtk, main_application, Component, ComponentParts, ComponentSender, SimpleComponent,
+    adw, gtk, main_application, Component, ComponentController, ComponentParts, ComponentSender,
+    Controller, SimpleComponent,
 };
+use std::convert::identity;
 
 use gtk::prelude::{
     ApplicationExt, ApplicationWindowExt, GtkWindowExt, OrientableExt, SettingsExt, WidgetExt,
@@ -10,11 +13,16 @@ use gtk::{gio, glib};
 
 use crate::config::{APP_ID, PROFILE};
 use crate::modals::about::AboutDialog;
+use crate::modals::content::CounterModel;
+use crate::modals::toggler::TogglerModel;
 
-pub(super) struct App {}
+pub(super) struct App {
+    _counter: Controller<CounterModel>,
+    _toggler: Controller<TogglerModel>,
+}
 
 #[derive(Debug)]
-pub(super) enum AppMsg {
+pub enum AppMsg {
     Quit,
 }
 
@@ -25,7 +33,7 @@ relm4::new_stateless_action!(AboutAction, WindowActionGroup, "about");
 
 #[relm4::component(pub)]
 impl SimpleComponent for App {
-    type Init = ();
+    type Init = (u8, bool);
     type Input = AppMsg;
     type Output = ();
     type Widgets = AppWidgets;
@@ -35,14 +43,19 @@ impl SimpleComponent for App {
             section! {
                 "_Preferences" => PreferencesAction,
                 "_Keyboard" => ShortcutsAction,
-                "_About GTK Rust Template" => AboutAction,
+                "_About E-IMZO Manager" => AboutAction,
             }
         }
     }
 
     view! {
+        #[root]
         main_window = adw::ApplicationWindow::new(&main_application()) {
+
             set_visible: true,
+            // width and height below
+            set_size_request: (800, 800),
+            set_default_size: (900, 900),
 
             connect_close_request[sender] => move |_| {
                 sender.input(AppMsg::Quit);
@@ -65,6 +78,7 @@ impl SimpleComponent for App {
                     None
                 },
 
+            // #[root]
             gtk::Box {
                 set_orientation: gtk::Orientation::Vertical,
 
@@ -75,26 +89,88 @@ impl SimpleComponent for App {
                     }
                 },
 
-                gtk::Label {
-                    set_label: "Hello world!",
-                    add_css_class: "title-header",
+                #[name(split_view)]
+                adw::NavigationSplitView {
                     set_vexpand: true,
-                }
-            }
+                    set_hexpand: true,
 
+                    #[wrap(Some)]
+                    set_sidebar = &adw::NavigationPage {
+                        set_title: "Sidebar",
+
+                        #[wrap(Some)]
+                        set_child = &adw::ToolbarView {
+                            // add_top_bar = &adw::HeaderBar {},
+
+                            #[wrap(Some)]
+                            set_content = &gtk::StackSidebar {
+                                set_stack: &stack,
+                            },
+                        },
+                    },
+
+                    #[wrap(Some)]
+                    set_content = &adw::NavigationPage {
+                        set_title: "Content",
+
+                        #[wrap(Some)]
+                        set_child = &adw::ToolbarView {
+                            // add_top_bar = &adw::HeaderBar {},
+                            set_content: Some(&stack),
+
+                        },
+                    },
+                },
+            },
+
+
+            add_breakpoint = bp_with_setters(
+                adw::Breakpoint::new(
+                    adw::BreakpointCondition::new_length(
+                        adw::BreakpointConditionLengthType::MaxWidth,
+                        400.0,
+                        adw::LengthUnit::Sp,
+                    )
+                ),
+                &[(&split_view, "collapsed", true)]
+            ),
+        },
+        stack = &gtk::Stack {
+            add_titled: (counter.widget(), None, "Counter"),
+            add_titled: (toggler.widget(), None, "Toggle"),
+            set_vhomogeneous: false,
         }
     }
 
     fn init(
-        _init: Self::Init,
+        init: Self::Init,
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let model = Self {};
+        let mut actions = RelmActionGroup::<WindowActionGroup>::new();
+
+        let counter = CounterModel::builder()
+            .launch(init.0)
+            .forward(sender.input_sender(), identity);
+
+        let toggler = TogglerModel::builder()
+            .launch(init.1)
+            .forward(sender.input_sender(), identity);
 
         let widgets = view_output!();
 
-        let mut actions = RelmActionGroup::<WindowActionGroup>::new();
+        let model = Self {
+            _counter: counter,
+            _toggler: toggler,
+        };
+
+        widgets.load_window_size();
+        widgets.stack.connect_visible_child_notify({
+            let split_view = widgets.split_view.clone();
+            move |_| {
+                split_view.set_show_content(true);
+            }
+        });
 
         let shortcuts_action = {
             let shortcuts = widgets.shortcuts.clone();
@@ -113,8 +189,6 @@ impl SimpleComponent for App {
         actions.add_action(about_action);
         actions.register_for_widget(&widgets.main_window);
 
-        widgets.load_window_size();
-
         ComponentParts { model, widgets }
     }
 
@@ -127,6 +201,13 @@ impl SimpleComponent for App {
     fn shutdown(&mut self, widgets: &mut Self::Widgets, _output: relm4::Sender<Self::Output>) {
         widgets.save_window_size().unwrap();
     }
+}
+fn bp_with_setters(
+    bp: adw::Breakpoint,
+    additions: &[(&impl IsA<glib::Object>, &str, impl ToValue)],
+) -> adw::Breakpoint {
+    bp.add_setters(additions);
+    bp
 }
 
 impl AppWidgets {
