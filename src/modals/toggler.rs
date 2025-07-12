@@ -1,6 +1,6 @@
 // The Toggler page
 use crate::app::AppMsg;
-use gtk::prelude::WidgetExt;
+
 use relm4::gtk;
 use relm4::gtk::prelude::{BoxExt, ButtonExt, OrientableExt};
 use relm4::{ComponentParts, ComponentSender, RelmWidgetExt, SimpleComponent};
