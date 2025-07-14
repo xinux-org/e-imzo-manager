@@ -27,7 +27,7 @@ impl SimpleComponent for AboutDialog {
             .version(VERSION)
             .translator_credits("translator-credits")
             .copyright("© 2025 Bleur Developers")
-            .developers(vec!["Bleur Developers"])
+            .developers(vec!["Xinux Developers"])
             .designers(vec!["Bleur Developers"])
             .build()
     }

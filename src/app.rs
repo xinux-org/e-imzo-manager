@@ -48,6 +48,7 @@ impl SimpleComponent for App {
         }
     }
 
+    // let enabled = true;
     view! {
         #[root]
         main_window = adw::ApplicationWindow::new(&main_application()) {
