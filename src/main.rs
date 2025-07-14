@@ -72,7 +72,7 @@ fn main() {
     // } else {
     //     app.visible_on_activate(true).run::<Welcome>(());
     // }
-    app.visible_on_activate(false).run::<App>((0, false));
-    // app.visible_on_activate(true).run::<WelcomeModel>(());
+    // app.visible_on_activate(false).run::<App>((0, false));
+    app.visible_on_activate(true).run::<WelcomeModel>(());
 }
 
