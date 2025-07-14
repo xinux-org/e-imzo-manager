@@ -1,20 +1,25 @@
-use adw::prelude::{AdwApplicationWindowExt, IsA, NavigationPageExt, ToValue};
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
-    adw, gtk, main_application, Component, ComponentController, ComponentParts, ComponentSender,
-    Controller, SimpleComponent,
+    adw::{
+        self,
+        prelude::{AdwApplicationWindowExt, IsA, NavigationPageExt, ToValue},
+    },
+    gtk::{
+        self, gio, glib,
+        prelude::{
+            ApplicationExt, ApplicationWindowExt, GtkWindowExt, OrientableExt, SettingsExt,
+            WidgetExt,
+        },
+    },
+    main_application, Component, ComponentController, ComponentParts, ComponentSender, Controller,
+    SimpleComponent,
 };
 use std::convert::identity;
 
-use gtk::prelude::{
-    ApplicationExt, ApplicationWindowExt, GtkWindowExt, OrientableExt, SettingsExt, WidgetExt,
+use crate::{
+    config::{APP_ID, PROFILE},
+    modals::{about::AboutDialog, content::CounterModel, toggler::TogglerModel},
 };
-use gtk::{gio, glib};
-
-use crate::config::{APP_ID, PROFILE};
-use crate::modals::about::AboutDialog;
-use crate::modals::content::CounterModel;
-use crate::modals::toggler::TogglerModel;
 
 pub(super) struct App {
     _counter: Controller<CounterModel>,
@@ -48,7 +53,6 @@ impl SimpleComponent for App {
         }
     }
 
-    // let enabled = true;
     view! {
         #[root]
         main_window = adw::ApplicationWindow::new(&main_application()) {

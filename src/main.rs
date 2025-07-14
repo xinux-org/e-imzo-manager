@@ -2,19 +2,18 @@
 mod config;
 mod app;
 mod modals;
-mod window;
+mod welcome;
 
 use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR, RESOURCES_FILE};
 use gettextrs::{gettext, LocaleCategory};
-use gtk::prelude::ApplicationExt;
-use gtk::{gio, glib};
 use relm4::{
     actions::{AccelsPlus, RelmAction, RelmActionGroup},
-    gtk, main_application, RelmApp,
+    gtk::{self, gio, glib, prelude::ApplicationExt},
+    main_application, RelmApp,
 };
 
 use app::App;
-use window::Welcome;
+use welcome::WelcomeModel;
 
 relm4::new_action_group!(AppActionGroup, "app");
 relm4::new_stateless_action!(QuitAction, AppActionGroup, "quit");
@@ -66,6 +65,14 @@ fn main() {
         .unwrap();
     relm4::set_global_css(&glib::GString::from_utf8_checked(data.to_vec()).unwrap());
 
+    // let is_eimzo_installed = true;
+
+    // if is_eimzo_installed {
+    //     app.visible_on_activate(false).run::<App>((0, false));
+    // } else {
+    //     app.visible_on_activate(true).run::<Welcome>(());
+    // }
     app.visible_on_activate(false).run::<App>((0, false));
-    // app.visible_on_activate(true).run::<Welcome>(());
+    // app.visible_on_activate(true).run::<WelcomeModel>(());
 }
+
