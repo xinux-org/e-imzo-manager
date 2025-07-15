@@ -1,29 +1,40 @@
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw::{
-        self,
-        prelude::{AdwApplicationWindowExt, IsA, NavigationPageExt, ToValue},
+        self, StatusPage, prelude::{AdwApplicationWindowExt, OrientableExt}
     },
     gtk::{
         self, gio, glib,
         prelude::{
-            ApplicationExt, ApplicationWindowExt, GtkWindowExt, OrientableExt, SettingsExt,
+            ApplicationExt, ApplicationWindowExt, GtkWindowExt, SettingsExt,
             WidgetExt,
         },
     },
     main_application, Component, ComponentController, ComponentParts, ComponentSender, Controller,
     SimpleComponent,
 };
+use relm4::gtk::prelude::BoxExt;
+
 use std::convert::identity;
 
 use crate::{
     config::{APP_ID, PROFILE},
-    modals::{about::AboutDialog, content::CounterModel, toggler::TogglerModel},
+    modals::about::AboutDialog,
+    welcome::WelcomeModel,
+    dashboard::DashboardModel
 };
+// use crate::welcome::AppWidgets;
 
-pub(super) struct App {
-    _counter: Controller<CounterModel>,
-    _toggler: Controller<TogglerModel>,
+#[derive(Clone)]
+enum Page {
+    Welcome,
+    Main,
+}
+
+pub struct App {
+    welcome: Controller<WelcomeModel>,
+    main_page: Controller<DashboardModel>,
+    current_page: Page,
 }
 
 #[derive(Debug)]
@@ -31,14 +42,14 @@ pub enum AppMsg {
     Quit,
 }
 
-relm4::new_action_group!(pub(super) WindowActionGroup, "win");
+relm4::new_action_group!(pub WindowActionGroup, "win");
 relm4::new_stateless_action!(PreferencesAction, WindowActionGroup, "preferences");
-relm4::new_stateless_action!(pub(super) ShortcutsAction, WindowActionGroup, "show-help-overlay");
+relm4::new_stateless_action!(pub ShortcutsAction, WindowActionGroup, "show-help-overlay");
 relm4::new_stateless_action!(AboutAction, WindowActionGroup, "about");
 
 #[relm4::component(pub)]
 impl SimpleComponent for App {
-    type Init = (u8, bool);
+    type Init = bool;
     type Input = AppMsg;
     type Output = ();
     type Widgets = AppWidgets;
@@ -79,72 +90,29 @@ impl SimpleComponent for App {
 
             add_css_class?: if PROFILE == "Devel" {
                     Some("devel")
-                } else {
-                    None
-                },
+            } else {
+                None
+            },
 
-            // #[root]
             gtk::Box {
                 set_orientation: gtk::Orientation::Vertical,
-
+                
                 adw::HeaderBar {
                     pack_end = &gtk::MenuButton {
                         set_icon_name: "open-menu-symbolic",
                         set_menu_model: Some(&primary_menu),
                     }
                 },
-
-                #[name(split_view)]
-                adw::NavigationSplitView {
-                    set_vexpand: true,
-                    set_hexpand: true,
-
-                    #[wrap(Some)]
-                    set_sidebar = &adw::NavigationPage {
-                        set_title: "Sidebar",
-
-                        #[wrap(Some)]
-                        set_child = &adw::ToolbarView {
-                            // add_top_bar = &adw::HeaderBar {},
-
-                            #[wrap(Some)]
-                            set_content = &gtk::StackSidebar {
-                                set_stack: &stack,
-                            },
-                        },
-                    },
-
-                    #[wrap(Some)]
-                    set_content = &adw::NavigationPage {
-                        set_title: "Content",
-
-                        #[wrap(Some)]
-                        set_child = &adw::ToolbarView {
-                            // add_top_bar = &adw::HeaderBar {},
-                            set_content: Some(&stack),
-
-                        },
-                    },
-                },
+                append: &stack,
             },
 
-
-            add_breakpoint = bp_with_setters(
-                adw::Breakpoint::new(
-                    adw::BreakpointCondition::new_length(
-                        adw::BreakpointConditionLengthType::MaxWidth,
-                        400.0,
-                        adw::LengthUnit::Sp,
-                    )
-                ),
-                &[(&split_view, "collapsed", true)]
-            ),
         },
         stack = &gtk::Stack {
-            add_titled: (counter.widget(), None, "Counter"),
-            add_titled: (toggler.widget(), None, "Toggle"),
+            add_named: (main_page.widget(), Some("Main")),
+            add_named: (welcomepage.widget(), Some("Welcome")),
             set_vhomogeneous: false,
         }
+
     }
 
     fn init(
@@ -154,29 +122,31 @@ impl SimpleComponent for App {
     ) -> ComponentParts<Self> {
         let mut actions = RelmActionGroup::<WindowActionGroup>::new();
 
-        let counter = CounterModel::builder()
-            .launch(init.0)
+        let welcomepage = WelcomeModel::builder()
+            .launch(false)
             .forward(sender.input_sender(), identity);
 
-        let toggler = TogglerModel::builder()
-            .launch(init.1)
+        let main_page = DashboardModel::builder()
+            .launch((0, true))
             .forward(sender.input_sender(), identity);
+
+        let current_page = if init { Page::Main } else { Page::Welcome };
 
         let widgets = view_output!();
 
         let model = Self {
-            _counter: counter,
-            _toggler: toggler,
+            welcome: welcomepage,
+            main_page: main_page,
+            current_page: current_page.clone(),
         };
 
         widgets.load_window_size();
-        widgets.stack.connect_visible_child_notify({
-            let split_view = widgets.split_view.clone();
-            move |_| {
-                split_view.set_show_content(true);
-            }
-        });
-
+        
+        match current_page {
+            Page::Main => widgets.stack.set_visible_child_name("Main"),
+            Page::Welcome => widgets.stack.set_visible_child_name("Welcome"),
+        };
+        
         let shortcuts_action = {
             let shortcuts = widgets.shortcuts.clone();
             RelmAction::<ShortcutsAction>::new_stateless(move |_| {
@@ -189,7 +159,7 @@ impl SimpleComponent for App {
                 AboutDialog::builder().launch(()).detach();
             })
         };
-
+        
         actions.add_action(shortcuts_action);
         actions.add_action(about_action);
         actions.register_for_widget(&widgets.main_window);
@@ -206,13 +176,6 @@ impl SimpleComponent for App {
     fn shutdown(&mut self, widgets: &mut Self::Widgets, _output: relm4::Sender<Self::Output>) {
         widgets.save_window_size().unwrap();
     }
-}
-fn bp_with_setters(
-    bp: adw::Breakpoint,
-    additions: &[(&impl IsA<glib::Object>, &str, impl ToValue)],
-) -> adw::Breakpoint {
-    bp.add_setters(additions);
-    bp
 }
 
 impl AppWidgets {

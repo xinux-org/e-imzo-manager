@@ -1,5 +1,5 @@
 // The Toggler page
-use crate::app::AppMsg;
+use crate::dashboard::DashboardModelMsg;
 
 use relm4::gtk;
 use relm4::gtk::prelude::{BoxExt, ButtonExt, OrientableExt};
@@ -18,7 +18,7 @@ pub enum ToggleMsg {
 impl SimpleComponent for TogglerModel {
     type Init = bool;
     type Input = ToggleMsg;
-    type Output = AppMsg;
+    type Output = DashboardModelMsg;
 
     view! {
         #[root]

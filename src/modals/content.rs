@@ -1,5 +1,5 @@
 // The Counter page
-use crate::app::AppMsg;
+use crate::dashboard::DashboardModelMsg;
 use relm4::{gtk};
 use relm4::gtk::prelude::{OrientableExt, BoxExt, ButtonExt};
 use relm4::{ComponentParts, ComponentSender, RelmWidgetExt, SimpleComponent};
@@ -18,7 +18,7 @@ pub enum CounterMsg {
 impl SimpleComponent for CounterModel {
     type Init = u8;
     type Input = CounterMsg;
-    type Output = AppMsg;
+    type Output = DashboardModelMsg;
 
     view! {
         #[root]
