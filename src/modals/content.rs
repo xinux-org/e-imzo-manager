@@ -1,10 +1,10 @@
 // The Counter page
-use crate::dashboard::DashboardModelMsg;
 use relm4::{gtk};
 use relm4::gtk::prelude::{OrientableExt, BoxExt, ButtonExt};
 use relm4::{ComponentParts, ComponentSender, RelmWidgetExt, SimpleComponent};
 
-pub struct CounterModel {
+pub struct ContentModel {
+    // to-do content data
     counter: u8,
 }
 
@@ -15,10 +15,10 @@ pub enum CounterMsg {
 }
 
 #[relm4::component(pub)]
-impl SimpleComponent for CounterModel {
+impl SimpleComponent for ContentModel {
     type Init = u8;
     type Input = CounterMsg;
-    type Output = DashboardModelMsg;
+    type Output = ();
 
     view! {
         #[root]
@@ -49,21 +49,21 @@ impl SimpleComponent for CounterModel {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let model = CounterModel { counter: init };
+        let model = ContentModel { counter: init };
 
         let widgets = view_output!();
 
         ComponentParts { model, widgets }
     }
 
-    fn update(&mut self, msg: Self::Input, _sender: ComponentSender<Self>) {
-        match msg {
-            CounterMsg::Increment => {
-                self.counter = self.counter.wrapping_add(1);
-            }
-            CounterMsg::Decrement => {
-                self.counter = self.counter.wrapping_sub(1);
-            }
-        }
-    }
+    // fn update(&mut self, msg: Self::Input, _sender: ComponentSender<Self>) {
+    //     match msg {
+    //         CounterMsg::Increment => {
+    //             self.counter = self.counter.wrapping_add(1);
+    //         }
+    //         CounterMsg::Decrement => {
+    //             self.counter = self.counter.wrapping_sub(1);
+    //         }
+    //     }
+    // }
 }

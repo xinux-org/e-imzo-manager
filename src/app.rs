@@ -1,27 +1,24 @@
+use relm4::gtk::prelude::BoxExt;
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw::{
-        self, StatusPage, prelude::{AdwApplicationWindowExt, OrientableExt}
+        self,
+        prelude::{AdwApplicationWindowExt, OrientableExt, IsA, ToValue},
     },
     gtk::{
         self, gio, glib,
-        prelude::{
-            ApplicationExt, ApplicationWindowExt, GtkWindowExt, SettingsExt,
-            WidgetExt,
-        },
+        prelude::{ApplicationExt, ApplicationWindowExt, GtkWindowExt, SettingsExt, WidgetExt},
     },
     main_application, Component, ComponentController, ComponentParts, ComponentSender, Controller,
     SimpleComponent,
 };
-use relm4::gtk::prelude::BoxExt;
 
 use std::convert::identity;
 
 use crate::{
     config::{APP_ID, PROFILE},
     modals::about::AboutDialog,
-    welcome::WelcomeModel,
-    dashboard::DashboardModel
+    pages::{dashboard::DashboardModel, welcome::WelcomeModel},
 };
 // use crate::welcome::AppWidgets;
 
@@ -94,9 +91,20 @@ impl SimpleComponent for App {
                 None
             },
 
+            add_breakpoint = bp_with_setters(
+                adw::Breakpoint::new(
+                    adw::BreakpointCondition::new_length(
+                        adw::BreakpointConditionLengthType::MaxWidth,
+                        400.0,
+                        adw::LengthUnit::Sp,
+                    )
+                ),
+                &[(&main_page.model().split_view, "collapsed", true)]
+            ),
+
             gtk::Box {
                 set_orientation: gtk::Orientation::Vertical,
-                
+
                 adw::HeaderBar {
                     pack_end = &gtk::MenuButton {
                         set_icon_name: "open-menu-symbolic",
@@ -141,12 +149,12 @@ impl SimpleComponent for App {
         };
 
         widgets.load_window_size();
-        
+
         match current_page {
             Page::Main => widgets.stack.set_visible_child_name("Main"),
             Page::Welcome => widgets.stack.set_visible_child_name("Welcome"),
         };
-        
+
         let shortcuts_action = {
             let shortcuts = widgets.shortcuts.clone();
             RelmAction::<ShortcutsAction>::new_stateless(move |_| {
@@ -159,7 +167,7 @@ impl SimpleComponent for App {
                 AboutDialog::builder().launch(()).detach();
             })
         };
-        
+
         actions.add_action(shortcuts_action);
         actions.add_action(about_action);
         actions.register_for_widget(&widgets.main_window);
@@ -176,6 +184,13 @@ impl SimpleComponent for App {
     fn shutdown(&mut self, widgets: &mut Self::Widgets, _output: relm4::Sender<Self::Output>) {
         widgets.save_window_size().unwrap();
     }
+}
+fn bp_with_setters(
+    bp: adw::Breakpoint,
+    additions: &[(&impl IsA<glib::Object>, &str, impl ToValue)],
+) -> adw::Breakpoint {
+    bp.add_setters(additions);
+    bp
 }
 
 impl AppWidgets {

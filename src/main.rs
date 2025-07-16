@@ -2,8 +2,7 @@
 mod config;
 mod app;
 mod modals;
-mod welcome;
-mod dashboard;
+mod pages;
 
 use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR, RESOURCES_FILE};
 use gettextrs::{gettext, LocaleCategory};
