@@ -12,7 +12,7 @@ use relm4::{
 };
 
 fn embedded_logo() -> Texture {
-    let bytes = include_bytes!("../.github/assets/Relm_logo.png");
+    let bytes = include_bytes!("../.github/assets/e_imzo.png");
     let g_bytes = glib::Bytes::from(&bytes.to_vec());
     let stream = MemoryInputStream::from_bytes(&g_bytes);
     let pixbuf = Pixbuf::from_stream(&stream, Cancellable::NONE).unwrap();
@@ -41,22 +41,32 @@ impl SimpleComponent for WelcomeModel {
                 set_halign: gtk::Align::Center,
                 set_valign: gtk::Align::Center,
                     gtk::Image {
-                        set_pixel_size: 100,
+                        set_pixel_size: 300,
                         set_paintable: Some(&embedded_logo()),
                     },
                     gtk::Label {
                         add_css_class: relm4::css::TITLE_1,
 
                         #[watch]
-                        set_label: &format!("Welcom to los pollos hermanos"),
-                        set_margin_all: 1,
+                        set_label: &format!("Welcome to e-imzo manager"),
+                        set_margin_all: 4,
                     },
+
                     gtk::Label {
-                        // add_css_class: relm4::css::TITLE_1,
+                        add_css_class: relm4::css::TITLE_2,
                         #[watch]
-                        set_markup: "It seems you <a href=\"appstream://org.gnome.Calculator.desktop\">don't have e-imzo installed</a>. Please download and relaunch the app again.",
+                        set_markup: "It seems you <a href=\"appstream://org.gnome.Calculator.desktop\">don't have e-imzo installed</a>.",
                         set_use_markup: true,
-                        set_margin_all: 6,
+                        set_margin_all: 10,
+                        set_justify: gtk::Justification::Center,
+                    },
+
+                    gtk::Label {
+                        add_css_class: relm4::css::TITLE_3,
+                        #[watch]
+                        set_markup: "Please download and relaunch the app again.",
+                        set_use_markup: true,
+                        set_margin_all: 5,
                         set_justify: gtk::Justification::Center,
                     }
                 }

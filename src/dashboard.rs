@@ -96,7 +96,7 @@ impl SimpleComponent for DashboardModel {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let mut actions = RelmActionGroup::<WindowActionGroup>::new();
+        let actions = RelmActionGroup::<WindowActionGroup>::new();
 
         let counter = CounterModel::builder()
             .launch(init.0)
