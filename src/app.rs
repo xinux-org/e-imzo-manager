@@ -1,4 +1,3 @@
-use relm4::gtk::prelude::BoxExt;
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw::{
@@ -7,12 +6,11 @@ use relm4::{
     },
     gtk::{
         self, gio, glib,
-        prelude::{ApplicationExt, ApplicationWindowExt, GtkWindowExt, SettingsExt, WidgetExt},
+        prelude::{ApplicationExt, ApplicationWindowExt, GtkWindowExt, SettingsExt, WidgetExt, BoxExt},
     },
     main_application, Component, ComponentController, ComponentParts, ComponentSender, Controller,
     SimpleComponent,
 };
-
 use std::convert::identity;
 
 use crate::{
@@ -29,9 +27,9 @@ enum Page {
 }
 
 pub struct App {
-    welcome: Controller<WelcomeModel>,
-    main_page: Controller<DashboardModel>,
-    current_page: Page,
+    _welcome: Controller<WelcomeModel>,
+    _main_page: Controller<DashboardModel>,
+    _current_page: Page,
 }
 
 #[derive(Debug)]
@@ -143,9 +141,9 @@ impl SimpleComponent for App {
         let widgets = view_output!();
 
         let model = Self {
-            welcome: welcomepage,
-            main_page: main_page,
-            current_page: current_page.clone(),
+            _welcome: welcomepage,
+            _main_page: main_page,
+            _current_page: current_page.clone(),
         };
 
         widgets.load_window_size();

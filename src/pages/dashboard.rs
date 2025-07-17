@@ -16,10 +16,13 @@ struct Certificate {
 }
 
 impl Certificate {
-    fn new(name: &str, data: Vec<String>) -> Self {
+    fn new<T>(name: T, data: Vec<String>) -> Self
+    where
+        T: ToString,
+    {
         Certificate {
             name: name.to_string(),
-            data: data.to_vec(),
+            data,
         }
     }
 }
@@ -74,15 +77,16 @@ impl SimpleComponent for DashboardModel {
         },
         #[name(stack)]
         gtk::Stack {
-            set_transition_type: gtk::StackTransitionType::SlideUp,
+            // set_transition_type: gtk::StackTransitionType::SlideUp,
+            // set_transition_duration: 500,
             set_vhomogeneous: false,
         }
     }
 
     fn init(
-        init: Self::Init,
+        _init: Self::Init,
         root: Self::Root,
-        sender: ComponentSender<Self>,
+        _sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let mut certificate = HashMap::new();
 
