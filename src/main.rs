@@ -13,9 +13,25 @@ use relm4::{
 };
 
 use app::App;
+use std::process::Command;
 
 relm4::new_action_group!(AppActionGroup, "app");
 relm4::new_stateless_action!(QuitAction, AppActionGroup, "quit");
+
+fn is_service_active(service_name: &str) -> Result<bool, String> {
+    let output = Command::new("systemctl")
+        .args(&["--user", "is-active", service_name])
+        .output()
+        .map_err(|e| format!("Failed to run systemctl: {}", e))?;
+
+    let status = String::from_utf8_lossy(&output.stdout).trim().to_string();
+
+    match status.as_str() {
+        "active" => Ok(true),
+        "inactive" | "failed" | "activating" | "deactivating" | "unknown" => Ok(false),
+        _ => Err(format!("Unexpected status: {}", status)),
+    }
+}
 
 fn main() {
     gtk::init().unwrap();
@@ -64,6 +80,17 @@ fn main() {
         .unwrap();
     relm4::set_global_css(&glib::GString::from_utf8_checked(data.to_vec()).unwrap());
 
-    app.visible_on_activate(false).run::<App>(true);
+    let service = "e-imzo.service";
+
+    match is_service_active(service) {
+        Ok(true) => {
+            app.visible_on_activate(false).run::<App>(true);
+        },
+        Ok(false) => {
+            app.visible_on_activate(false).run::<App>(false);
+        }
+        Err(e) => eprintln!("Error checking service: {}", e),
+    }
+
 }
 

@@ -23,10 +23,10 @@ impl SimpleComponent for AboutDialog {
             // Insert your Issues page
             // .issue_url("https://gitlab.gnome.org/World/Rust/gtk-rust-template/-/issues")
             // Insert your application name here
-            .application_name("Relm4 Template")
+            .application_name("E-IMZO Manager")
             .version(VERSION)
             .translator_credits("translator-credits")
-            .copyright("© 2025 Bleur Developers")
+            .copyright("© 2025 Xinux Developers")
             .developers(vec!["Xinux Developers"])
             .designers(vec!["Bleur Developers"])
             .build()
