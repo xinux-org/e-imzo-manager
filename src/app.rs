@@ -1,24 +1,35 @@
-use adw::prelude::{AdwApplicationWindowExt, IsA, NavigationPageExt, ToValue};
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
-    adw, gtk, main_application, Component, ComponentController, ComponentParts, ComponentSender,
-    Controller, SimpleComponent,
+    adw::{
+        self,
+        prelude::{AdwApplicationWindowExt, OrientableExt, IsA, ToValue},
+    },
+    gtk::{
+        self, gio, glib,
+        prelude::{ApplicationExt, ApplicationWindowExt, GtkWindowExt, SettingsExt, WidgetExt, BoxExt},
+    },
+    main_application, Component, ComponentController, ComponentParts, ComponentSender, Controller,
+    SimpleComponent,
 };
 use std::convert::identity;
 
-use gtk::prelude::{
-    ApplicationExt, ApplicationWindowExt, GtkWindowExt, OrientableExt, SettingsExt, WidgetExt,
+use crate::{
+    config::{APP_ID, PROFILE},
+    modals::about::AboutDialog,
+    pages::{dashboard::DashboardModel, welcome::WelcomeModel},
 };
-use gtk::{gio, glib};
+// use crate::welcome::AppWidgets;
 
-use crate::config::{APP_ID, PROFILE};
-use crate::modals::about::AboutDialog;
-use crate::modals::content::CounterModel;
-use crate::modals::toggler::TogglerModel;
+#[derive(Clone)]
+enum Page {
+    Welcome,
+    Main,
+}
 
-pub(super) struct App {
-    _counter: Controller<CounterModel>,
-    _toggler: Controller<TogglerModel>,
+pub struct App {
+    _welcome: Controller<WelcomeModel>,
+    _main_page: Controller<DashboardModel>,
+    _current_page: Page,
 }
 
 #[derive(Debug)]
@@ -26,14 +37,14 @@ pub enum AppMsg {
     Quit,
 }
 
-relm4::new_action_group!(pub(super) WindowActionGroup, "win");
+relm4::new_action_group!(pub WindowActionGroup, "win");
 relm4::new_stateless_action!(PreferencesAction, WindowActionGroup, "preferences");
-relm4::new_stateless_action!(pub(super) ShortcutsAction, WindowActionGroup, "show-help-overlay");
+relm4::new_stateless_action!(pub ShortcutsAction, WindowActionGroup, "show-help-overlay");
 relm4::new_stateless_action!(AboutAction, WindowActionGroup, "about");
 
 #[relm4::component(pub)]
 impl SimpleComponent for App {
-    type Init = (u8, bool);
+    type Init = bool;
     type Input = AppMsg;
     type Output = ();
     type Widgets = AppWidgets;
@@ -74,55 +85,9 @@ impl SimpleComponent for App {
 
             add_css_class?: if PROFILE == "Devel" {
                     Some("devel")
-                } else {
-                    None
-                },
-
-            // #[root]
-            gtk::Box {
-                set_orientation: gtk::Orientation::Vertical,
-
-                adw::HeaderBar {
-                    pack_end = &gtk::MenuButton {
-                        set_icon_name: "open-menu-symbolic",
-                        set_menu_model: Some(&primary_menu),
-                    }
-                },
-
-                #[name(split_view)]
-                adw::NavigationSplitView {
-                    set_vexpand: true,
-                    set_hexpand: true,
-
-                    #[wrap(Some)]
-                    set_sidebar = &adw::NavigationPage {
-                        set_title: "Sidebar",
-
-                        #[wrap(Some)]
-                        set_child = &adw::ToolbarView {
-                            // add_top_bar = &adw::HeaderBar {},
-
-                            #[wrap(Some)]
-                            set_content = &gtk::StackSidebar {
-                                set_stack: &stack,
-                            },
-                        },
-                    },
-
-                    #[wrap(Some)]
-                    set_content = &adw::NavigationPage {
-                        set_title: "Content",
-
-                        #[wrap(Some)]
-                        set_child = &adw::ToolbarView {
-                            // add_top_bar = &adw::HeaderBar {},
-                            set_content: Some(&stack),
-
-                        },
-                    },
-                },
+            } else {
+                None
             },
-
 
             add_breakpoint = bp_with_setters(
                 adw::Breakpoint::new(
@@ -132,14 +97,28 @@ impl SimpleComponent for App {
                         adw::LengthUnit::Sp,
                     )
                 ),
-                &[(&split_view, "collapsed", true)]
+                &[(&main_page.model().split_view, "collapsed", true)]
             ),
+
+            gtk::Box {
+                set_orientation: gtk::Orientation::Vertical,
+
+                adw::HeaderBar {
+                    pack_end = &gtk::MenuButton {
+                        set_icon_name: "open-menu-symbolic",
+                        set_menu_model: Some(&primary_menu),
+                    }
+                },
+                append: &stack,
+            },
+
         },
         stack = &gtk::Stack {
-            add_titled: (counter.widget(), None, "Counter"),
-            add_titled: (toggler.widget(), None, "Toggle"),
+            add_named: (main_page.widget(), Some("Main")),
+            add_named: (welcomepage.widget(), Some("Welcome")),
             set_vhomogeneous: false,
         }
+
     }
 
     fn init(
@@ -149,28 +128,30 @@ impl SimpleComponent for App {
     ) -> ComponentParts<Self> {
         let mut actions = RelmActionGroup::<WindowActionGroup>::new();
 
-        let counter = CounterModel::builder()
-            .launch(init.0)
+        let welcomepage = WelcomeModel::builder()
+            .launch(false)
             .forward(sender.input_sender(), identity);
 
-        let toggler = TogglerModel::builder()
-            .launch(init.1)
+        let main_page = DashboardModel::builder()
+            .launch((0, true))
             .forward(sender.input_sender(), identity);
+
+        let current_page = if init { Page::Main } else { Page::Welcome };
 
         let widgets = view_output!();
 
         let model = Self {
-            _counter: counter,
-            _toggler: toggler,
+            _welcome: welcomepage,
+            _main_page: main_page,
+            _current_page: current_page.clone(),
         };
 
         widgets.load_window_size();
-        widgets.stack.connect_visible_child_notify({
-            let split_view = widgets.split_view.clone();
-            move |_| {
-                split_view.set_show_content(true);
-            }
-        });
+
+        match current_page {
+            Page::Main => widgets.stack.set_visible_child_name("Main"),
+            Page::Welcome => widgets.stack.set_visible_child_name("Welcome"),
+        };
 
         let shortcuts_action = {
             let shortcuts = widgets.shortcuts.clone();
