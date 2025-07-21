@@ -2,11 +2,11 @@ use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw::{
         self,
-        prelude::{AdwApplicationWindowExt, OrientableExt, IsA, ToValue},
+        prelude::{AdwApplicationWindowExt, IsA, OrientableExt, ToValue},
     },
     gtk::{
         self, gio, glib,
-        prelude::{ApplicationExt, ApplicationWindowExt, GtkWindowExt, SettingsExt, WidgetExt, BoxExt},
+        prelude::{ApplicationExt, ApplicationWindowExt, BoxExt, GtkWindowExt, SettingsExt, WidgetExt}, StackPage,
     },
     main_application, Component, ComponentController, ComponentParts, ComponentSender, Controller,
     SimpleComponent,
@@ -16,7 +16,7 @@ use std::convert::identity;
 use crate::{
     config::{APP_ID, PROFILE},
     modals::about::AboutDialog,
-    pages::{dashboard::DashboardModel, welcome::WelcomeModel},
+    pages::{dashboard::DashboardModel, select_mode::{SelectModePage}, welcome::WelcomeModel},
 };
 // use crate::welcome::AppWidgets;
 
@@ -24,16 +24,20 @@ use crate::{
 enum Page {
     Welcome,
     Main,
+    SelectModeEnum
 }
 
 pub struct App {
     _welcome: Controller<WelcomeModel>,
     _main_page: Controller<DashboardModel>,
+    _select_mode: Controller<SelectModePage>,
     _current_page: Page,
+    // page: StackPage
 }
 
 #[derive(Debug)]
 pub enum AppMsg {
+    SetStackPage(StackPage),
     Quit,
 }
 
@@ -116,6 +120,7 @@ impl SimpleComponent for App {
         stack = &gtk::Stack {
             add_named: (main_page.widget(), Some("Main")),
             add_named: (welcomepage.widget(), Some("Welcome")),
+            add_named: (select_mode.widget(), Some("SelectMode")),
             set_vhomogeneous: false,
         }
 
@@ -136,14 +141,20 @@ impl SimpleComponent for App {
             .launch((0, true))
             .forward(sender.input_sender(), identity);
 
-        let current_page = if init { Page::Main } else { Page::Welcome };
+        let select_mode = SelectModePage::builder()
+            .launch(())
+            .forward(sender.input_sender(), identity);
+
+        let current_page = if init { Page::SelectModeEnum } else { Page::Welcome };
 
         let widgets = view_output!();
 
         let model = Self {
             _welcome: welcomepage,
             _main_page: main_page,
+            _select_mode: select_mode,
             _current_page: current_page.clone(),
+            // page: 
         };
 
         widgets.load_window_size();
@@ -151,6 +162,7 @@ impl SimpleComponent for App {
         match current_page {
             Page::Main => widgets.stack.set_visible_child_name("Main"),
             Page::Welcome => widgets.stack.set_visible_child_name("Welcome"),
+            Page::SelectModeEnum => widgets.stack.set_visible_child_name("SelectMode"),
         };
 
         let shortcuts_action = {
@@ -176,6 +188,7 @@ impl SimpleComponent for App {
     fn update(&mut self, message: Self::Input, _sender: ComponentSender<Self>) {
         match message {
             AppMsg::Quit => main_application().quit(),
+            AppMsg::SetStackPage(_) => todo!(),
         }
     }
 
