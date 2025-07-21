@@ -114,6 +114,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9555578bc9e57714c812a1f84e4fc5b4d21fcb063490c624de019f7464c91268"
 
 [[package]]
+name = "eimzo"
+version = "0.1.0"
+
+[[package]]
 name = "equivalent"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -475,6 +479,7 @@ dependencies = [
 name = "gtk-rust-template"
 version = "0.1.0"
 dependencies = [
+ "eimzo",
  "gettext-rs",
  "relm4",
  "tracing",
