@@ -29,7 +29,7 @@ enum Page {
 
 pub struct App {
     _welcome: Controller<WelcomeModel>,
-    _main_page: Controller<DashboardModel>,
+    // _main_page: Controller<DashboardModel>,
     _select_mode: Controller<SelectModePage>,
     _current_page: Page,
     // page: StackPage
@@ -37,7 +37,6 @@ pub struct App {
 
 #[derive(Debug)]
 pub enum AppMsg {
-    SetStackPage(StackPage),
     Quit,
 }
 
@@ -93,16 +92,16 @@ impl SimpleComponent for App {
                 None
             },
 
-            add_breakpoint = bp_with_setters(
-                adw::Breakpoint::new(
-                    adw::BreakpointCondition::new_length(
-                        adw::BreakpointConditionLengthType::MaxWidth,
-                        400.0,
-                        adw::LengthUnit::Sp,
-                    )
-                ),
-                &[(&main_page.model().split_view, "collapsed", true)]
-            ),
+            // add_breakpoint = bp_with_setters(
+            //     adw::Breakpoint::new(
+            //         adw::BreakpointCondition::new_length(
+            //             adw::BreakpointConditionLengthType::MaxWidth,
+            //             400.0,
+            //             adw::LengthUnit::Sp,
+            //         )
+            //     ),
+            //     &[(&main_page.model().split_view, "collapsed", true)]
+            // ),
 
             gtk::Box {
                 set_orientation: gtk::Orientation::Vertical,
@@ -118,7 +117,7 @@ impl SimpleComponent for App {
 
         },
         stack = &gtk::Stack {
-            add_named: (main_page.widget(), Some("Main")),
+            // add_named: (main_page.widget(), Some("Main")),
             add_named: (welcomepage.widget(), Some("Welcome")),
             add_named: (select_mode.widget(), Some("SelectMode")),
             set_vhomogeneous: false,
@@ -137,9 +136,9 @@ impl SimpleComponent for App {
             .launch(false)
             .forward(sender.input_sender(), identity);
 
-        let main_page = DashboardModel::builder()
-            .launch((0, true))
-            .forward(sender.input_sender(), identity);
+        // let main_page = DashboardModel::builder()
+        //     .launch((0, true))
+        //     .forward(sender.input_sender(), identity);
 
         let select_mode = SelectModePage::builder()
             .launch(())
@@ -151,7 +150,7 @@ impl SimpleComponent for App {
 
         let model = Self {
             _welcome: welcomepage,
-            _main_page: main_page,
+            // _main_page: main_page,
             _select_mode: select_mode,
             _current_page: current_page.clone(),
             // page: 
@@ -188,7 +187,6 @@ impl SimpleComponent for App {
     fn update(&mut self, message: Self::Input, _sender: ComponentSender<Self>) {
         match message {
             AppMsg::Quit => main_application().quit(),
-            AppMsg::SetStackPage(_) => todo!(),
         }
     }
 
