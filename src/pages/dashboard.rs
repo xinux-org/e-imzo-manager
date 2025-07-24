@@ -9,7 +9,6 @@ use relm4::{
 use std::collections::HashMap;
 
 use crate::app::AppMsg;
-use crate::pages::select_mode::SelectModeMsg;
 
 
 struct Certificate {
@@ -38,7 +37,7 @@ pub struct DashboardModel {
 impl SimpleComponent for DashboardModel {
     type Init = ();
     type Input = ();
-    type Output = SelectModeMsg;
+    type Output = AppMsg;
 
     view! {
         #[root]

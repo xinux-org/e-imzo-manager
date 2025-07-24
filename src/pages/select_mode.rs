@@ -2,17 +2,14 @@ use relm4::{
     gtk::{
         self,
         prelude::{BoxExt, ButtonExt, OrientableExt, WidgetExt},
-    }, Component, ComponentController, ComponentParts, ComponentSender, Controller, RelmWidgetExt, SimpleComponent
+    },
+    ComponentParts, ComponentSender, RelmWidgetExt, SimpleComponent,
 };
 
 use crate::app::AppMsg;
-use crate::pages::dashboard::DashboardModel;
-use std::convert::identity;
+use crate::app::Page;
 
-pub struct SelectModePage {
-    method: SelectModeMethod,
-    local_mode: Controller<DashboardModel>,
-}
+pub struct SelectModePage {}
 
 #[derive(Debug)]
 pub enum SelectModeMsg {
@@ -21,7 +18,6 @@ pub enum SelectModeMsg {
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum SelectModeMethod {
-    Initial,
     Local,
     USB,
 }
@@ -39,11 +35,8 @@ impl SimpleComponent for SelectModePage {
             set_orientation: gtk::Orientation::Vertical,
             set_vexpand: true,
             set_hexpand: true,
-            
 
-            #[transition(SlideUpDown)]
-            match model.method {
-                SelectModeMethod::Initial => gtk::Box {
+               gtk::Box {
                     set_orientation: gtk::Orientation::Horizontal,
                     set_halign: gtk::Align::Center,
                     set_valign: gtk::Align::Center,
@@ -65,28 +58,6 @@ impl SimpleComponent for SelectModePage {
                     }
                 },
 
-                SelectModeMethod::Local => gtk::Box {
-                    set_orientation: gtk::Orientation::Vertical,
-                    set_vexpand: true,
-                    set_hexpand: true,
-
-                    gtk::Label {
-                        set_label: "Local content selected.",
-                    },
-
-                    gtk::Label {
-                        set_label: "You can now pick a local option.",
-                    },
-                },
-
-                SelectModeMethod::USB => 
-                    gtk::Box { 
-                        set_orientation: gtk::Orientation::Vertical,
-                        set_vexpand: true,
-                        set_hexpand: true,
-                        append: model.local_mode.widget()
-                    },
-            }
         }
     }
 
@@ -95,25 +66,20 @@ impl SimpleComponent for SelectModePage {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        
-        let local_mode = DashboardModel::builder()
-            .launch(())
-            .forward(sender.input_sender(), identity);
-    
-        let model = SelectModePage {
-            method: SelectModeMethod::Initial,
-            local_mode: local_mode
-        };
+        let model = SelectModePage {};
 
         let widgets = view_output!();
 
         ComponentParts { model, widgets }
     }
 
-    fn update(&mut self, msg: SelectModeMsg, _sender: ComponentSender<Self>) {
+    fn update(&mut self, msg: SelectModeMsg, sender: ComponentSender<Self>) {
         match msg {
-            SelectModeMsg::SetMethod(method) => {
-                self.method = method;
+            SelectModeMsg::SetMethod(SelectModeMethod::Local) => {
+                let _ = sender.output(AppMsg::SetPage(Page::Local));
+            }
+            SelectModeMsg::SetMethod(SelectModeMethod::USB) => {
+                let _ = sender.output(AppMsg::SetPage(Page::USB));
             }
         }
     }

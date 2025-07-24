@@ -13,7 +13,6 @@ use relm4::{
 };
 
 use app::App;
-use eimzo::is_service_active;
 
 relm4::new_action_group!(AppActionGroup, "app");
 relm4::new_stateless_action!(QuitAction, AppActionGroup, "quit");
@@ -21,7 +20,6 @@ relm4::new_stateless_action!(QuitAction, AppActionGroup, "quit");
 fn main() {
     gtk::init().unwrap();
 
-    // Enable logging
     tracing_subscriber::fmt()
         .with_span_events(tracing_subscriber::fmt::format::FmtSpan::FULL)
         .with_max_level(tracing::Level::INFO)
@@ -65,17 +63,6 @@ fn main() {
         .unwrap();
     relm4::set_global_css(&glib::GString::from_utf8_checked(data.to_vec()).unwrap());
 
-    let service = "e-imzo.service";
-
-    match is_service_active(service) {
-        Ok(true) => {
-            app.visible_on_activate(false).run::<App>(true);
-        },
-        Ok(false) => {
-            app.visible_on_activate(false).run::<App>(false);
-        }
-        Err(e) => eprintln!("Error checking service: {}", e),
-    }
-
+    app.visible_on_activate(false).run::<App>(());
 }
 

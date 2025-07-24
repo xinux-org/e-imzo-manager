@@ -1,12 +1,12 @@
+use eimzo::is_service_active;
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
-    adw::{
-        self,
-        prelude::{AdwApplicationWindowExt, IsA, OrientableExt, ToValue},
-    },
+    adw::{self, prelude::OrientableExt},
     gtk::{
         self, gio, glib,
-        prelude::{ApplicationExt, ApplicationWindowExt, BoxExt, GtkWindowExt, SettingsExt, WidgetExt}, StackPage,
+        prelude::{
+            ApplicationExt, ApplicationWindowExt, BoxExt, GtkWindowExt, SettingsExt, WidgetExt,
+        },
     },
     main_application, Component, ComponentController, ComponentParts, ComponentSender, Controller,
     SimpleComponent,
@@ -16,28 +16,29 @@ use std::convert::identity;
 use crate::{
     config::{APP_ID, PROFILE},
     modals::about::AboutDialog,
-    pages::{dashboard::DashboardModel, select_mode::{SelectModePage}, welcome::WelcomeModel},
+    pages::{dashboard::DashboardModel, select_mode::SelectModePage, welcome::WelcomeModel},
 };
-// use crate::welcome::AppWidgets;
 
-#[derive(Clone)]
-enum Page {
+#[derive(Debug, Clone)]
+pub enum Page {
     Welcome,
-    Main,
-    SelectModeEnum
+    SelectMode,
+    Local,
+    USB,
 }
 
 pub struct App {
-    _welcome: Controller<WelcomeModel>,
-    // _main_page: Controller<DashboardModel>,
-    _select_mode: Controller<SelectModePage>,
-    _current_page: Page,
-    // page: StackPage
+    page: Page,
+    welcome_page: Controller<WelcomeModel>,
+    select_mode_page: Controller<SelectModePage>,
+    local_mode_page: Controller<DashboardModel>,
+    usb_mode_page: Controller<DashboardModel>,
 }
 
 #[derive(Debug)]
 pub enum AppMsg {
     Quit,
+    SetPage(Page),
 }
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
@@ -47,7 +48,7 @@ relm4::new_stateless_action!(AboutAction, WindowActionGroup, "about");
 
 #[relm4::component(pub)]
 impl SimpleComponent for App {
-    type Init = bool;
+    type Init = ();
     type Input = AppMsg;
     type Output = ();
     type Widgets = AppWidgets;
@@ -92,19 +93,10 @@ impl SimpleComponent for App {
                 None
             },
 
-            // add_breakpoint = bp_with_setters(
-            //     adw::Breakpoint::new(
-            //         adw::BreakpointCondition::new_length(
-            //             adw::BreakpointConditionLengthType::MaxWidth,
-            //             400.0,
-            //             adw::LengthUnit::Sp,
-            //         )
-            //     ),
-            //     &[(&main_page.model().split_view, "collapsed", true)]
-            // ),
-
             gtk::Box {
                 set_orientation: gtk::Orientation::Vertical,
+                set_vexpand: true,
+                set_hexpand: true,
 
                 adw::HeaderBar {
                     pack_end = &gtk::MenuButton {
@@ -112,71 +104,99 @@ impl SimpleComponent for App {
                         set_menu_model: Some(&primary_menu),
                     }
                 },
-                append: &stack,
+
+                #[transition(Crossfade)]
+                match model.page {
+                    Page::SelectMode => gtk::Box {
+                        set_orientation: gtk::Orientation::Vertical,
+                        set_vexpand: true,
+                        set_hexpand: true,
+                        append: model.select_mode_page.widget()
+                    },
+                    Page::Welcome => gtk::Box {
+                        set_orientation: gtk::Orientation::Vertical,
+                        set_vexpand: true,
+                        set_hexpand: true,
+                        append: model.welcome_page.widget()
+                    },
+                    Page::Local => gtk::Box {
+                        set_orientation: gtk::Orientation::Vertical,
+                        set_vexpand: true,
+                        set_hexpand: true,
+                        append: model.local_mode_page.widget()
+                    },
+                    Page::USB => gtk::Box {
+                        set_orientation: gtk::Orientation::Vertical,
+                        set_vexpand: true,
+                        set_hexpand: true,
+                        append: model.usb_mode_page.widget()
+                    },
+                },
             },
-
         },
-        stack = &gtk::Stack {
-            // add_named: (main_page.widget(), Some("Main")),
-            add_named: (welcomepage.widget(), Some("Welcome")),
-            add_named: (select_mode.widget(), Some("SelectMode")),
-            set_vhomogeneous: false,
-        }
-
     }
 
     fn init(
-        init: Self::Init,
+        _init: Self::Init,
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let mut actions = RelmActionGroup::<WindowActionGroup>::new();
-
-        let welcomepage = WelcomeModel::builder()
-            .launch(false)
-            .forward(sender.input_sender(), identity);
-
-        // let main_page = DashboardModel::builder()
-        //     .launch((0, true))
-        //     .forward(sender.input_sender(), identity);
-
-        let select_mode = SelectModePage::builder()
+        
+        let welcome_page = WelcomeModel::builder()
             .launch(())
             .forward(sender.input_sender(), identity);
 
-        let current_page = if init { Page::SelectModeEnum } else { Page::Welcome };
+        let select_mode_page = SelectModePage::builder()
+            .launch(())
+            .forward(sender.input_sender(), identity);
 
-        let widgets = view_output!();
+        let local_mode_page = DashboardModel::builder()
+            .launch(())
+            .forward(sender.input_sender(), identity);
+
+        let usb_mode_page = DashboardModel::builder()
+            .launch(())
+            .forward(sender.input_sender(), identity);
+
+        let mut page: Page = Page::SelectMode;
+        
+        match is_service_active("e-imzo.service") {
+            Ok(true) => {
+                page = Page::SelectMode;
+            },
+            Ok(false) => {
+                page = Page::Welcome;
+            },
+            Err(e) => {
+                eprintln!("Error checking service: {}", e);
+            } 
+        }
 
         let model = Self {
-            _welcome: welcomepage,
-            // _main_page: main_page,
-            _select_mode: select_mode,
-            _current_page: current_page.clone(),
-            // page: 
+            page: page,
+            welcome_page: welcome_page,
+            select_mode_page: select_mode_page,
+            local_mode_page: local_mode_page,
+            usb_mode_page: usb_mode_page,
         };
 
+        let widgets = view_output!();
         widgets.load_window_size();
-
-        match current_page {
-            Page::Main => widgets.stack.set_visible_child_name("Main"),
-            Page::Welcome => widgets.stack.set_visible_child_name("Welcome"),
-            Page::SelectModeEnum => widgets.stack.set_visible_child_name("SelectMode"),
-        };
-
+        
         let shortcuts_action = {
             let shortcuts = widgets.shortcuts.clone();
             RelmAction::<ShortcutsAction>::new_stateless(move |_| {
                 shortcuts.present();
             })
         };
-
+        
         let about_action = {
             RelmAction::<AboutAction>::new_stateless(move |_| {
                 AboutDialog::builder().launch(()).detach();
             })
         };
-
+        
+        let mut actions = RelmActionGroup::<WindowActionGroup>::new();
         actions.add_action(shortcuts_action);
         actions.add_action(about_action);
         actions.register_for_widget(&widgets.main_window);
@@ -186,6 +206,9 @@ impl SimpleComponent for App {
 
     fn update(&mut self, message: Self::Input, _sender: ComponentSender<Self>) {
         match message {
+            AppMsg::SetPage(method) => {
+                self.page = method;
+            }
             AppMsg::Quit => main_application().quit(),
         }
     }
@@ -193,13 +216,6 @@ impl SimpleComponent for App {
     fn shutdown(&mut self, widgets: &mut Self::Widgets, _output: relm4::Sender<Self::Output>) {
         widgets.save_window_size().unwrap();
     }
-}
-fn bp_with_setters(
-    bp: adw::Breakpoint,
-    additions: &[(&impl IsA<glib::Object>, &str, impl ToValue)],
-) -> adw::Breakpoint {
-    bp.add_setters(additions);
-    bp
 }
 
 impl AppWidgets {

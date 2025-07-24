@@ -23,7 +23,7 @@ pub struct WelcomeModel;
 
 #[relm4::component(pub)]
 impl SimpleComponent for WelcomeModel {
-    type Init = bool;
+    type Init = ();
     type Input = ();
     type Output = AppMsg;
     type Widgets = AppWidgets;
