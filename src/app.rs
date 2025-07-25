@@ -16,23 +16,19 @@ use std::convert::identity;
 use crate::{
     config::{APP_ID, PROFILE},
     modals::about::AboutDialog,
-    pages::{dashboard::DashboardModel, select_mode::SelectModePage, welcome::WelcomeModel},
+    pages::{select_mode::SelectModePage, welcome::WelcomeModel},
 };
 
 #[derive(Debug, Clone)]
 pub enum Page {
     Welcome,
     SelectMode,
-    Local,
-    USB,
 }
 
 pub struct App {
     page: Page,
     welcome_page: Controller<WelcomeModel>,
     select_mode_page: Controller<SelectModePage>,
-    local_mode_page: Controller<DashboardModel>,
-    usb_mode_page: Controller<DashboardModel>,
 }
 
 #[derive(Debug)]
@@ -119,18 +115,6 @@ impl SimpleComponent for App {
                         set_hexpand: true,
                         append: model.welcome_page.widget()
                     },
-                    Page::Local => gtk::Box {
-                        set_orientation: gtk::Orientation::Vertical,
-                        set_vexpand: true,
-                        set_hexpand: true,
-                        append: model.local_mode_page.widget()
-                    },
-                    Page::USB => gtk::Box {
-                        set_orientation: gtk::Orientation::Vertical,
-                        set_vexpand: true,
-                        set_hexpand: true,
-                        append: model.usb_mode_page.widget()
-                    },
                 },
             },
         },
@@ -147,14 +131,6 @@ impl SimpleComponent for App {
             .forward(sender.input_sender(), identity);
 
         let select_mode_page = SelectModePage::builder()
-            .launch(())
-            .forward(sender.input_sender(), identity);
-
-        let local_mode_page = DashboardModel::builder()
-            .launch(())
-            .forward(sender.input_sender(), identity);
-
-        let usb_mode_page = DashboardModel::builder()
             .launch(())
             .forward(sender.input_sender(), identity);
 
@@ -176,8 +152,6 @@ impl SimpleComponent for App {
             page: page,
             welcome_page: welcome_page,
             select_mode_page: select_mode_page,
-            local_mode_page: local_mode_page,
-            usb_mode_page: usb_mode_page,
         };
 
         let widgets = view_output!();

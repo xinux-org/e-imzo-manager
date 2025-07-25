@@ -19,7 +19,7 @@ relm4::new_stateless_action!(QuitAction, AppActionGroup, "quit");
 
 fn main() {
     gtk::init().unwrap();
-
+    println!("asda");
     tracing_subscriber::fmt()
         .with_span_events(tracing_subscriber::fmt::format::FmtSpan::FULL)
         .with_max_level(tracing::Level::INFO)
@@ -29,8 +29,6 @@ fn main() {
     gettextrs::setlocale(LocaleCategory::LcAll, "");
     gettextrs::bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR).expect("Unable to bind the text domain");
     gettextrs::textdomain(GETTEXT_PACKAGE).expect("Unable to switch to the text domain");
-
-    glib::set_application_name(&gettext("E-IMZO Manager"));
 
     let res = gio::Resource::load(RESOURCES_FILE).expect("Could not load gresource file");
     gio::resources_register(&res);
