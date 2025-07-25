@@ -58,21 +58,18 @@ impl SimpleComponent for App {
             }
         }
     }
-
     view! {
         #[root]
         main_window = adw::ApplicationWindow::new(&main_application()) {
-
             set_visible: true,
             // width and height below
-            set_size_request: (800, 800),
-            set_default_size: (900, 900),
+            set_size_request: (400, 600),
+            set_default_size: (400, 600),
 
             connect_close_request[sender] => move |_| {
                 sender.input(AppMsg::Quit);
                 glib::Propagation::Stop
             },
-
             #[wrap(Some)]
             set_help_overlay: shortcuts = &gtk::Builder::from_resource(
                     "/com/belmoussaoui/GtkRustTemplate/gtk/help-overlay.ui"
@@ -88,32 +85,29 @@ impl SimpleComponent for App {
             } else {
                 None
             },
-
             gtk::Box {
                 set_orientation: gtk::Orientation::Vertical,
                 set_vexpand: true,
                 set_hexpand: true,
-
                 adw::HeaderBar {
                     pack_end = &gtk::MenuButton {
                         set_icon_name: "open-menu-symbolic",
                         set_menu_model: Some(&primary_menu),
                     }
                 },
-
-                #[transition(Crossfade)]
+                // #[transition(Crossfade)]
                 match model.page {
-                    Page::SelectMode => gtk::Box {
-                        set_orientation: gtk::Orientation::Vertical,
-                        set_vexpand: true,
-                        set_hexpand: true,
-                        append: model.select_mode_page.widget()
-                    },
                     Page::Welcome => gtk::Box {
                         set_orientation: gtk::Orientation::Vertical,
                         set_vexpand: true,
                         set_hexpand: true,
                         append: model.welcome_page.widget()
+                    },
+                    Page::SelectMode => gtk::Box {
+                        set_orientation: gtk::Orientation::Vertical,
+                        set_vexpand: true,
+                        set_hexpand: true,
+                        append: model.select_mode_page.widget()
                     },
                 },
             },
@@ -125,7 +119,6 @@ impl SimpleComponent for App {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        
         let welcome_page = WelcomeModel::builder()
             .launch(())
             .forward(sender.input_sender(), identity);
@@ -135,17 +128,17 @@ impl SimpleComponent for App {
             .forward(sender.input_sender(), identity);
 
         let mut page: Page = Page::SelectMode;
-        
+
         match is_service_active("e-imzo.service") {
             Ok(true) => {
                 page = Page::SelectMode;
-            },
+            }
             Ok(false) => {
                 page = Page::Welcome;
-            },
+            }
             Err(e) => {
                 eprintln!("Error checking service: {}", e);
-            } 
+            }
         }
 
         let model = Self {
@@ -156,20 +149,20 @@ impl SimpleComponent for App {
 
         let widgets = view_output!();
         widgets.load_window_size();
-        
+
         let shortcuts_action = {
             let shortcuts = widgets.shortcuts.clone();
             RelmAction::<ShortcutsAction>::new_stateless(move |_| {
                 shortcuts.present();
             })
         };
-        
+
         let about_action = {
             RelmAction::<AboutAction>::new_stateless(move |_| {
                 AboutDialog::builder().launch(()).detach();
             })
         };
-        
+
         let mut actions = RelmActionGroup::<WindowActionGroup>::new();
         actions.add_action(shortcuts_action);
         actions.add_action(about_action);
@@ -184,6 +177,7 @@ impl SimpleComponent for App {
                 self.page = method;
             }
             AppMsg::Quit => main_application().quit(),
+
         }
     }
 

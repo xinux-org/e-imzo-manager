@@ -19,7 +19,6 @@ relm4::new_stateless_action!(QuitAction, AppActionGroup, "quit");
 
 fn main() {
     gtk::init().unwrap();
-    println!("asda");
     tracing_subscriber::fmt()
         .with_span_events(tracing_subscriber::fmt::format::FmtSpan::FULL)
         .with_max_level(tracing::Level::INFO)
