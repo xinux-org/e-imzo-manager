@@ -1,5 +1,3 @@
-use relm4::adw::prelude::PreferencesRowExt;
-use relm4::gtk::prelude::ListBoxRowExt;
 use relm4::{
     adw,
     gtk::{
@@ -16,8 +14,11 @@ use std::{collections::HashMap, convert::identity, path::PathBuf};
 
 use crate::app::AppMsg;
 use crate::modals::document::{Document, DocumentInput};
+use eimzo::get_pfx_files_in_folder;
 
 pub struct SelectModePage {
+    is_path_empty: bool,
+    certificate: Vec<String>,
     document: Controller<Document>,
     open_dialog: Controller<OpenDialog>,
 }
@@ -39,31 +40,51 @@ impl SimpleComponent for SelectModePage {
     view! {
         gtk::Box {
             set_orientation: gtk::Orientation::Vertical,
-            // set_vexpand: true,
-            // set_hexpand: true,
-            set_spacing: 20,
-            set_margin_start: 10,
-            set_margin_end: 10,
-            set_margin_top: 20,
-            set_margin_bottom: 10,
 
-            gtk::Button {
-                set_halign: gtk::Align::Center,
-                set_focus_on_click: true,
-                adw::ButtonContent {
-                    set_icon_name: "drive-multidisk-symbolic",
-                    #[watch]
-                    set_label: "Load .pfx",
-                },
-                connect_clicked => SelectModeMsg::OpenFile,
-            },
-            
-            adw::Clamp {
-                #[name(file_list)]
-                gtk::ListBox {
-                    set_selection_mode: gtk::SelectionMode::None,
-                    add_css_class: "boxed-list",
-                },
+            if model.is_path_empty {
+                adw::StatusPage {
+                    set_icon_name: Some("checkbox-checked-symbolic"),
+                    set_title: "No certificates",
+                    set_description: Some("Load some certificates to start using the app."),
+                    gtk::Button {
+                        set_halign: gtk::Align::Center,
+                        set_focus_on_click: true,
+                        set_css_classes: &["pill", "suggested-action"],
+                        adw::ButtonContent {
+                            set_icon_name: "drive-multidisk-symbolic",
+                            #[watch]
+                            set_label: "Load .pfx",
+                        },
+                        connect_clicked => SelectModeMsg::OpenFile,
+                    },
+                }
+            } else {
+                gtk::Box {
+                    set_spacing: 20,
+                    set_margin_start: 10,
+                    set_margin_end: 10,
+                    set_margin_top: 20,
+                    set_margin_bottom: 10,
+                    set_orientation: gtk::Orientation::Vertical,
+                    gtk::Button {
+                        set_halign: gtk::Align::Center,
+                        set_focus_on_click: true,
+                        adw::ButtonContent {
+                            set_icon_name: "drive-multidisk-symbolic",
+                            #[watch]
+                            set_label: "Load .pfx",
+                        },
+                        connect_clicked => SelectModeMsg::OpenFile,
+                    },
+                    adw::Clamp {
+                        #[name(file_list)]
+                        gtk::ListBox {
+                            set_selection_mode: gtk::SelectionMode::None,
+                            add_css_class: "boxed-list",
+
+                        },
+                    }
+                }
             },
         },
     }
@@ -73,8 +94,6 @@ impl SimpleComponent for SelectModePage {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let widgets = view_output!();
-
         let document = Document::builder()
             .launch(())
             .forward(sender.input_sender(), identity);
@@ -94,25 +113,27 @@ impl SimpleComponent for SelectModePage {
                 OpenDialogResponse::Cancel => SelectModeMsg::None,
             });
 
-        let mut certificate = HashMap::new();
+        let mut certificate = Vec::<String>::new();
+            
+        match get_pfx_files_in_folder("/media/DSKEYS") {
+            Ok(file_names) => {
+                for file_name in file_names {
+                certificate.push(file_name.clone());
+                }
+            }
+            Err(e) => println!("Error in function eimzo::get_pfx_files_in_folder: {}", e),
+        }
 
-        certificate.insert(
-            "test.txt111",
-            vec!["asd1111".to_string(), "asdas111".to_string()],
-        );
-        certificate.insert(
-            "tesasdasdasdt.txt",
-            vec!["asd22222".to_string(), "asdas2222".to_string()],
-        );
-        certificate.insert(
-            "tesasdasdasdt3333.txt",
-            vec!["asd3333".to_string(), "333333".to_string()],
-        );
-
+        let mut model = SelectModePage {
+            is_path_empty: std::path::PathBuf::from("/media/DSKEYS").read_dir().expect("REASON").next().is_none(),
+            certificate: certificate.clone(),
+            document,
+            open_dialog,
+        };
+        let widgets = view_output!();
         let file_list = widgets.file_list.clone();
 
-
-        for (file_name, data) in &certificate {
+        for file_name in certificate {
             let hbox = gtk::Box::new(gtk::Orientation::Horizontal, 12);
             hbox.set_margin_all(12);
             hbox.set_hexpand(true);
@@ -121,7 +142,7 @@ impl SimpleComponent for SelectModePage {
             hbox.append(&icon);
 
             let vbox = gtk::Box::new(gtk::Orientation::Vertical, 4);
-            let title = gtk::Label::new(Some(file_name));
+            let title = gtk::Label::new(Some(&file_name));
             title.set_xalign(0.0);
             title.add_css_class("title-3");
 
@@ -135,11 +156,6 @@ impl SimpleComponent for SelectModePage {
             hbox.append(&vbox);
             file_list.append(&hbox);
         }
-
-        let model = SelectModePage {
-            document,
-            open_dialog,
-        };
 
         ComponentParts { model, widgets }
     }

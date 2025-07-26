@@ -30,7 +30,6 @@ impl SimpleComponent for WelcomeModel {
 
     view! {
         gtk::Box{
-
             set_orientation: gtk::Orientation::Vertical,
             gtk::Box {
                 set_orientation: gtk::Orientation::Vertical,

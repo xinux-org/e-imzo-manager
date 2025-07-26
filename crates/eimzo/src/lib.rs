@@ -1,4 +1,7 @@
-use std::process::Command;
+use std::{
+    {fs, io},
+    process::Command
+};
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
@@ -13,4 +16,22 @@ pub fn is_service_active(service_name: &str) -> Result<bool, String> {
         "inactive" | "failed" | "activating" | "deactivating" | "unknown" => Ok(false),
         _ => Err(format!("Unexpected status: {}", status)),
     }
+}
+
+
+pub fn get_pfx_files_in_folder(path: &str) -> io::Result<Vec<String>> {
+    let entries = fs::read_dir(path)?;
+
+    let pfx_files: Vec<String> = entries
+        .filter_map(|entry| {
+            let path = entry.ok()?.path();
+            if path.is_file() && path.extension()?.to_str()? == "pfx" {
+                path.file_name()?.to_str().map(|s| s.to_owned())                                 
+            } else {
+                None
+            }
+        })
+        .collect();
+
+    Ok(pfx_files)
 }
