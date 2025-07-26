@@ -19,6 +19,7 @@ use eimzo::get_pfx_files_in_folder;
 pub struct SelectModePage {
     is_path_empty: bool,
     certificate: Vec<String>,
+    file_list: gtk::ListBox, 
     document: Controller<Document>,
     open_dialog: Controller<OpenDialog>,
 }
@@ -27,6 +28,7 @@ pub struct SelectModePage {
 pub enum SelectModeMsg {
     OpenFile,
     OpenFileResponse(PathBuf),
+    SaveFile(String),
     None,
 }
 
@@ -79,9 +81,9 @@ impl SimpleComponent for SelectModePage {
                     adw::Clamp {
                         #[name(file_list)]
                         gtk::ListBox {
+                            #[watch]
                             set_selection_mode: gtk::SelectionMode::None,
                             add_css_class: "boxed-list",
-
                         },
                     }
                 }
@@ -114,49 +116,41 @@ impl SimpleComponent for SelectModePage {
             });
 
         let mut certificate = Vec::<String>::new();
-            
+
         match get_pfx_files_in_folder("/media/DSKEYS") {
             Ok(file_names) => {
                 for file_name in file_names {
-                certificate.push(file_name.clone());
+                    println!(
+                        "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+                    );
+                    println!("{:?}", file_name);
+                    println!(
+                        "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+                    );
+                    certificate.push(file_name.clone());
                 }
             }
             Err(e) => println!("Error in function eimzo::get_pfx_files_in_folder: {}", e),
         }
 
         let mut model = SelectModePage {
-            is_path_empty: std::path::PathBuf::from("/media/DSKEYS").read_dir().expect("REASON").next().is_none(),
+            is_path_empty: std::path::PathBuf::from("/media/DSKEYS")
+                .read_dir()
+                .expect("REASON")
+                .next()
+                .is_none(),
             certificate: certificate.clone(),
+            file_list: gtk::ListBox::new(), 
             document,
             open_dialog,
         };
         let widgets = view_output!();
         let file_list = widgets.file_list.clone();
+        model.file_list = file_list;
 
-        for file_name in certificate {
-            let hbox = gtk::Box::new(gtk::Orientation::Horizontal, 12);
-            hbox.set_margin_all(12);
-            hbox.set_hexpand(true);
-
-            let icon = gtk::Image::from_icon_name("folder-symbolic");
-            hbox.append(&icon);
-
-            let vbox = gtk::Box::new(gtk::Orientation::Vertical, 4);
-            let title = gtk::Label::new(Some(&file_name));
-            title.set_xalign(0.0);
-            title.add_css_class("title-3");
-
-            let subtitle = gtk::Label::new(Some("/media/DSKEYS"));
-            subtitle.set_xalign(0.0);
-            subtitle.add_css_class("dim-label");
-
-            vbox.append(&title);
-            vbox.append(&subtitle);
-
-            hbox.append(&vbox);
-            file_list.append(&hbox);
+        for file_name in &model.certificate {
+            add_file_row_to_list(file_name, &model.file_list);
         }
-
         ComponentParts { model, widgets }
     }
 
@@ -166,7 +160,12 @@ impl SimpleComponent for SelectModePage {
                 self.open_dialog.emit(OpenDialogMsg::Open);
             }
             SelectModeMsg::OpenFileResponse(path) => {
-                self.document.emit(DocumentInput::Open(path));
+                self.document.emit(DocumentInput::Save(path.clone()));
+            }
+            SelectModeMsg::SaveFile(path) => {
+                self.certificate.push(path.to_string());
+                self.is_path_empty = false;
+                add_file_row_to_list(&path.clone(), &self.file_list);
             }
             SelectModeMsg::None => {}
         }
@@ -180,3 +179,29 @@ fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
 
     vec![filename_filter]
 }
+
+fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
+    let hbox = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+    hbox.set_margin_all(12);
+    hbox.set_hexpand(true);
+
+    let icon = gtk::Image::from_icon_name("folder-symbolic");
+    hbox.append(&icon);
+
+    let vbox = gtk::Box::new(gtk::Orientation::Vertical, 4);
+
+    let title = gtk::Label::new(Some(file_name));
+    title.set_xalign(0.0);
+    title.add_css_class("title-3");
+
+    let subtitle = gtk::Label::new(Some("/media/DSKEYS"));
+    subtitle.set_xalign(0.0);
+    subtitle.add_css_class("dim-label");
+
+    vbox.append(&title);
+    vbox.append(&subtitle);
+
+    hbox.append(&vbox);
+    file_list.append(&hbox);
+}
+

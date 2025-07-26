@@ -1,3 +1,4 @@
+use eimzo::get_pfx_files_in_folder;
 use relm4::Worker;
 use relm4::ComponentSender;
 use std::fs;
@@ -64,35 +65,35 @@ impl Worker for Document {
         Self {}
     }
 
-    fn update(&mut self, input: DocumentInput, _sender: ComponentSender<Self>) {
+    fn update(&mut self, input: DocumentInput, sender: ComponentSender<Self>) {
         match input {
             DocumentInput::Save(path) => {
                 println!("Save as PFX to {path:?}");
-
-                // TODO in a real app you would report any errors from saving the document
-                // if let Ok(json) = serde_json::to_string(&self.model) {
-                //     std::fs::write(path, json).unwrap();
-                // }
-                let _ = fs::copy(path, "/media/DSKEYS");
+                let copied_file = &path.file_name().unwrap().to_str().unwrap();
+                
+                match get_pfx_files_in_folder("/media/DSKEYS") {
+                    Ok(file_names) => {
+                        if file_names.contains(&copied_file.to_string()) {
+                            // todo show dialog message that file already exists
+                            ()
+                        } else {
+                            let _ = fs::copy(&path, format!("/media/DSKEYS/{}", copied_file));
+                            let _ = sender.output(SelectModeMsg::SaveFile(copied_file.to_string()));
+                        }
+                    }
+                    Err(e) => println!("Error in function eimzo::get_pfx_files_in_folder: {}", e),
+                    }
             }
+
+
+
+
+
+
+
+
             DocumentInput::Open(path) => {
                 println!("Open tasks document at {path:?}");
-
-                let _ = fs::copy(&path, format!("/media/DSKEYS/{}", &path.file_name().unwrap().to_str().unwrap()));
-
-
-
-                
-                // let file_path = Path::new(&path).file_name();
-
-                // if let Some(file_path) = file_path.unwrap().to_str() {
-                //     // update the data model
-                //     // self.model = file_path;
-
-                //     // refresh the view from the data model
-                //     // let _ = sender.output(DocumentOutput::Cleared);
-
-                // }
             } // DocumentInput::Clear => {
               //     self.model.tasks.clear();
 
