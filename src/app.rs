@@ -1,4 +1,4 @@
-use eimzo::is_service_active;
+use eimzo::{check_path_and_perm, is_service_active};
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw::{self, prelude::OrientableExt},
@@ -119,6 +119,7 @@ impl SimpleComponent for App {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
+        
         let welcome_page = WelcomeModel::builder()
             .launch(())
             .forward(sender.input_sender(), identity);

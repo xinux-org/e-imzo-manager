@@ -4,17 +4,22 @@ use relm4::{
         self, glib,
         prelude::{BoxExt, ButtonExt, OrientableExt, WidgetExt},
     },
-    Component, ComponentController, ComponentParts, ComponentSender, Controller,
+    Component, ComponentController, ComponentParts, ComponentSender, Controller, JoinHandle,
     RelmIterChildrenExt, RelmWidgetExt, SimpleComponent,
 };
 use relm4_components::open_dialog::{
     OpenDialog, OpenDialogMsg, OpenDialogResponse, OpenDialogSettings,
 };
+use tracing::info;
 
-use std::{fs, path::PathBuf, process::Stdio};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+    process::Command,
+};
 
 use crate::app::AppMsg;
-use eimzo::get_pfx_files_in_folder;
+use eimzo::{check_path_and_perm, get_pfx_files_in_folder};
 
 pub struct SelectModePage {
     is_path_empty: bool,
@@ -29,7 +34,6 @@ pub enum SelectModeMsg {
     OpenFileResponse(PathBuf),
     RefreshCertificates,
     None,
-    SUDO,
 }
 
 #[relm4::component(pub)]
@@ -76,18 +80,9 @@ impl SimpleComponent for SelectModePage {
                             #[watch]
                             set_label: "Load .pfx",
                         },
-                        connect_clicked => SelectModeMsg::OpenFile,
+                        connect_clicked => SelectModeMsg::OpenFile
                     },
-                    gtk::Button {
-                        set_halign: gtk::Align::Center,
-                        set_focus_on_click: true,
-                        adw::ButtonContent {
-                            set_icon_name: "drive-multidisk-symbolic",
-                            #[watch]
-                            set_label: "SUDO",
-                        },
-                        connect_clicked => SelectModeMsg::SUDO,
-                    },
+
                     adw::Clamp {
                         #[name(file_list)]
                         gtk::ListBox {
@@ -132,21 +127,20 @@ impl SimpleComponent for SelectModePage {
 
         let mut certificate = Vec::<String>::new();
 
-        match get_pfx_files_in_folder("/media/DSKEYS") {
-            Ok(file_names) => {
-                for file_name in file_names {
-                    certificate.push(file_name.clone());
+        let path = Path::new("/media/DSKEYS");
+        if path.exists() {
+            match get_pfx_files_in_folder("/media/DSKEYS") {
+                Ok(file_names) => {
+                    for file_name in file_names {
+                        certificate.push(file_name.clone());
+                    }
                 }
+                Err(e) => println!("Error in Init function eimzo::get_pfx_files_in_folder: {}", e),
             }
-            Err(e) => println!("Error in function eimzo::get_pfx_files_in_folder: {}", e),
         }
 
         let mut model = SelectModePage {
-            is_path_empty: std::path::PathBuf::from("/media/DSKEYS")
-                .read_dir()
-                .expect("REASON")
-                .next()
-                .is_none(),
+            is_path_empty: certificate.is_empty(),
             certificate: certificate.clone(),
             file_list: gtk::ListBox::new(),
             open_dialog,
@@ -164,6 +158,11 @@ impl SimpleComponent for SelectModePage {
     fn update(&mut self, msg: SelectModeMsg, sender: ComponentSender<Self>) {
         match msg {
             SelectModeMsg::OpenFile => {
+                std::thread::spawn(check_path_and_perm)
+                    .join()
+                    .expect("Fucked up");
+
+                // check_path_and_perm();
                 self.open_dialog.emit(OpenDialogMsg::Open);
             }
             SelectModeMsg::OpenFileResponse(path) => {
@@ -201,16 +200,10 @@ impl SimpleComponent for SelectModePage {
                         }
                         self.is_path_empty = self.certificate.is_empty();
                     }
-                    Err(e) => println!("Error in function eimzo::get_pfx_files_in_folder: {}", e),
+                    Err(e) => println!("Error in RefreshCertificates eimzo::get_pfx_files_in_folder: {}", e),
                 }
             }
             SelectModeMsg::None => {}
-            SelectModeMsg::SUDO => {
-                let _ = std::process::Command::new("pkexec")
-                    .arg("mkdir")
-                    .arg("-p")
-                    .arg("/media/asd");
-            }
         }
     }
 }
