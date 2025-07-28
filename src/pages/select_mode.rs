@@ -11,7 +11,7 @@ use relm4_components::open_dialog::{
     OpenDialog, OpenDialogMsg, OpenDialogResponse, OpenDialogSettings,
 };
 
-use std::{fs, path::PathBuf};
+use std::{fs, path::PathBuf, process::Stdio};
 
 use crate::app::AppMsg;
 use eimzo::get_pfx_files_in_folder;
@@ -29,6 +29,7 @@ pub enum SelectModeMsg {
     OpenFileResponse(PathBuf),
     RefreshCertificates,
     None,
+    SUDO,
 }
 
 #[relm4::component(pub)]
@@ -76,6 +77,16 @@ impl SimpleComponent for SelectModePage {
                             set_label: "Load .pfx",
                         },
                         connect_clicked => SelectModeMsg::OpenFile,
+                    },
+                    gtk::Button {
+                        set_halign: gtk::Align::Center,
+                        set_focus_on_click: true,
+                        adw::ButtonContent {
+                            set_icon_name: "drive-multidisk-symbolic",
+                            #[watch]
+                            set_label: "SUDO",
+                        },
+                        connect_clicked => SelectModeMsg::SUDO,
                     },
                     adw::Clamp {
                         #[name(file_list)]
@@ -156,7 +167,6 @@ impl SimpleComponent for SelectModePage {
                 self.open_dialog.emit(OpenDialogMsg::Open);
             }
             SelectModeMsg::OpenFileResponse(path) => {
-                println!("Save as PFX to {path:?}");
                 let copied_file = &path.file_name().unwrap().to_str().unwrap();
 
                 match get_pfx_files_in_folder("/media/DSKEYS") {
@@ -169,7 +179,10 @@ impl SimpleComponent for SelectModePage {
                             let _ = sender.input(SelectModeMsg::RefreshCertificates);
                         }
                     }
-                    Err(e) => println!("Error in function eimzo::get_pfx_files_in_folder: {}", e),
+                    Err(e) => println!(
+                        "Error OpenFileResponse in function eimzo::get_pfx_files_in_folder: {}",
+                        e
+                    ),
                 }
             }
             SelectModeMsg::RefreshCertificates => {
@@ -192,6 +205,12 @@ impl SimpleComponent for SelectModePage {
                 }
             }
             SelectModeMsg::None => {}
+            SelectModeMsg::SUDO => {
+                let _ = std::process::Command::new("pkexec")
+                    .arg("mkdir")
+                    .arg("-p")
+                    .arg("/media/asd");
+            }
         }
     }
 }
