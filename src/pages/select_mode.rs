@@ -1,8 +1,7 @@
 use relm4::{
     adw,
     gtk::{
-        self,
-        glib,
+        self, glib,
         prelude::{BoxExt, ButtonExt, OrientableExt, WidgetExt},
     },
     Component, ComponentController, ComponentParts, ComponentSender, Controller,
@@ -12,18 +11,15 @@ use relm4_components::open_dialog::{
     OpenDialog, OpenDialogMsg, OpenDialogResponse, OpenDialogSettings,
 };
 
-
-use std::{convert::identity, path::PathBuf};
+use std::{fs, path::PathBuf};
 
 use crate::app::AppMsg;
-use crate::modals::document::{Document, DocumentInput};
 use eimzo::get_pfx_files_in_folder;
 
 pub struct SelectModePage {
     is_path_empty: bool,
     certificate: Vec<String>,
     file_list: gtk::ListBox,
-    document: Controller<Document>,
     open_dialog: Controller<OpenDialog>,
 }
 
@@ -31,7 +27,6 @@ pub struct SelectModePage {
 pub enum SelectModeMsg {
     OpenFile,
     OpenFileResponse(PathBuf),
-    // SaveFile(String),
     RefreshCertificates,
     None,
 }
@@ -100,17 +95,14 @@ impl SimpleComponent for SelectModePage {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-
         let sender_clone = sender.input_sender().clone();
 
         glib::timeout_add_seconds_local(2, move || {
-            sender_clone.send(SelectModeMsg::RefreshCertificates).unwrap();
+            sender_clone
+                .send(SelectModeMsg::RefreshCertificates)
+                .unwrap();
             glib::ControlFlow::Continue
         });
-
-        let document = Document::builder()
-            .launch(())
-            .forward(sender.input_sender(), identity);
 
         let open_dialog = OpenDialog::builder()
             .transient_for_native(&root)
@@ -146,7 +138,6 @@ impl SimpleComponent for SelectModePage {
                 .is_none(),
             certificate: certificate.clone(),
             file_list: gtk::ListBox::new(),
-            document,
             open_dialog,
         };
         let widgets = view_output!();
@@ -159,13 +150,27 @@ impl SimpleComponent for SelectModePage {
         ComponentParts { model, widgets }
     }
 
-    fn update(&mut self, msg: SelectModeMsg, _sender: ComponentSender<Self>) {
+    fn update(&mut self, msg: SelectModeMsg, sender: ComponentSender<Self>) {
         match msg {
             SelectModeMsg::OpenFile => {
                 self.open_dialog.emit(OpenDialogMsg::Open);
             }
             SelectModeMsg::OpenFileResponse(path) => {
-                self.document.emit(DocumentInput::Save(path.clone()));
+                println!("Save as PFX to {path:?}");
+                let copied_file = &path.file_name().unwrap().to_str().unwrap();
+
+                match get_pfx_files_in_folder("/media/DSKEYS") {
+                    Ok(file_names) => {
+                        if file_names.contains(&copied_file.to_string()) {
+                            // todo show dialog message that file already exists
+                            ()
+                        } else {
+                            let _ = fs::copy(&path, format!("/media/DSKEYS/{}", copied_file));
+                            let _ = sender.input(SelectModeMsg::RefreshCertificates);
+                        }
+                    }
+                    Err(e) => println!("Error in function eimzo::get_pfx_files_in_folder: {}", e),
+                }
             }
             SelectModeMsg::RefreshCertificates => {
                 // Clear current list
