@@ -2,15 +2,18 @@ use relm4::{
     adw,
     gtk::{
         self,
+        glib,
         prelude::{BoxExt, ButtonExt, OrientableExt, WidgetExt},
     },
-    Component, ComponentController, ComponentParts, ComponentSender, Controller, RelmWidgetExt,
-    SimpleComponent,
+    Component, ComponentController, ComponentParts, ComponentSender, Controller,
+    RelmIterChildrenExt, RelmWidgetExt, SimpleComponent,
 };
 use relm4_components::open_dialog::{
     OpenDialog, OpenDialogMsg, OpenDialogResponse, OpenDialogSettings,
 };
-use std::{collections::HashMap, convert::identity, path::PathBuf};
+
+
+use std::{convert::identity, path::PathBuf};
 
 use crate::app::AppMsg;
 use crate::modals::document::{Document, DocumentInput};
@@ -19,7 +22,7 @@ use eimzo::get_pfx_files_in_folder;
 pub struct SelectModePage {
     is_path_empty: bool,
     certificate: Vec<String>,
-    file_list: gtk::ListBox, 
+    file_list: gtk::ListBox,
     document: Controller<Document>,
     open_dialog: Controller<OpenDialog>,
 }
@@ -28,7 +31,8 @@ pub struct SelectModePage {
 pub enum SelectModeMsg {
     OpenFile,
     OpenFileResponse(PathBuf),
-    SaveFile(String),
+    // SaveFile(String),
+    RefreshCertificates,
     None,
 }
 
@@ -96,6 +100,14 @@ impl SimpleComponent for SelectModePage {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
+
+        let sender_clone = sender.input_sender().clone();
+
+        glib::timeout_add_seconds_local(2, move || {
+            sender_clone.send(SelectModeMsg::RefreshCertificates).unwrap();
+            glib::ControlFlow::Continue
+        });
+
         let document = Document::builder()
             .launch(())
             .forward(sender.input_sender(), identity);
@@ -120,13 +132,6 @@ impl SimpleComponent for SelectModePage {
         match get_pfx_files_in_folder("/media/DSKEYS") {
             Ok(file_names) => {
                 for file_name in file_names {
-                    println!(
-                        "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-                    );
-                    println!("{:?}", file_name);
-                    println!(
-                        "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-                    );
                     certificate.push(file_name.clone());
                 }
             }
@@ -140,7 +145,7 @@ impl SimpleComponent for SelectModePage {
                 .next()
                 .is_none(),
             certificate: certificate.clone(),
-            file_list: gtk::ListBox::new(), 
+            file_list: gtk::ListBox::new(),
             document,
             open_dialog,
         };
@@ -162,10 +167,24 @@ impl SimpleComponent for SelectModePage {
             SelectModeMsg::OpenFileResponse(path) => {
                 self.document.emit(DocumentInput::Save(path.clone()));
             }
-            SelectModeMsg::SaveFile(path) => {
-                self.certificate.push(path.to_string());
-                self.is_path_empty = false;
-                add_file_row_to_list(&path.clone(), &self.file_list);
+            SelectModeMsg::RefreshCertificates => {
+                // Clear current list
+                for row in self.file_list.iter_children() {
+                    self.file_list.remove(&row);
+                }
+
+                self.certificate.clear();
+
+                match get_pfx_files_in_folder("/media/DSKEYS") {
+                    Ok(file_names) => {
+                        for file_name in file_names {
+                            self.certificate.push(file_name.clone());
+                            add_file_row_to_list(&file_name.clone(), &self.file_list);
+                        }
+                        self.is_path_empty = self.certificate.is_empty();
+                    }
+                    Err(e) => println!("Error in function eimzo::get_pfx_files_in_folder: {}", e),
+                }
             }
             SelectModeMsg::None => {}
         }
@@ -204,4 +223,3 @@ fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
     hbox.append(&vbox);
     file_list.append(&hbox);
 }
-

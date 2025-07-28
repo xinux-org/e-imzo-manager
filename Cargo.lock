@@ -90,9 +90,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.29"
+version = "1.2.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5c1599538de2394445747c8cf7935946e3cc27e9625f889d979bfb2aaf569362"
+checksum = "deec109607ca693028562ed836a5f1c4b8bd77755c4e132fc5ce11b0b6211ae7"
 dependencies = [
  "shlex",
 ]
@@ -563,9 +563,9 @@ dependencies = [
 
 [[package]]
 name = "io-uring"
-version = "0.7.8"
+version = "0.7.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b86e202f00093dcba4275d4636b93ef9dd75d025ae560d2521b45ea28ab49013"
+checksum = "d93587f37623a1a17d94ef2bc9ada592f5465fe7732084ab7beefabe5c77c0c4"
 dependencies = [
  "bitflags",
  "cfg-if",
@@ -913,9 +913,9 @@ dependencies = [
 
 [[package]]
 name = "rustc-demangle"
-version = "0.1.25"
+version = "0.1.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "989e6739f80c4ad5b13e0fd7fe89531180375b18520cc8c82080e4dc4035b84f"
+checksum = "56f7d92ca342cea22a06f2121d944b4fd82af56988c270852495420f961d4ace"
 
 [[package]]
 name = "rustc_version"
@@ -1050,9 +1050,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "1.46.1"
+version = "1.47.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0cc3a2344dafbe23a245241fe8b09735b521110d30fcefbbd5feb1797ca35d17"
+checksum = "43864ed400b6043a4757a25c7a64a8efde741aed79a056a2fb348a406701bb35"
 dependencies = [
  "backtrace",
  "io-uring",

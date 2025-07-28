@@ -34,7 +34,6 @@ struct Model {
 #[derive(Debug)]
 pub enum DocumentInput {
     // extra operations on the document itself (in this case, related to file I/O)
-    Open(PathBuf),
     Save(PathBuf),
     // events related to the model that the document stores
     // Clear,
@@ -68,6 +67,8 @@ impl Worker for Document {
     fn update(&mut self, input: DocumentInput, sender: ComponentSender<Self>) {
         match input {
             DocumentInput::Save(path) => {
+
+                
                 println!("Save as PFX to {path:?}");
                 let copied_file = &path.file_name().unwrap().to_str().unwrap();
                 
@@ -78,7 +79,7 @@ impl Worker for Document {
                             ()
                         } else {
                             let _ = fs::copy(&path, format!("/media/DSKEYS/{}", copied_file));
-                            let _ = sender.output(SelectModeMsg::SaveFile(copied_file.to_string()));
+                            let _ = sender.output(SelectModeMsg::RefreshCertificates);
                         }
                     }
                     Err(e) => println!("Error in function eimzo::get_pfx_files_in_folder: {}", e),
@@ -86,15 +87,7 @@ impl Worker for Document {
             }
 
 
-
-
-
-
-
-
-            DocumentInput::Open(path) => {
-                println!("Open tasks document at {path:?}");
-            } // DocumentInput::Clear => {
+             // DocumentInput::Clear => {
               //     self.model.tasks.clear();
 
               //     let _ = sender.output(DocumentOutput::Cleared);
