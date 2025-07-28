@@ -6,7 +6,7 @@ use relm4::{
         gdk_pixbuf::Pixbuf,
         gio::{Cancellable, MemoryInputStream},
         glib,
-        prelude::{BoxExt, OrientableExt, WidgetExt},
+        prelude::{OrientableExt, WidgetExt},
     },
     ComponentParts, ComponentSender, RelmWidgetExt, SimpleComponent,
 };
@@ -30,7 +30,6 @@ impl SimpleComponent for WelcomeModel {
     
     
     view! {
-        
         gtk::Box {
             set_orientation: gtk::Orientation::Vertical,
             set_hexpand: true,
@@ -51,12 +50,12 @@ impl SimpleComponent for WelcomeModel {
             },
                     
             gtk::Label {
-            add_css_class: relm4::css::TITLE_4,
-            #[watch]
-            set_markup: "It seems you <a href=\"appstream://org.gnome.Calculator.desktop\">don't have e-imzo installed</a>.",
-            set_use_markup: true,
-            set_margin_all: 5,
-            set_justify: gtk::Justification::Center,
+                add_css_class: relm4::css::TITLE_4,
+                #[watch]
+                set_markup: "It seems you <a href=\"appstream://org.gnome.Calculator.desktop\">don't have e-imzo installed</a>.",
+                set_use_markup: true,
+                set_margin_all: 5,
+                set_justify: gtk::Justification::Center,
             },
                     
             gtk::Label {
@@ -67,9 +66,7 @@ impl SimpleComponent for WelcomeModel {
                 set_margin_all: 5,
                 set_justify: gtk::Justification::Center,
             }
-        }    
-        
-        
+        }        
     }
 
     fn init(
