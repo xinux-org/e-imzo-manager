@@ -27,48 +27,47 @@ impl SimpleComponent for WelcomeModel {
     type Input = ();
     type Output = AppMsg;
     type Widgets = AppWidgets;
-
+    
+    
     view! {
-        gtk::Box{
+        gtk::Box {
             set_orientation: gtk::Orientation::Vertical,
-            gtk::Box {
-                set_orientation: gtk::Orientation::Vertical,
-                // set_spacing: 5,
-                // set_margin_all: 5,
-                set_hexpand: true,
-                set_vexpand: true,
-                set_halign: gtk::Align::Center,
-                set_valign: gtk::Align::Center,
-                    gtk::Image {
-                        set_pixel_size: 300,
-                        set_paintable: Some(&embedded_logo()),
-                    },
-                    gtk::Label {
-                        add_css_class: relm4::css::TITLE_1,
-
-                        #[watch]
-                        set_label: &format!("Welcome to e-imzo manager"),
-                        set_margin_all: 1,
-                    },
-                    gtk::Label {
-                        add_css_class: relm4::css::TITLE_2,
-                        #[watch]
-                        set_markup: "It seems you <a href=\"appstream://org.gnome.Calculator.desktop\">don't have e-imzo installed</a>.",
-                        set_use_markup: true,
-                        set_margin_all: 10,
-                        set_justify: gtk::Justification::Center,
-                    },
-                    gtk::Label {
-                        add_css_class: relm4::css::TITLE_3,
-                        #[watch]
-                        set_markup: "Please download and relaunch the app again.",
-                        set_use_markup: true,
-                        set_margin_all: 5,
-                        set_justify: gtk::Justification::Center,
-                    }
-                }
+            set_hexpand: true,
+            set_vexpand: true,
+            set_halign: gtk::Align::Center,
+            set_valign: gtk::Align::Center,
+                    
+            gtk::Image {
+                set_pixel_size: 320,
+                set_paintable: Some(&embedded_logo()),
             },
-        }
+                    
+            gtk::Label {
+                add_css_class: relm4::css::TITLE_2,
+                #[watch]
+                set_label: &format!("Welcome to E-imzo"),
+                set_margin_all: 1,
+            },
+                    
+            gtk::Label {
+                add_css_class: relm4::css::TITLE_4,
+                #[watch]
+                set_markup: "It seems you <a href=\"appstream://org.gnome.Calculator.desktop\">don't have e-imzo installed</a>.",
+                set_use_markup: true,
+                set_margin_all: 5,
+                set_justify: gtk::Justification::Center,
+            },
+                    
+            gtk::Label {
+                add_css_class: relm4::css::TITLE_4,
+                #[watch]
+                set_markup: "Please download and relaunch the app again.",
+                set_use_markup: true,
+                set_margin_all: 5,
+                set_justify: gtk::Justification::Center,
+            }
+        }        
+    }
 
     fn init(
         _init: Self::Init,
