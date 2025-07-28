@@ -33,8 +33,6 @@ impl SimpleComponent for WelcomeModel {
         
         gtk::Box {
             set_orientation: gtk::Orientation::Vertical,
-            // set_spacing: 5,
-            // set_margin_all: 5,
             set_hexpand: true,
             set_vexpand: true,
             set_halign: gtk::Align::Center,
@@ -42,8 +40,6 @@ impl SimpleComponent for WelcomeModel {
                     
             gtk::Image {
                 set_pixel_size: 320,
-                // set_vexpand: true,
-                // set_hexpand: true,
                 set_paintable: Some(&embedded_logo()),
             },
                     
