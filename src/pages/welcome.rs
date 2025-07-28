@@ -12,7 +12,7 @@ use relm4::{
 };
 
 fn embedded_logo() -> Texture {
-    let bytes = include_bytes!("../../.github/assets/xinux_manager.png");
+    let bytes = include_bytes!("../../.github/assets/e_imzo.png");
     let g_bytes = glib::Bytes::from(&bytes.to_vec());
     let stream = MemoryInputStream::from_bytes(&g_bytes);
     let pixbuf = Pixbuf::from_stream(&stream, Cancellable::NONE).unwrap();
@@ -28,66 +28,43 @@ impl SimpleComponent for WelcomeModel {
     type Output = AppMsg;
     type Widgets = AppWidgets;
     
-    // type Init = u8;
-    // type Input = AppMsg;
-    // type Output = ();
-
+    
     view! {
-        
-        // gtk::Window {
-        //     set_title: Some("Embedded Logo app "),
-        //     set_default_size: (200, 200),
-        
-        //     gtk::Box {
-        //         set_orientation: gtk::Orientation::Vertical,
-        //         set_spacing: 5,
-        //         set_margin_all: 5,
-        
-        //         gtk::Image {
-        //         set_vexpand: true,
-        //         set_hexpand: true,
-        //         set_paintable: Some(&embedded_logo()),
-        //         },
-        //     }
-        // }
-        
-        
-        
         
         gtk::Box {
             set_orientation: gtk::Orientation::Vertical,
-            set_spacing: 5,
-            set_margin_all: 5,
-            // set_hexpand: true,
-            // set_vexpand: true,
-            // set_halign: gtk::Align::Center,
-            // set_valign: gtk::Align::Center,
+            // set_spacing: 5,
+            // set_margin_all: 5,
+            set_hexpand: true,
+            set_vexpand: true,
+            set_halign: gtk::Align::Center,
+            set_valign: gtk::Align::Center,
                     
             gtk::Image {
-                set_pixel_size: 300,
-                set_vexpand: true,
-                set_hexpand: true,
+                set_pixel_size: 320,
+                // set_vexpand: true,
+                // set_hexpand: true,
                 set_paintable: Some(&embedded_logo()),
             },
                     
             gtk::Label {
-                add_css_class: relm4::css::TITLE_1,
+                add_css_class: relm4::css::TITLE_2,
                 #[watch]
-                set_label: &format!("Welcome to e-imzo manager"),
+                set_label: &format!("Welcome to E-imzo"),
                 set_margin_all: 1,
             },
                     
             gtk::Label {
-            add_css_class: relm4::css::TITLE_2,
+            add_css_class: relm4::css::TITLE_4,
             #[watch]
             set_markup: "It seems you <a href=\"appstream://org.gnome.Calculator.desktop\">don't have e-imzo installed</a>.",
             set_use_markup: true,
-            set_margin_all: 10,
+            set_margin_all: 5,
             set_justify: gtk::Justification::Center,
             },
                     
             gtk::Label {
-                add_css_class: relm4::css::TITLE_3,
+                add_css_class: relm4::css::TITLE_4,
                 #[watch]
                 set_markup: "Please download and relaunch the app again.",
                 set_use_markup: true,
