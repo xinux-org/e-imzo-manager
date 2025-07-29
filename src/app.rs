@@ -1,11 +1,11 @@
-use eimzo::{check_path_and_perm, is_service_active};
+use eimzo::{check_service_active};
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw::{self, prelude::OrientableExt},
     gtk::{
         self, gio, glib,
         prelude::{
-            ApplicationExt, ApplicationWindowExt, BoxExt, GtkWindowExt, SettingsExt, WidgetExt,
+            ApplicationExt, BoxExt, GtkWindowExt, SettingsExt, WidgetExt,
         },
     },
     main_application, Component, ComponentController, ComponentParts, ComponentSender, Controller,
@@ -126,23 +126,14 @@ impl SimpleComponent for App {
             .launch(())
             .forward(sender.input_sender(), identity);
 
-        // let page: Page = if is_service_active("e-imzo.service") {
-        //     Page::SelectMode
-        // } else {
-        //     Page::Welcome
-        // };
-
-        // match is_service_active("e-imzo.service") {
-        //     true => {
-        //         page = Page::SelectMode;
-        //     }
-        //     false => {
-        //         page = Page::Welcome;
-        //     }
-        // }
+        let page: Page = if check_service_active("e-imzo.service") {
+            Page::SelectMode
+        } else {
+            Page::Welcome
+        };
 
         let model = Self {
-            page: Page::Welcome,
+            page: page,
             welcome_page: welcome_page,
             select_mode_page: select_mode_page,
         };

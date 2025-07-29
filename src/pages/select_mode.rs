@@ -7,6 +7,7 @@ use relm4_components::open_dialog::*;
 use std::{
     fs,
     path::{Path, PathBuf},
+    process::ExitStatus,
 };
 
 use crate::{app::AppMsg, config::LIBEXECDIR};
@@ -22,6 +23,7 @@ pub struct SelectModePage {
 #[derive(Debug)]
 pub enum SelectModeMsg {
     OpenFile,
+    OpenFileConfirmed,
     OpenFileResponse(PathBuf),
     RefreshCertificates,
     None,
@@ -152,25 +154,27 @@ impl SimpleComponent for SelectModePage {
     fn update(&mut self, msg: SelectModeMsg, sender: ComponentSender<Self>) {
         match msg {
             SelectModeMsg::OpenFile => {
-                let path = Path::new("/media/DSKEYS");
-                if path.exists() {
-                    glib::MainContext::default().spawn_local(async move {
-                        let output = tokio::process::Command::new("pkexec")
-                            .arg(format!("{}/e-helper", LIBEXECDIR))
-                            .output()
-                            .await;
+                relm4::spawn(async move {
+                    let output = tokio::process::Command::new("pkexec")
+                        .arg(format!("{}/e-helper", LIBEXECDIR))
+                        .output()
+                        .await;
 
-                        match output {
-                            Ok(o) => {
-                                eprintln!("stdout: {}", String::from_utf8_lossy(&o.stdout));
-                                eprintln!("stderr: {}", String::from_utf8_lossy(&o.stderr));
+                    match output {
+                        Ok(o) => {
+                            if !ExitStatus::success(&o.status) {
+                                return;
                             }
-                            Err(e) => {
-                                eprintln!("Failed to execute pkexec: {}", e);
-                            }
+
+                            sender.input(SelectModeMsg::OpenFileConfirmed);
                         }
-                    });
-                }
+                        Err(e) => {
+                            eprintln!("Failed to execute pkexec: {}", e);
+                        }
+                    }
+                });
+            }
+            SelectModeMsg::OpenFileConfirmed => {
                 self.open_dialog.emit(OpenDialogMsg::Open);
             }
             SelectModeMsg::OpenFileResponse(path) => {

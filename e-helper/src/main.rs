@@ -31,14 +31,6 @@ enum SubCommands {
 }
 
 fn main() {
-    // let cli = SubCommands::augment_subcommands(clap::Command::new(
-    //     "Helper binary for NixOS Configuration Editor",
-    // ));
-    // let matches = cli.get_matches();
-    // let derived_subcommands = SubCommands::from_arg_matches(&matches)
-    //     .map_err(|err| err.exit())
-    //     .unwrap();
-
     if users::get_effective_uid() != 0 {
         eprintln!("nixos-conf-editor-helper must be run as root");
         std::process::exit(1);
