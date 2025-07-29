@@ -1,23 +1,16 @@
 use relm4::{
     adw,
-    gtk::{
-        self, glib,
-        prelude::*,
-    },
-    Component, ComponentController, ComponentParts, ComponentSender, Controller, JoinHandle,
-    RelmIterChildrenExt, RelmWidgetExt, SimpleComponent,
+    gtk::{self, glib, prelude::*},
+    *,
 };
-use relm4_components::open_dialog::{
-    OpenDialog, OpenDialogMsg, OpenDialogResponse, OpenDialogSettings,
-};
-
+use relm4_components::open_dialog::*;
 use std::{
     fs,
     path::{Path, PathBuf},
 };
 
-use crate::app::AppMsg;
-use eimzo::{check_path_and_perm, get_pfx_files_in_folder};
+use crate::{app::AppMsg, config::LIBEXECDIR};
+use eimzo::get_pfx_files_in_folder;
 
 pub struct SelectModePage {
     is_path_empty: bool,
@@ -133,7 +126,10 @@ impl SimpleComponent for SelectModePage {
                         certificate.push(file_name.clone());
                     }
                 }
-                Err(e) => println!("Error in Init function eimzo::get_pfx_files_in_folder: {}", e),
+                Err(e) => println!(
+                    "Error in Init function eimzo::get_pfx_files_in_folder: {}",
+                    e
+                ),
             }
         }
 
@@ -156,6 +152,25 @@ impl SimpleComponent for SelectModePage {
     fn update(&mut self, msg: SelectModeMsg, sender: ComponentSender<Self>) {
         match msg {
             SelectModeMsg::OpenFile => {
+                let path = Path::new("/media/DSKEYS");
+                if path.exists() {
+                    glib::MainContext::default().spawn_local(async move {
+                        let output = tokio::process::Command::new("pkexec")
+                            .arg(format!("{}/e-helper", LIBEXECDIR))
+                            .output()
+                            .await;
+
+                        match output {
+                            Ok(o) => {
+                                eprintln!("stdout: {}", String::from_utf8_lossy(&o.stdout));
+                                eprintln!("stderr: {}", String::from_utf8_lossy(&o.stderr));
+                            }
+                            Err(e) => {
+                                eprintln!("Failed to execute pkexec: {}", e);
+                            }
+                        }
+                    });
+                }
                 self.open_dialog.emit(OpenDialogMsg::Open);
             }
             SelectModeMsg::OpenFileResponse(path) => {
@@ -193,7 +208,10 @@ impl SimpleComponent for SelectModePage {
                         }
                         self.is_path_empty = self.certificate.is_empty();
                     }
-                    Err(e) => println!("Error in RefreshCertificates eimzo::get_pfx_files_in_folder: {}", e),
+                    Err(e) => println!(
+                        "Error in RefreshCertificates eimzo::get_pfx_files_in_folder: {}",
+                        e
+                    ),
                 }
             }
             SelectModeMsg::None => {}

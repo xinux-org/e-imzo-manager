@@ -1,9 +1,5 @@
-use std::process::exit;
-
-use crate::{app::AppMsg, config::LIBEXECDIR};
-use eimzo::check_path_and_perm;
+use crate::app::AppMsg;
 use relm4::{
-    adw,
     gtk::{
         self,
         gdk::Texture,
@@ -12,7 +8,7 @@ use relm4::{
         glib,
         prelude::*,
     },
-    ComponentParts, ComponentSender, RelmWidgetExt, SimpleComponent,
+    *,
 };
 
 fn embedded_logo() -> Texture {
@@ -68,35 +64,6 @@ impl SimpleComponent for WelcomeModel {
                 set_use_markup: true,
                 set_margin_all: 5,
                 set_justify: gtk::Justification::Center,
-            },
-
-            gtk::Button {
-                set_halign: gtk::Align::Center,
-                set_focus_on_click: true,
-                set_css_classes: &["pill", "suggested-action"],
-                adw::ButtonContent {
-                    set_icon_name: "drive-multidisk-symbolic",
-                    #[watch]
-                    set_label: "Load .pfx",
-                },
-                connect_clicked => {
-                    glib::MainContext::default().spawn_local(async move {
-                        let output = tokio::process::Command::new("pkexec")
-                            .arg(format!("{}/e-helper", LIBEXECDIR))
-                            .output()
-                            .await;
-
-                        match output {
-                            Ok(o) => {
-                                eprintln!("stdout: {}", String::from_utf8_lossy(&o.stdout));
-                                eprintln!("stderr: {}", String::from_utf8_lossy(&o.stderr));
-                            }
-                            Err(e) => {
-                                eprintln!("Failed to execute pkexec: {}", e);
-                            }
-                        }
-                    });
-                },
             },
         }
     }

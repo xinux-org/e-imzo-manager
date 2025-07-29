@@ -4,11 +4,11 @@ mod app;
 mod modals;
 mod pages;
 
-use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR, RESOURCES_FILE};
+use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
 use gettextrs::{gettext, LocaleCategory};
 use relm4::{
     actions::{AccelsPlus, RelmAction, RelmActionGroup},
-    gtk::{self, gio, glib, prelude::ApplicationExt},
+    gtk::{self, prelude::ApplicationExt},
     main_application, RelmApp,
 };
 
@@ -62,4 +62,3 @@ fn main() {
 
     app.visible_on_activate(false).run::<App>(());
 }
-
