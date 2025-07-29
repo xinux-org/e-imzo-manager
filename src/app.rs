@@ -69,15 +69,15 @@ impl SimpleComponent for App {
                 sender.input(AppMsg::Quit);
                 glib::Propagation::Stop
             },
-            #[wrap(Some)]
-            set_help_overlay: shortcuts = &gtk::Builder::from_resource(
-                    "/com/belmoussaoui/GtkRustTemplate/gtk/help-overlay.ui"
-                )
-                .object::<gtk::ShortcutsWindow>("help_overlay")
-                .unwrap() -> gtk::ShortcutsWindow {
-                    set_transient_for: Some(&main_window),
-                    set_application: Some(&main_application()),
-            },
+            // #[wrap(Some)]
+            // set_help_overlay: shortcuts = &gtk::Builder::from_resource(
+            //         "/com/belmoussaoui/GtkRustTemplate/gtk/help-overlay.ui"
+            //     )
+            //     .object::<gtk::ShortcutsWindow>("help_overlay")
+            //     .unwrap() -> gtk::ShortcutsWindow {
+            //         set_transient_for: Some(&main_window),
+            //         set_application: Some(&main_application()),
+            // },
 
             add_css_class?: if PROFILE == "Devel" {
                     Some("devel")
@@ -126,11 +126,11 @@ impl SimpleComponent for App {
             .launch(())
             .forward(sender.input_sender(), identity);
 
-        let page: Page = if is_service_active("e-imzo.service") {
-            Page::SelectMode
-        } else {
-            Page::Welcome
-        };
+        // let page: Page = if is_service_active("e-imzo.service") {
+        //     Page::SelectMode
+        // } else {
+        //     Page::Welcome
+        // };
 
         // match is_service_active("e-imzo.service") {
         //     true => {
@@ -142,7 +142,7 @@ impl SimpleComponent for App {
         // }
 
         let model = Self {
-            page: page,
+            page: Page::Welcome,
             welcome_page: welcome_page,
             select_mode_page: select_mode_page,
         };
@@ -150,12 +150,12 @@ impl SimpleComponent for App {
         let widgets = view_output!();
         widgets.load_window_size();
 
-        let shortcuts_action = {
-            let shortcuts = widgets.shortcuts.clone();
-            RelmAction::<ShortcutsAction>::new_stateless(move |_| {
-                shortcuts.present();
-            })
-        };
+        // let shortcuts_action = {
+        //     let shortcuts = widgets.shortcuts.clone();
+        //     RelmAction::<ShortcutsAction>::new_stateless(move |_| {
+        //         shortcuts.present();
+        //     })
+        // };
 
         let about_action = {
             RelmAction::<AboutAction>::new_stateless(move |_| {
@@ -164,7 +164,7 @@ impl SimpleComponent for App {
         };
 
         let mut actions = RelmActionGroup::<WindowActionGroup>::new();
-        actions.add_action(shortcuts_action);
+        // actions.add_action(shortcuts_action);
         actions.add_action(about_action);
         actions.register_for_widget(&widgets.main_window);
 

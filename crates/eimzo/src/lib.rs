@@ -1,7 +1,14 @@
 use std::{
-    process::Command,
-    {fs, io},
+    error::Error,
+    fs, io,
+    process::{Command, exit},
 };
+
+#[cfg(not(feature = "development"))]
+static PATH: &str = "/media/DSKEYS";
+
+#[cfg(feature = "development")]
+static PATH: &str = "/home/bahrom/DSKEYS";
 
 pub fn is_service_active(service_name: &str) -> bool {
     let output = Command::new("systemctl")
@@ -9,7 +16,9 @@ pub fn is_service_active(service_name: &str) -> bool {
         .output()
         .map_err(|e| format!("Failed to run systemctl: {}", e));
 
-    let status = String::from_utf8_lossy(&output.unwrap().stdout).trim().to_string();
+    let status = String::from_utf8_lossy(&output.unwrap().stdout)
+        .trim()
+        .to_string();
 
     match status.as_str() {
         "active" => true,
@@ -35,28 +44,43 @@ pub fn get_pfx_files_in_folder(path: &str) -> io::Result<Vec<String>> {
     Ok(pfx_files)
 }
 
-pub fn check_path_and_perm() -> () {
-    let user = Command::new("whoami")
-        .output()
-        .map_err(|e| format!("Failed to run systemctl: {}", e));
+pub fn check_path_and_perm() -> Result<(), Box<dyn Error + Send>> {
+    // let user = Command::new("whoami")
+    //     .output()
+    //     .map_err(|e| format!("Failed to run systemctl: {}", e));
 
-    let username = String::from_utf8_lossy(&user.unwrap().stdout)
-        .trim()
-        .to_string();
+    // let username = String::from_utf8_lossy(&user.unwrap().stdout)
+    //     .trim()
+    //     .to_string();
 
-    let output = Command::new("pkexec")
+    let foo = std::env::var("PATH");
+    println!("{:?}", foo);
+
+    let output = Command::new("/usr/bin/env") // "/run/wrappers/bin/pkexec"
         .args([
-            "sh",
-            "-c",
-            &format!(
-                "mkdir -p /media/DSKEYS && chown {} /media/DSKEYS",
-                username.as_str()
-            ),
+            "pkexec",
+            "mkdir -p /media/DSKEYS/e-helper",
+            // "mkdir",
+            // "-p",
+            // "/media/DSKEYS",
         ])
         .output()
         .map_err(|e| format!("Failed to run check_path_and_perm: {}", e));
-    
-    let status = String::from_utf8_lossy(&output.unwrap().stdout).trim().to_string();
 
-    println!("We somehow made it to here! {}", status);
+    let output = match output {
+        Ok(o) => {
+            println!("{}", String::from_utf8_lossy(&o.stdout));
+            o
+        }
+        Err(e) => {
+            eprintln!("{}", e);
+            exit(1)
+        }
+    };
+
+    let status = String::from_utf8_lossy(&output.stdout).trim().to_string();
+
+    println!("We somehow made it to here with this path! {}", PATH);
+
+    Ok(())
 }

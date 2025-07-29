@@ -9,6 +9,10 @@ repository = "#repository#"
 authors = ["#author#"]
 publish = false
 
+[features]
+# default = ["development"]
+development = []
+
 [profile.release]
 lto = true
 
@@ -19,4 +23,8 @@ relm4-components = "0.9.1"
 tracing = "0.1.41"
 tracing-subscriber = "0.3"
 eimzo = {path = "crates/eimzo"}
-# tokio = { version = "1.47.0", features = ["full"]}
+tokio = { version = "1.47.0", features = ["full"]}
+
+[workspace]
+members = [".", "e-helper"]
+default-members = [".", "e-helper"]

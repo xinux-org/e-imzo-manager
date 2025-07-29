@@ -156,9 +156,9 @@ impl SimpleComponent for SelectModePage {
     fn update(&mut self, msg: SelectModeMsg, sender: ComponentSender<Self>) {
         match msg {
             SelectModeMsg::OpenFile => {
-                std::thread::spawn(check_path_and_perm)
-                    .join()
-                    .expect("Fucked up");
+                // std::thread::spawn(check_path_and_perm)
+                //     .join()
+                //     .expect("Fucked up");
 
                 // check_path_and_perm();
                 self.open_dialog.emit(OpenDialogMsg::Open);

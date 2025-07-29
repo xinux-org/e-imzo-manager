@@ -1,4 +1,6 @@
-use crate::app::AppMsg;
+use std::process::exit;
+
+use crate::{app::AppMsg, config::LIBEXECDIR};
 use eimzo::check_path_and_perm;
 use relm4::{
     adw,
@@ -29,8 +31,7 @@ impl SimpleComponent for WelcomeModel {
     type Input = ();
     type Output = AppMsg;
     type Widgets = AppWidgets;
-    
-    
+
     view! {
         gtk::Box {
             set_orientation: gtk::Orientation::Vertical,
@@ -38,19 +39,19 @@ impl SimpleComponent for WelcomeModel {
             set_vexpand: true,
             set_halign: gtk::Align::Center,
             set_valign: gtk::Align::Center,
-                    
+
             gtk::Image {
                 set_pixel_size: 320,
                 set_paintable: Some(&embedded_logo()),
             },
-                    
+
             gtk::Label {
                 add_css_class: relm4::css::TITLE_2,
                 #[watch]
                 set_label: &format!("Welcome to E-imzo"),
                 set_margin_all: 1,
             },
-                    
+
             gtk::Label {
                 add_css_class: relm4::css::TITLE_4,
                 #[watch]
@@ -59,7 +60,7 @@ impl SimpleComponent for WelcomeModel {
                 set_margin_all: 5,
                 set_justify: gtk::Justification::Center,
             },
-                    
+
             gtk::Label {
                 add_css_class: relm4::css::TITLE_4,
                 #[watch]
@@ -79,20 +80,33 @@ impl SimpleComponent for WelcomeModel {
                     set_label: "Load .pfx",
                 },
                 connect_clicked => {
-                    std::thread::spawn(check_path_and_perm)
-                    .join()
-                    .expect("Fucked up");
+                    glib::MainContext::default().spawn_local(async move {
+                        let output = tokio::process::Command::new("pkexec")
+                            .arg(format!("{}/e-helper", LIBEXECDIR))
+                            .arg("ls")
+                            .output()
+                            .await;
+
+                        match output {
+                            Ok(o) => {
+                                eprintln!("stdout: {}", String::from_utf8_lossy(&o.stdout));
+                                eprintln!("stderr: {}", String::from_utf8_lossy(&o.stderr));
+                            }
+                            Err(e) => {
+                                eprintln!("Failed to execute pkexec: {}", e);
+                            }
+                        }
+                    });
                 },
             },
-        }        
+        }
     }
-
     fn init(
         _init: Self::Init,
         root: Self::Root,
         _sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let model = WelcomeModel { };
+        let model = WelcomeModel {};
         let widgets = view_output!();
 
         ComponentParts { model, widgets }
