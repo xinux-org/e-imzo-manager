@@ -10,20 +10,28 @@ static PATH: &str = "/media/DSKEYS";
 #[cfg(feature = "development")]
 static PATH: &str = "/home/bahrom/DSKEYS";
 
-pub fn is_service_active(service_name: &str) -> bool {
+pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
         .args(&["--user", "is-active", service_name])
         .output()
-        .map_err(|e| format!("Failed to run systemctl: {}", e));
+        .map_err(|e| format!("Failed to run systemctl: {}", e))?;
 
-    let status = String::from_utf8_lossy(&output.unwrap().stdout)
-        .trim()
-        .to_string();
+    let status = String::from_utf8_lossy(&output.stdout).trim().to_string();
 
     match status.as_str() {
-        "active" => true,
-        "inactive" | "failed" | "activating" | "deactivating" | "unknown" => false,
-        _ => false,
+        "active" => Ok(true),
+        "inactive" | "failed" | "activating" | "deactivating" | "unknown" => Ok(false),
+        _ => Err(format!("Unexpected status: {}", status)),
+    }   
+}
+
+pub fn check_service_active(service: &str) -> bool {
+    match is_service_active(service) {
+        Ok(active) => active,
+        Err(_e) => {
+            // eprintln!("Error checking service: {}", e);
+            false
+        }
     }
 }
 
