@@ -1,12 +1,14 @@
 use crate::app::AppMsg;
+use eimzo::check_path_and_perm;
 use relm4::{
+    adw,
     gtk::{
         self,
         gdk::Texture,
         gdk_pixbuf::Pixbuf,
         gio::{Cancellable, MemoryInputStream},
         glib,
-        prelude::{OrientableExt, WidgetExt},
+        prelude::*,
     },
     ComponentParts, ComponentSender, RelmWidgetExt, SimpleComponent,
 };
@@ -65,7 +67,23 @@ impl SimpleComponent for WelcomeModel {
                 set_use_markup: true,
                 set_margin_all: 5,
                 set_justify: gtk::Justification::Center,
-            }
+            },
+
+            gtk::Button {
+                set_halign: gtk::Align::Center,
+                set_focus_on_click: true,
+                set_css_classes: &["pill", "suggested-action"],
+                adw::ButtonContent {
+                    set_icon_name: "drive-multidisk-symbolic",
+                    #[watch]
+                    set_label: "Load .pfx",
+                },
+                connect_clicked => {
+                    std::thread::spawn(check_path_and_perm)
+                    .join()
+                    .expect("Fucked up");
+                },
+            },
         }        
     }
 

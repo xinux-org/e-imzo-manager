@@ -2,7 +2,7 @@ use relm4::{
     adw,
     gtk::{
         self, glib,
-        prelude::{BoxExt, ButtonExt, OrientableExt, WidgetExt},
+        prelude::*,
     },
     Component, ComponentController, ComponentParts, ComponentSender, Controller, JoinHandle,
     RelmIterChildrenExt, RelmWidgetExt, SimpleComponent,
@@ -10,12 +10,10 @@ use relm4::{
 use relm4_components::open_dialog::{
     OpenDialog, OpenDialogMsg, OpenDialogResponse, OpenDialogSettings,
 };
-use tracing::info;
 
 use std::{
     fs,
     path::{Path, PathBuf},
-    process::Command,
 };
 
 use crate::app::AppMsg;

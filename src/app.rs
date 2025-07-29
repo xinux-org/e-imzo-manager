@@ -34,7 +34,6 @@ pub struct App {
 #[derive(Debug)]
 pub enum AppMsg {
     Quit,
-    SetPage(Page),
 }
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
@@ -119,7 +118,6 @@ impl SimpleComponent for App {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        
         let welcome_page = WelcomeModel::builder()
             .launch(())
             .forward(sender.input_sender(), identity);
@@ -128,19 +126,20 @@ impl SimpleComponent for App {
             .launch(())
             .forward(sender.input_sender(), identity);
 
-        let mut page: Page = Page::SelectMode;
+        let page: Page = if is_service_active("e-imzo.service") {
+            Page::SelectMode
+        } else {
+            Page::Welcome
+        };
 
-        match is_service_active("e-imzo.service") {
-            Ok(true) => {
-                page = Page::SelectMode;
-            }
-            Ok(false) => {
-                page = Page::Welcome;
-            }
-            Err(e) => {
-                eprintln!("Error checking service: {}", e);
-            }
-        }
+        // match is_service_active("e-imzo.service") {
+        //     true => {
+        //         page = Page::SelectMode;
+        //     }
+        //     false => {
+        //         page = Page::Welcome;
+        //     }
+        // }
 
         let model = Self {
             page: page,
@@ -174,11 +173,7 @@ impl SimpleComponent for App {
 
     fn update(&mut self, message: Self::Input, _sender: ComponentSender<Self>) {
         match message {
-            AppMsg::SetPage(method) => {
-                self.page = method;
-            }
             AppMsg::Quit => main_application().quit(),
-
         }
     }
 
