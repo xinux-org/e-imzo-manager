@@ -83,7 +83,6 @@ impl SimpleComponent for WelcomeModel {
                     glib::MainContext::default().spawn_local(async move {
                         let output = tokio::process::Command::new("pkexec")
                             .arg(format!("{}/e-helper", LIBEXECDIR))
-                            .arg("ls")
                             .output()
                             .await;
 

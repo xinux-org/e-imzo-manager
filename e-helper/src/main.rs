@@ -5,6 +5,7 @@ use std::{
     io::{self, Read, Write},
     process::Command,
 };
+use std::os::unix::fs::chown;
 
 #[derive(Subcommand, Debug)]
 enum SubCommands {
@@ -30,57 +31,23 @@ enum SubCommands {
 }
 
 fn main() {
-    let cli = SubCommands::augment_subcommands(clap::Command::new(
-        "Helper binary for NixOS Configuration Editor",
-    ));
-    let matches = cli.get_matches();
-    let derived_subcommands = SubCommands::from_arg_matches(&matches)
-        .map_err(|err| err.exit())
-        .unwrap();
+    // let cli = SubCommands::augment_subcommands(clap::Command::new(
+    //     "Helper binary for NixOS Configuration Editor",
+    // ));
+    // let matches = cli.get_matches();
+    // let derived_subcommands = SubCommands::from_arg_matches(&matches)
+    //     .map_err(|err| err.exit())
+    //     .unwrap();
 
     if users::get_effective_uid() != 0 {
         eprintln!("nixos-conf-editor-helper must be run as root");
         std::process::exit(1);
     }
 
-    match derived_subcommands {
-        SubCommands::Config { output } => {
-            match write_file(&output) {
-                Ok(_) => (),
-                Err(err) => {
-                    eprintln!("{}", err);
-                    std::process::exit(1);
-                }
-            };
-        }
-        SubCommands::Rebuild { arguments } => match rebuild(arguments) {
-            Ok(_) => (),
-            Err(err) => {
-                eprintln!("{}", err);
-                std::process::exit(1);
-            }
-        },
-        SubCommands::WriteRebuild {
-            content,
-            path,
-            arguments,
-        } => {
-            match write_content(&content, &path) {
-                Ok(_) => (),
-                Err(err) => {
-                    eprintln!("{}", err);
-                    std::process::exit(1);
-                }
-            };
-            match rebuild(arguments) {
-                Ok(_) => (),
-                Err(err) => {
-                    eprintln!("{}", err);
-                    std::process::exit(1);
-                }
-            };
-        }
-    }
+    // Rest logic [you're sudo and implement using native Rust functions (no shell or Command)]
+    let _ = std::fs::create_dir_all("/media/DSKEYS");
+    let _ = chown("/media/DSKEYS", Some(1000), Some(1000));
+
 }
 
 fn write_file(path: &str) -> Result<(), Box<dyn Error>> {
