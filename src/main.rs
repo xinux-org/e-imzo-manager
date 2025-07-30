@@ -4,16 +4,18 @@ mod app;
 mod modals;
 mod pages;
 
-use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR, RESOURCES_FILE};
+use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
 use gettextrs::{gettext, LocaleCategory};
 use relm4::{
     actions::{AccelsPlus, RelmAction, RelmActionGroup},
-    gtk::{self, gio, glib, prelude::ApplicationExt},
+    gtk::{self, gio, glib, prelude::*},
     main_application, RelmApp,
 };
 
 use app::App;
 use std::process::Command;
+
+use crate::config::RESOURCES_FILE;
 
 relm4::new_action_group!(AppActionGroup, "app");
 relm4::new_stateless_action!(QuitAction, AppActionGroup, "quit");
@@ -35,8 +37,6 @@ fn is_service_active(service_name: &str) -> Result<bool, String> {
 
 fn main() {
     gtk::init().unwrap();
-
-    // Enable logging
     tracing_subscriber::fmt()
         .with_span_events(tracing_subscriber::fmt::format::FmtSpan::FULL)
         .with_max_level(tracing::Level::INFO)
@@ -46,8 +46,6 @@ fn main() {
     gettextrs::setlocale(LocaleCategory::LcAll, "");
     gettextrs::bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR).expect("Unable to bind the text domain");
     gettextrs::textdomain(GETTEXT_PACKAGE).expect("Unable to switch to the text domain");
-
-    glib::set_application_name(&gettext("E-IMZO Manager"));
 
     let res = gio::Resource::load(RESOURCES_FILE).expect("Could not load gresource file");
     gio::resources_register(&res);
@@ -80,17 +78,6 @@ fn main() {
         .unwrap();
     relm4::set_global_css(&glib::GString::from_utf8_checked(data.to_vec()).unwrap());
 
-    let service = "e-imzo.service";
-
-    match is_service_active(service) {
-        Ok(true) => {
-            app.visible_on_activate(false).run::<App>(true);
-        },
-        Ok(false) => {
-            app.visible_on_activate(false).run::<App>(false);
-        }
-        Err(e) => eprintln!("Error checking service: {}", e),
-    }
-
+    app.visible_on_activate(false).run::<App>(());
 }
 
