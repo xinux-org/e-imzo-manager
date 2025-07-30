@@ -8,11 +8,13 @@ use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
 use gettextrs::{gettext, LocaleCategory};
 use relm4::{
     actions::{AccelsPlus, RelmAction, RelmActionGroup},
-    gtk::{self, prelude::ApplicationExt},
+    gtk::{self, gio, glib, prelude::*},
     main_application, RelmApp,
 };
 
 use app::App;
+
+use crate::config::RESOURCES_FILE;
 
 relm4::new_action_group!(AppActionGroup, "app");
 relm4::new_stateless_action!(QuitAction, AppActionGroup, "quit");
@@ -29,8 +31,8 @@ fn main() {
     gettextrs::bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR).expect("Unable to bind the text domain");
     gettextrs::textdomain(GETTEXT_PACKAGE).expect("Unable to switch to the text domain");
 
-    // let res = gio::Resource::load(RESOURCES_FILE).expect("Could not load gresource file");
-    // gio::resources_register(&res);
+    let res = gio::Resource::load(RESOURCES_FILE).expect("Could not load gresource file");
+    gio::resources_register(&res);
 
     gtk::Window::set_default_icon_name(APP_ID);
 
@@ -52,13 +54,13 @@ fn main() {
 
     let app = RelmApp::from_app(app);
 
-    // let data = res
-    //     .lookup_data(
-    //         "/com/belmoussaoui/GtkRustTemplate/style.css",
-    //         gio::ResourceLookupFlags::NONE,
-    //     )
-    //     .unwrap();
-    // relm4::set_global_css(&glib::GString::from_utf8_checked(data.to_vec()).unwrap());
+    let data = res
+        .lookup_data(
+            "/com/belmoussaoui/GtkRustTemplate/style.css",
+            gio::ResourceLookupFlags::NONE,
+        )
+        .unwrap();
+    relm4::set_global_css(&glib::GString::from_utf8_checked(data.to_vec()).unwrap());
 
     app.visible_on_activate(false).run::<App>(());
 }

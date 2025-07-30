@@ -1,23 +1,17 @@
-use eimzo::{check_service_active};
-use relm4::{
-    actions::{RelmAction, RelmActionGroup},
-    adw::{self, prelude::OrientableExt},
-    gtk::{
-        self, gio, glib,
-        prelude::{
-            ApplicationExt, BoxExt, GtkWindowExt, SettingsExt, WidgetExt,
-        },
-    },
-    main_application, Component, ComponentController, ComponentParts, ComponentSender, Controller,
-    SimpleComponent,
-};
-use std::convert::identity;
-
 use crate::{
     config::{APP_ID, PROFILE},
     modals::about::AboutDialog,
     pages::{select_mode::SelectModePage, welcome::WelcomeModel},
 };
+use eimzo::check_service_active;
+use relm4::{
+    actions::{RelmAction, RelmActionGroup},
+    adw::{self, prelude::*},
+    gtk::{self, gio, glib},
+    main_application, Component, ComponentController, ComponentParts, ComponentSender, Controller,
+    SimpleComponent,
+};
+use std::convert::identity;
 
 #[derive(Debug, Clone)]
 pub enum Page {
@@ -69,15 +63,15 @@ impl SimpleComponent for App {
                 sender.input(AppMsg::Quit);
                 glib::Propagation::Stop
             },
-            // #[wrap(Some)]
-            // set_help_overlay: shortcuts = &gtk::Builder::from_resource(
-            //         "/com/belmoussaoui/GtkRustTemplate/gtk/help-overlay.ui"
-            //     )
-            //     .object::<gtk::ShortcutsWindow>("help_overlay")
-            //     .unwrap() -> gtk::ShortcutsWindow {
-            //         set_transient_for: Some(&main_window),
-            //         set_application: Some(&main_application()),
-            // },
+            #[wrap(Some)]
+            set_help_overlay: shortcuts = &gtk::Builder::from_resource(
+                    "/com/belmoussaoui/GtkRustTemplate/gtk/help-overlay.ui"
+                )
+                .object::<gtk::ShortcutsWindow>("help_overlay")
+                .unwrap() -> gtk::ShortcutsWindow {
+                    set_transient_for: Some(&main_window),
+                    set_application: Some(&main_application()),
+            },
 
             add_css_class?: if PROFILE == "Devel" {
                     Some("devel")
@@ -94,7 +88,6 @@ impl SimpleComponent for App {
                         set_menu_model: Some(&primary_menu),
                     }
                 },
-                // #[transition(Crossfade)]
                 match model.page {
                     Page::Welcome => gtk::Box {
                         set_orientation: gtk::Orientation::Vertical,
@@ -141,12 +134,12 @@ impl SimpleComponent for App {
         let widgets = view_output!();
         widgets.load_window_size();
 
-        // let shortcuts_action = {
-        //     let shortcuts = widgets.shortcuts.clone();
-        //     RelmAction::<ShortcutsAction>::new_stateless(move |_| {
-        //         shortcuts.present();
-        //     })
-        // };
+        let shortcuts_action = {
+            let shortcuts = widgets.shortcuts.clone();
+            RelmAction::<ShortcutsAction>::new_stateless(move |_| {
+                shortcuts.present();
+            })
+        };
 
         let about_action = {
             RelmAction::<AboutAction>::new_stateless(move |_| {
@@ -155,7 +148,7 @@ impl SimpleComponent for App {
         };
 
         let mut actions = RelmActionGroup::<WindowActionGroup>::new();
-        // actions.add_action(shortcuts_action);
+        actions.add_action(shortcuts_action);
         actions.add_action(about_action);
         actions.register_for_widget(&widgets.main_window);
 
