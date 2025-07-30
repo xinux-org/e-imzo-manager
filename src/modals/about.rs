@@ -18,17 +18,17 @@ impl SimpleComponent for AboutDialog {
             .application_icon(APP_ID)
             // Insert your license of choice here
             // .license_type(gtk::License::MitX11)
-            // Insert your website here
-            // .website("https://gitlab.gnome.org/bilelmoussaoui/gtk-rust-template/")
-            // Insert your Issues page
-            // .issue_url("https://gitlab.gnome.org/World/Rust/gtk-rust-template/-/issues")
-            // Insert your application name here
+            .website("https://e-imzo.soliq.uz/")
+            .issue_url("https://github.com/xinux-org/e-imzo/issues")
             .application_name("E-IMZO Manager")
             .version(VERSION)
             .translator_credits("translator-credits")
             .copyright("© 2025 Xinux Developers")
-            .developers(vec!["Xinux Developers"])
-            .designers(vec!["Bleur Developers"])
+            .developers(vec![
+				"Baxrom Raxmatov bahrom04",
+                "Bemeritus",
+                "let-rec"
+			])
             .build()
     }
 

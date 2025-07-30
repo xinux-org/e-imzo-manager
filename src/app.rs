@@ -1,6 +1,9 @@
 use crate::{
     config::{APP_ID, PROFILE},
-    modals::about::AboutDialog,
+    modals::{
+        about::AboutDialog,
+        awesome::{self, AwesomeModel},
+    },
     pages::{select_mode::SelectModePage, welcome::WelcomeModel},
 };
 use eimzo::check_service_active;
@@ -31,7 +34,7 @@ pub enum AppMsg {
 }
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
-relm4::new_stateless_action!(PreferencesAction, WindowActionGroup, "preferences");
+relm4::new_stateless_action!(AwesomeAction, WindowActionGroup, "awesom");
 relm4::new_stateless_action!(pub ShortcutsAction, WindowActionGroup, "show-help-overlay");
 relm4::new_stateless_action!(AboutAction, WindowActionGroup, "about");
 
@@ -45,7 +48,7 @@ impl SimpleComponent for App {
     menu! {
         primary_menu: {
             section! {
-                "_Preferences" => PreferencesAction,
+                "_Awesome e-imzo" => AwesomeAction,
                 "_Keyboard" => ShortcutsAction,
                 "_About E-IMZO Manager" => AboutAction,
             }
@@ -134,6 +137,24 @@ impl SimpleComponent for App {
         let widgets = view_output!();
         widgets.load_window_size();
 
+        // let awesome_action = {
+        //     RelmAction::<AwesomeAction>::new_stateless(move |_| {
+        //         tracing::info!("AwesomeAction triggered");
+        //         AwesomeModel::builder().launch(()).detach().widgets().dialog.present(Some(&main_window.clone()));
+        //     })
+        // };
+
+        let awesome_action = {
+            RelmAction::<AwesomeAction>::new_stateless(move |_| {
+                tracing::info!("AwesomeAction triggered");
+                AwesomeModel::builder()
+                    .launch(())
+                    .widgets()
+                    .dialog
+                    .present(Some(&relm4::main_application().windows()[0]));
+            })
+        };
+
         let shortcuts_action = {
             let shortcuts = widgets.shortcuts.clone();
             RelmAction::<ShortcutsAction>::new_stateless(move |_| {
@@ -148,6 +169,7 @@ impl SimpleComponent for App {
         };
 
         let mut actions = RelmActionGroup::<WindowActionGroup>::new();
+        actions.add_action(awesome_action);
         actions.add_action(shortcuts_action);
         actions.add_action(about_action);
         actions.register_for_widget(&widgets.main_window);

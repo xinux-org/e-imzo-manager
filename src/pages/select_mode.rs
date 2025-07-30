@@ -1,5 +1,5 @@
 use relm4::{
-    adw,
+    adw::{self, prelude::*},
     gtk::{self, glib, prelude::*},
     *,
 };
@@ -25,6 +25,7 @@ pub enum SelectModeMsg {
     OpenFile,
     OpenFileConfirmed,
     OpenFileResponse(PathBuf),
+    ShowMessage(String),
     RefreshCertificates,
     None,
 }
@@ -184,6 +185,9 @@ impl SimpleComponent for SelectModePage {
                     Ok(file_names) => {
                         if file_names.contains(&copied_file.to_string()) {
                             // todo show dialog message that file already exists
+                            let _ = sender.input(SelectModeMsg::ShowMessage(
+                                "the file already exists".to_string(),
+                            ));
                             ()
                         } else {
                             let _ = fs::copy(&path, format!("/media/DSKEYS/{}", copied_file));
@@ -195,6 +199,17 @@ impl SimpleComponent for SelectModePage {
                         e
                     ),
                 }
+            }
+            SelectModeMsg::ShowMessage(text) => {
+                println!("ShowMessage ShowMessageShowMessageShowMessageShowMessageShowMessage");
+                let dialog = adw::AlertDialog::builder().body(text).build();
+
+                dialog.add_responses(&[("ok", "Cancel")]);
+                dialog.connect_response(None, |dialog, response| {
+                    println!("{:?}", response);
+                    dialog.close();
+                });
+                dialog.set_visible(true);
             }
             SelectModeMsg::RefreshCertificates => {
                 // Clear current list

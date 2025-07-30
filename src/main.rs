@@ -67,6 +67,7 @@ fn main() {
     actions.register_for_main_application();
 
     app.set_accelerators_for_action::<QuitAction>(&["<Control>q"]);
+    // app.set_accelerators_for_action::<AwesomeAction>(&["<Control>q"]);
 
     let app = RelmApp::from_app(app);
 
