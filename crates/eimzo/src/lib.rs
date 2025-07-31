@@ -1,4 +1,5 @@
 use std::{fs, io, process::Command};
+use std::os::unix::fs::MetadataExt;
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
@@ -42,4 +43,10 @@ pub fn get_pfx_files_in_folder(path: &str) -> io::Result<Vec<String>> {
     Ok(pfx_files)
 }
 
+pub fn check_file_ownership(path: &str) -> Result<(u32, u32), Box<dyn std::error::Error>> {
+    let metadata = fs::metadata(path)?;
+    let uid = metadata.uid();
+    let gid = metadata.gid();
+    Ok((uid, gid))
+}
 
