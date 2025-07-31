@@ -184,9 +184,8 @@ impl SimpleComponent for SelectModePage {
                 match get_pfx_files_in_folder("/media/DSKEYS") {
                     Ok(file_names) => {
                         if file_names.contains(&copied_file.to_string()) {
-                            // todo show dialog message that file already exists
                             let _ = sender.input(SelectModeMsg::ShowMessage(
-                                "the file already exists".to_string(),
+                                "File already exists. You can use it".to_string(),
                             ));
                             ()
                         } else {
@@ -201,15 +200,20 @@ impl SimpleComponent for SelectModePage {
                 }
             }
             SelectModeMsg::ShowMessage(text) => {
-                println!("ShowMessage ShowMessageShowMessageShowMessageShowMessageShowMessage");
-                let dialog = adw::AlertDialog::builder().body(text).build();
+                let dialog = adw::AlertDialog::builder()
+                    .heading(text)
+                    // .body("")
+                    .default_response("ok")
+                    .follows_content_size(true)
+                    .build();
 
-                dialog.add_responses(&[("ok", "Cancel")]);
+                dialog.add_responses(&[("OK", "OK")]);
                 dialog.connect_response(None, |dialog, response| {
                     println!("{:?}", response);
                     dialog.close();
                 });
                 dialog.set_visible(true);
+                dialog.present(Some(&relm4::main_application().windows()[0]));
             }
             SelectModeMsg::RefreshCertificates => {
                 // Clear current list
