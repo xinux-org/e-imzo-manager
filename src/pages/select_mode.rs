@@ -1,6 +1,6 @@
 use relm4::{
     adw::{self, prelude::*},
-    gtk::{self, glib, prelude::*},
+    gtk::{self, glib},
     *,
 };
 use relm4_components::open_dialog::*;
@@ -166,7 +166,6 @@ impl SimpleComponent for SelectModePage {
                             if !ExitStatus::success(&o.status) {
                                 return;
                             }
-
                             sender.input(SelectModeMsg::OpenFileConfirmed);
                         }
                         Err(e) => {
@@ -187,7 +186,6 @@ impl SimpleComponent for SelectModePage {
                             let _ = sender.input(SelectModeMsg::ShowMessage(
                                 "File already exists. You can use it".to_string(),
                             ));
-                            ()
                         } else {
                             let _ = fs::copy(&path, format!("/media/DSKEYS/{}", copied_file));
                             let _ = sender.input(SelectModeMsg::RefreshCertificates);

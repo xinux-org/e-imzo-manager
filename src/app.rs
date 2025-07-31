@@ -137,21 +137,10 @@ impl SimpleComponent for App {
         let widgets = view_output!();
         widgets.load_window_size();
 
-        // let awesome_action = {
-        //     RelmAction::<AwesomeAction>::new_stateless(move |_| {
-        //         tracing::info!("AwesomeAction triggered");
-        //         AwesomeModel::builder().launch(()).detach().widgets().dialog.present(Some(&main_window.clone()));
-        //     })
-        // };
-
         let awesome_action = {
             RelmAction::<AwesomeAction>::new_stateless(move |_| {
                 tracing::info!("AwesomeAction triggered");
-                AwesomeModel::builder()
-                    .launch(())
-                    .widgets()
-                    .dialog
-                    .present(Some(&relm4::main_application().windows()[0]));
+                AwesomeModel::builder().launch(()).detach();
             })
         };
 
