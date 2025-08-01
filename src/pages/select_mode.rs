@@ -53,7 +53,7 @@ impl SimpleComponent for SelectModePage {
                         set_focus_on_click: true,
                         set_css_classes: &["pill", "suggested-action"],
                         adw::ButtonContent {
-                            set_icon_name: "drive-multidisk-symbolic",
+                            set_icon_name: "folder-documents-symbolic",
                             #[watch]
                             set_label: "Load .pfx",
                         },

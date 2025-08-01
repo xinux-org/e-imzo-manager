@@ -86,7 +86,6 @@ impl SimpleComponent for App {
                 set_orientation: gtk::Orientation::Vertical,
                 set_vexpand: true,
                 set_hexpand: true,
-
                 adw::HeaderBar {
                     pack_start = &gtk::Button {
                         set_icon_name: "list-add-symbolic",
@@ -101,7 +100,6 @@ impl SimpleComponent for App {
                         set_menu_model: Some(&primary_menu),
                     }
                 },
-
                 match model.page {
                     Page::Welcome => gtk::Box {
                         set_orientation: gtk::Orientation::Vertical,
