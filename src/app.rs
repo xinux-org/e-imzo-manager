@@ -1,10 +1,10 @@
 use crate::{
     config::{APP_ID, PROFILE},
-    modals::{
-        about::AboutDialog,
-        awesome::{self, AwesomeModel},
+    modals::{about::AboutDialog, awesome::AwesomeModel},
+    pages::{
+        select_mode::{SelectModeMsg, SelectModePage},
+        welcome::WelcomeModel,
     },
-    pages::{select_mode::SelectModePage, welcome::WelcomeModel},
 };
 use eimzo::check_service_active;
 use relm4::{
@@ -31,6 +31,7 @@ pub struct App {
 #[derive(Debug)]
 pub enum AppMsg {
     Quit,
+    SelectMode(SelectModeMsg),
 }
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
@@ -85,12 +86,22 @@ impl SimpleComponent for App {
                 set_orientation: gtk::Orientation::Vertical,
                 set_vexpand: true,
                 set_hexpand: true,
+
                 adw::HeaderBar {
+                    pack_start = &gtk::Button {
+                        set_icon_name: "list-add-symbolic",
+                        add_css_class: "flat",
+                        connect_clicked => AppMsg::SelectMode(SelectModeMsg::OpenFile),
+                        #[watch]
+                        set_visible: matches!(model.page, Page::SelectMode),
+                    },
+
                     pack_end = &gtk::MenuButton {
                         set_icon_name: "open-menu-symbolic",
                         set_menu_model: Some(&primary_menu),
                     }
                 },
+
                 match model.page {
                     Page::Welcome => gtk::Box {
                         set_orientation: gtk::Orientation::Vertical,
@@ -169,6 +180,9 @@ impl SimpleComponent for App {
     fn update(&mut self, message: Self::Input, _sender: ComponentSender<Self>) {
         match message {
             AppMsg::Quit => main_application().quit(),
+            AppMsg::SelectMode(msg) => {
+                self.select_mode_page.emit(msg);
+            }
         }
     }
 

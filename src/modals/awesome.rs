@@ -13,8 +13,10 @@ impl SimpleComponent for AwesomeModel {
 
     view! {
         adw::Dialog {
-            set_content_width: 325,
+            // set_content_width: 325,
             set_title: "List of used e-imzo websites",
+            set_follows_content_size: true,
+            set_presentation_mode: adw::DialogPresentationMode::Floating,
 
             #[wrap(Some)]
             set_child = &adw::ToolbarView {
@@ -23,7 +25,7 @@ impl SimpleComponent for AwesomeModel {
                 #[wrap(Some)]
                 set_content = &gtk::Box {
                     set_orientation: gtk::Orientation::Vertical,
-                    set_margin_all: 12,
+                    set_margin_all: 6,
 
                     gtk::Label {
                         set_markup: "1. <a href=\"https://clients.ahost.uz/login\">ahost.uz</a>",

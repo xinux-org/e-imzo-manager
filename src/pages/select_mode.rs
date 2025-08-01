@@ -43,6 +43,8 @@ impl SimpleComponent for SelectModePage {
 
             if model.is_path_empty {
                 adw::StatusPage {
+                    set_vexpand: true,
+                    set_hexpand: true,
                     set_icon_name: Some("checkbox-checked-symbolic"),
                     set_title: "No certificates",
                     set_description: Some("Load some certificates to start using the app."),
@@ -60,20 +62,18 @@ impl SimpleComponent for SelectModePage {
                 }
             } else {
                 gtk::Box {
+                    gtk::Label {
+                        add_css_class: relm4::css::TITLE_2,
+                        #[watch]
+                        set_label: &format!("Loaded certificates"),
+                        set_margin_all: 1,
+                    },
                     set_spacing: 20,
                     set_margin_start: 10,
                     set_margin_end: 10,
                     set_margin_top: 20,
                     set_margin_bottom: 10,
                     set_orientation: gtk::Orientation::Vertical,
-                    gtk::Button {
-                        set_halign: gtk::Align::Center,
-                        set_focus_on_click: true,
-                        adw::ButtonContent {
-                            set_icon_name: "plus",
-                        },
-                        connect_clicked => SelectModeMsg::OpenFile
-                    },
 
                     adw::Clamp {
                         #[name(file_list)]
@@ -121,7 +121,7 @@ impl SimpleComponent for SelectModePage {
 
         let path = Path::new("/media/DSKEYS");
         if path.exists() {
-            match get_pfx_files_in_folder("/media/DSKEYS") {
+            match get_pfx_files_in_folder() {
                 Ok(file_names) => {
                     for file_name in file_names {
                         certificate.push(file_name.clone());
@@ -153,7 +153,7 @@ impl SimpleComponent for SelectModePage {
     fn update(&mut self, msg: SelectModeMsg, sender: ComponentSender<Self>) {
         match msg {
             SelectModeMsg::OpenFile => {
-                if Path::new("/media/DSKEYS").exists() {
+                if Path::new("/media/DSKEYS").exists() && check_file_ownership().unwrap() == 1000 {
                     self.open_dialog.emit(OpenDialogMsg::Open);
                 } else {
                     relm4::spawn(async move {
@@ -182,7 +182,7 @@ impl SimpleComponent for SelectModePage {
             SelectModeMsg::OpenFileResponse(path) => {
                 let copied_file = &path.file_name().unwrap().to_str().unwrap();
 
-                match get_pfx_files_in_folder("/media/DSKEYS") {
+                match get_pfx_files_in_folder() {
                     Ok(file_names) => {
                         if file_names.contains(&copied_file.to_string()) {
                             let _ = sender.input(SelectModeMsg::ShowMessage(
@@ -223,18 +223,24 @@ impl SimpleComponent for SelectModePage {
 
                 self.certificate.clear();
 
-                match get_pfx_files_in_folder("/media/DSKEYS") {
-                    Ok(file_names) => {
-                        for file_name in file_names {
-                            self.certificate.push(file_name.clone());
-                            add_file_row_to_list(&file_name.clone(), &self.file_list);
+                let path = Path::new("/media/DSKEYS");
+                if path.exists() {
+                    match get_pfx_files_in_folder() {
+                        Ok(file_names) => {
+                            for file_name in file_names {
+                                self.certificate.push(file_name.clone());
+                                add_file_row_to_list(&file_name.clone(), &self.file_list);
+                            }
+                            self.is_path_empty = self.certificate.is_empty();
                         }
-                        self.is_path_empty = self.certificate.is_empty();
+                        Err(e) => println!(
+                            "Error in RefreshCertificates eimzo::get_pfx_files_in_folder: {}",
+                            e
+                        ),
                     }
-                    Err(e) => println!(
-                        "Error in RefreshCertificates eimzo::get_pfx_files_in_folder: {}",
-                        e
-                    ),
+                } else {
+                    // set initial page if no files in folder
+                    self.is_path_empty = self.certificate.is_empty();
                 }
             }
             SelectModeMsg::None => {}
@@ -255,7 +261,7 @@ fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
     hbox.set_margin_all(12);
     hbox.set_hexpand(true);
 
-    let icon = gtk::Image::from_icon_name("folder-symbolic");
+    let icon = gtk::Image::from_icon_name("folder-documents-symbolic");
     hbox.append(&icon);
 
     let vbox = gtk::Box::new(gtk::Orientation::Vertical, 4);
@@ -264,12 +270,12 @@ fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
     title.set_xalign(0.0);
     title.add_css_class("title-3");
 
-    let subtitle = gtk::Label::new(Some("/media/DSKEYS"));
-    subtitle.set_xalign(0.0);
-    subtitle.add_css_class("dim-label");
+    // let subtitle = gtk::Label::new(Some(&format!("/media/DSKEYS/{}", file_name)));
+    // subtitle.set_xalign(0.0);
+    // subtitle.add_css_class("dim-label");
 
     vbox.append(&title);
-    vbox.append(&subtitle);
+    // vbox.append(&subtitle);
 
     hbox.append(&vbox);
     file_list.append(&hbox);

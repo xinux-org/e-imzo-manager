@@ -1,5 +1,7 @@
-use std::{fs, io, process::Command};
 use std::os::unix::fs::MetadataExt;
+use std::path::Path;
+use std::{fs, io, process::Command};
+
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
@@ -26,7 +28,8 @@ pub fn check_service_active(service: &str) -> bool {
     }
 }
 
-pub fn get_pfx_files_in_folder(path: &str) -> io::Result<Vec<String>> {
+pub fn get_pfx_files_in_folder() -> io::Result<Vec<String>> {
+    let path = Path::new("/media/DSKEYS");
     let entries = fs::read_dir(path)?;
 
     let pfx_files: Vec<String> = entries
@@ -43,10 +46,9 @@ pub fn get_pfx_files_in_folder(path: &str) -> io::Result<Vec<String>> {
     Ok(pfx_files)
 }
 
-pub fn check_file_ownership(path: &str) -> Result<(u32, u32), Box<dyn std::error::Error>> {
+pub fn check_file_ownership() -> Result<u32, Box<dyn std::error::Error>> {
+    let path = Path::new("/media/DSKEYS");
     let metadata = fs::metadata(path)?;
     let uid = metadata.uid();
-    let gid = metadata.gid();
-    Ok((uid, gid))
+    return Ok(uid);
 }
-

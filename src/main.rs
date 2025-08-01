@@ -12,10 +12,8 @@ use relm4::{
     main_application, RelmApp,
 };
 
-use app::App;
-use std::process::Command;
-
 use crate::config::RESOURCES_FILE;
+use app::App;
 
 relm4::new_action_group!(AppActionGroup, "app");
 relm4::new_stateless_action!(QuitAction, AppActionGroup, "quit");
@@ -66,4 +64,3 @@ fn main() {
 
     app.visible_on_activate(false).run::<App>(());
 }
-

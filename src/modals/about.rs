@@ -15,12 +15,11 @@ impl SimpleComponent for AboutDialog {
 
     fn init_root() -> Self::Root {
         adw::AboutDialog::builder()
-            .application_icon(APP_ID)
-            // Insert your license of choice here
-            // .license_type(gtk::License::MitX11)
-            .website("https://e-imzo.soliq.uz/")
-            .issue_url("https://github.com/xinux-org/e-imzo/issues")
             .application_name("E-IMZO Manager")
+            .application_icon(APP_ID)
+            .license_type(gtk::License::MitX11)
+            .website("https://xinux.uz/")
+            .issue_url("https://github.com/xinux-org/e-imzo/issues")
             .version(VERSION)
             .translator_credits("translator-credits")
             .copyright("© 2025 Xinux Developers")
