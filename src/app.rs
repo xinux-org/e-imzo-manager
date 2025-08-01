@@ -1,7 +1,10 @@
 use crate::{
     config::{APP_ID, PROFILE},
-    modals::about::AboutDialog,
-    pages::{select_mode::SelectModePage, welcome::WelcomeModel},
+    modals::{about::AboutDialog, awesome::AwesomeModel},
+    pages::{
+        select_mode::{SelectModeMsg, SelectModePage},
+        welcome::WelcomeModel,
+    },
 };
 use eimzo::check_service_active;
 use relm4::{
@@ -28,10 +31,11 @@ pub struct App {
 #[derive(Debug)]
 pub enum AppMsg {
     Quit,
+    SelectMode(SelectModeMsg),
 }
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
-relm4::new_stateless_action!(PreferencesAction, WindowActionGroup, "preferences");
+relm4::new_stateless_action!(AwesomeAction, WindowActionGroup, "awesom");
 relm4::new_stateless_action!(pub ShortcutsAction, WindowActionGroup, "show-help-overlay");
 relm4::new_stateless_action!(AboutAction, WindowActionGroup, "about");
 
@@ -45,7 +49,7 @@ impl SimpleComponent for App {
     menu! {
         primary_menu: {
             section! {
-                "_Preferences" => PreferencesAction,
+                "_Awesome e-imzo" => AwesomeAction,
                 "_Keyboard" => ShortcutsAction,
                 "_About E-IMZO Manager" => AboutAction,
             }
@@ -83,6 +87,14 @@ impl SimpleComponent for App {
                 set_vexpand: true,
                 set_hexpand: true,
                 adw::HeaderBar {
+                    pack_start = &gtk::Button {
+                        set_icon_name: "list-add-symbolic",
+                        add_css_class: "flat",
+                        connect_clicked => AppMsg::SelectMode(SelectModeMsg::OpenFile),
+                        #[watch]
+                        set_visible: matches!(model.page, Page::SelectMode),
+                    },
+
                     pack_end = &gtk::MenuButton {
                         set_icon_name: "open-menu-symbolic",
                         set_menu_model: Some(&primary_menu),
@@ -134,6 +146,13 @@ impl SimpleComponent for App {
         let widgets = view_output!();
         widgets.load_window_size();
 
+        let awesome_action = {
+            RelmAction::<AwesomeAction>::new_stateless(move |_| {
+                tracing::info!("AwesomeAction triggered");
+                AwesomeModel::builder().launch(()).detach();
+            })
+        };
+
         let shortcuts_action = {
             let shortcuts = widgets.shortcuts.clone();
             RelmAction::<ShortcutsAction>::new_stateless(move |_| {
@@ -148,6 +167,7 @@ impl SimpleComponent for App {
         };
 
         let mut actions = RelmActionGroup::<WindowActionGroup>::new();
+        actions.add_action(awesome_action);
         actions.add_action(shortcuts_action);
         actions.add_action(about_action);
         actions.register_for_widget(&widgets.main_window);
@@ -158,6 +178,9 @@ impl SimpleComponent for App {
     fn update(&mut self, message: Self::Input, _sender: ComponentSender<Self>) {
         match message {
             AppMsg::Quit => main_application().quit(),
+            AppMsg::SelectMode(msg) => {
+                self.select_mode_page.emit(msg);
+            }
         }
     }
 

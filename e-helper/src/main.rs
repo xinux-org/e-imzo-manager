@@ -1,10 +1,4 @@
-use clap::{self, FromArgMatches, Subcommand};
-use std::{
-    error::Error,
-    fs::File,
-    io::{self, Read, Write},
-    process::Command,
-};
+use clap::{self, Subcommand};
 use std::os::unix::fs::chown;
 
 #[derive(Subcommand, Debug)]
@@ -39,31 +33,4 @@ fn main() {
     // Rest logic [you're sudo and implement using native Rust functions (no shell or Command)]
     let _ = std::fs::create_dir_all("/media/DSKEYS");
     let _ = chown("/media/DSKEYS", Some(1000), Some(1000));
-
-}
-
-fn write_file(path: &str) -> Result<(), Box<dyn Error>> {
-    let stdin = io::stdin();
-    let mut buf = String::new();
-    stdin.lock().read_to_string(&mut buf)?;
-    let mut file = File::create(path)?;
-    write!(file, "{}", &buf)?;
-    Ok(())
-}
-
-fn write_content(content: &str, path: &str) -> Result<(), Box<dyn Error>> {
-    let mut file = File::create(path)?;
-    write!(file, "{}", content)?;
-    Ok(())
-}
-
-fn rebuild(args: Vec<String>) -> Result<(), Box<dyn Error>> {
-    let mut cmd = Command::new("nixos-rebuild").args(args).spawn()?;
-    let x = cmd.wait()?;
-    if x.success() {
-        Ok(())
-    } else {
-        eprintln!("nixos-rebuild failed with exit code {}", x.code().unwrap());
-        std::process::exit(1);
-    }
 }
