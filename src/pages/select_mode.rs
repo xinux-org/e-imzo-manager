@@ -11,7 +11,7 @@ use std::{
 };
 
 use crate::{app::AppMsg, config::LIBEXECDIR};
-use eimzo::{get_pfx_files_in_folder, check_file_ownership};
+use eimzo::{check_file_ownership, get_pfx_files_in_folder};
 
 pub struct SelectModePage {
     is_path_empty: bool,
@@ -70,9 +70,7 @@ impl SimpleComponent for SelectModePage {
                         set_halign: gtk::Align::Center,
                         set_focus_on_click: true,
                         adw::ButtonContent {
-                            set_icon_name: "drive-multidisk-symbolic",
-                            #[watch]
-                            set_label: "Load .pfx",
+                            set_icon_name: "plus",
                         },
                         connect_clicked => SelectModeMsg::OpenFile
                     },
@@ -155,33 +153,28 @@ impl SimpleComponent for SelectModePage {
     fn update(&mut self, msg: SelectModeMsg, sender: ComponentSender<Self>) {
         match msg {
             SelectModeMsg::OpenFile => {
-                match check_file_ownership("/media/DSKEYS") {
-                    Ok((uid, gid)) => {
-                        if Path::new("/media/DSKEYS").exists() && uid == 1000{
-                            self.open_dialog.emit(OpenDialogMsg::Open);
-                        } else {
-                            relm4::spawn(async move {
-                                let output = tokio::process::Command::new("pkexec")
-                                    .arg(format!("{}/e-helper", LIBEXECDIR))
-                                    .output()
-                                    .await;
-                                match output {
-                                    Ok(o) => {
-                                        if !ExitStatus::success(&o.status) {
-                                            return;
-                                        }
-                                        sender.input(SelectModeMsg::OpenFileConfirmed);
-                                    }
-                                    Err(e) => {
-                                        eprintln!("Failed to execute pkexec: {}", e);
-                                    }
+                if Path::new("/media/DSKEYS").exists() {
+                    self.open_dialog.emit(OpenDialogMsg::Open);
+                } else {
+                    relm4::spawn(async move {
+                        let output = tokio::process::Command::new("pkexec")
+                            .arg(format!("{}/e-helper", LIBEXECDIR))
+                            .output()
+                            .await;
+                        match output {
+                            Ok(output) => {
+                                if !ExitStatus::success(&output.status) {
+                                    // do nothing if user canceled entering password
+                                    return;
                                 }
-                            });
+                                sender.input(SelectModeMsg::OpenFileConfirmed);
+                            }
+                            Err(e) => {
+                                eprintln!("Failed to execute pkexec: {}", e);
+                            }
                         }
-                    },
-                    Err(e) => eprintln!("Error checking file ownership: {}", e),
+                    });
                 }
-                
             }
             SelectModeMsg::OpenFileConfirmed => {
                 self.open_dialog.emit(OpenDialogMsg::Open);
