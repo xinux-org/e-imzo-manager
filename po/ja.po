@@ -9,10 +9,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-02 18:26+0500\n"
-"PO-Revision-Date: 2025-08-02 18:34+0500\n"
+"PO-Revision-Date: 2025-08-02 18:30+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: uz\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,97 +23,93 @@ msgstr ""
 #: data/com.belmoussaoui.GtkRustTemplate.desktop.in.in:3
 #: data/com.belmoussaoui.GtkRustTemplate.metainfo.xml.in.in:8
 msgid "GTK Rust Template"
-msgstr "GTK Rust Template"
+msgstr ""
 
 #: data/com.belmoussaoui.GtkRustTemplate.desktop.in.in:4
 #: data/com.belmoussaoui.GtkRustTemplate.metainfo.xml.in.in:9
 msgid "Write a GTK + Rust application"
-msgstr "GTK + Rust ilovasini yozing"
+msgstr ""
 
 #: data/com.belmoussaoui.GtkRustTemplate.desktop.in.in:10
 msgid "Gnome;GTK;"
-msgstr "Gnome;GTK;"
+msgstr ""
 
 #: data/com.belmoussaoui.GtkRustTemplate.gschema.xml.in:6
 msgid "Window width"
-msgstr "Ilova kengligi"
+msgstr ""
 
 #: data/com.belmoussaoui.GtkRustTemplate.gschema.xml.in:10
 msgid "Window height"
-msgstr "Ilova balandligi"
+msgstr ""
 
 #: data/com.belmoussaoui.GtkRustTemplate.gschema.xml.in:14
 msgid "Window maximized state"
-msgstr "Ilovaning maksimal holati"
+msgstr ""
 
 #: data/com.belmoussaoui.GtkRustTemplate.metainfo.xml.in.in:11
 msgid ""
 "A boilerplate template for GTK + Rust. It uses Meson as a build system and "
 "has flatpak support by default."
 msgstr ""
-"GTK + Rust uchun qozon namunasi. U Meson-ni qurish tizimi sifatida ishlatadi "
-"va sukut bo'yicha flatpak-ni qo'llab-quvvatlaydi."
 
 #: data/com.belmoussaoui.GtkRustTemplate.metainfo.xml.in.in:16
 msgid "Main window"
-msgstr "Asosiy oyna"
+msgstr ""
 
 #. developer_name tag deprecated with Appstream 1.0
 #: data/com.belmoussaoui.GtkRustTemplate.metainfo.xml.in.in:41
 msgid "Bilal Elmoussaoui"
-msgstr "Bilol Elmoussaui"
+msgstr ""
 
 #: data/resources/ui/shortcuts.ui:11
 msgctxt "shortcut window"
 msgid "General"
-msgstr "Umumiy"
+msgstr ""
 
 #: data/resources/ui/shortcuts.ui:14
 msgctxt "shortcut window"
 msgid "Show Shortcuts"
-msgstr "Yorliqlarni ko'rsatish"
+msgstr ""
 
 #: data/resources/ui/shortcuts.ui:20
 msgctxt "shortcut window"
 msgid "Quit"
-msgstr "Chiqish"
+msgstr ""
 
 #: src/app.rs:53
 msgid "Awesome e-imzo"
-msgstr "e-imzo ro'yxati"
+msgstr ""
 
 #: src/app.rs:54
 msgid "Keyboard"
-msgstr "Klaviatura"
+msgstr ""
 
 #: src/app.rs:55
 msgid "About E-IMZO Manager"
-msgstr "E-IMZO Manager haqida"
+msgstr "E-IMZOマネージャーについて"
 
 #: src/pages/welcome.rs:55
 msgid ""
 "It seems you <a href=\"appstream://org.gnome.Calculator.desktop\">don't have "
 "e-imzo installed</a>."
 msgstr ""
-"Sizda <a href=\"appstream://org.gnome.Calculator.desktop\">e-imzo "
-"o‘rnatilmagan</a>ga o‘xshaydi."
 
 #: src/pages/welcome.rs:64
 msgid "Please download and relaunch the app again."
-msgstr "Iltimos, ilovani yuklab oling va qayta ishga tushiring."
+msgstr ""
 
 #: src/pages/select_mode.rs:50
 msgid "No certificates"
-msgstr "Sertifikatlar yo'q"
+msgstr ""
 
 #: src/pages/select_mode.rs:51
 msgid "Load some certificates to start using the app."
-msgstr "Ilovadan foydalanishni boshlash uchun ba'zi sertifikatlarni yuklang."
+msgstr ""
 
 #: src/pages/select_mode.rs:69
 msgid "Loaded certificates"
-msgstr "Sertifikatlarni yuklang"
+msgstr ""
 
 #: src/pages/select_mode.rs:190
 msgid "File already exists. You can use it"
-msgstr "Fayl allaqachon mavjud. Siz e-imzo foydalanishingiz mumkin"
+msgstr ""

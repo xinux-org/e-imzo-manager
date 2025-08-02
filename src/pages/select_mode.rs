@@ -66,7 +66,7 @@ impl SimpleComponent for SelectModePage {
                     gtk::Label {
                         add_css_class: relm4::css::TITLE_2,
                         #[watch]
-                        set_label: &gettext(&format!("Loaded certificates")),
+                        set_label: &gettext("Loaded certificates"),
                         set_margin_all: 1,
                     },
                     set_spacing: 20,
@@ -187,7 +187,7 @@ impl SimpleComponent for SelectModePage {
                     Ok(file_names) => {
                         if file_names.contains(&copied_file.to_string()) {
                             let _ = sender.input(SelectModeMsg::ShowMessage(
-                                "File already exists. You can use it".to_string(),
+                                gettext("File already exists. You can use it").to_string(),
                             ));
                         } else {
                             let _ = fs::copy(&path, format!("/media/DSKEYS/{}", copied_file));
