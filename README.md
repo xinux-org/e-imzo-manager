@@ -113,4 +113,8 @@ Join the GNOME and gtk-rs community!
 ## Development
 ```
 export GTK_DEBUG=interactive
+
+meson setup build
+meson compile -C build
+./build/src/gtk-rust-template
 ```
