@@ -3,6 +3,7 @@ use relm4::{
     gtk::{self, glib},
     *,
 };
+use gettextrs::gettext;
 use relm4_components::open_dialog::*;
 use std::{
     fs,
@@ -46,8 +47,8 @@ impl SimpleComponent for SelectModePage {
                     set_vexpand: true,
                     set_hexpand: true,
                     set_icon_name: Some("checkbox-checked-symbolic"),
-                    set_title: "No certificates",
-                    set_description: Some("Load some certificates to start using the app."),
+                    set_title: &gettext("No certificates"),
+                    set_description: Some(&gettext("Load some certificates to start using the app.")),
                     gtk::Button {
                         set_halign: gtk::Align::Center,
                         set_focus_on_click: true,
@@ -65,7 +66,7 @@ impl SimpleComponent for SelectModePage {
                     gtk::Label {
                         add_css_class: relm4::css::TITLE_2,
                         #[watch]
-                        set_label: &format!("Loaded certificates"),
+                        set_label: &gettext(&format!("Loaded certificates")),
                         set_margin_all: 1,
                     },
                     set_spacing: 20,
