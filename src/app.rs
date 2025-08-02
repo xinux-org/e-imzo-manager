@@ -7,6 +7,7 @@ use crate::{
     },
 };
 use eimzo::check_service_active;
+use gettextrs::gettext;
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw::{self, prelude::*},
@@ -49,9 +50,9 @@ impl SimpleComponent for App {
     menu! {
         primary_menu: {
             section! {
-                "_Awesome e-imzo" => AwesomeAction,
-                "_Keyboard" => ShortcutsAction,
-                "_About E-IMZO Manager" => AboutAction,
+                &gettext("Awesome e-imzo") => AwesomeAction,
+                &gettext("Keyboard") => ShortcutsAction,
+                &gettext("About E-IMZO Manager") => AboutAction,
             }
         }
     }
