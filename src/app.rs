@@ -50,9 +50,9 @@ impl SimpleComponent for App {
     menu! {
         primary_menu: {
             section! {
-                &gettext("Preferences") => AwesomeAction,
-                "_Keyboard" => ShortcutsAction,
-                "_About E-IMZO Manager" => AboutAction,
+                &gettext("Awesome e-imzo") => AwesomeAction,
+                &gettext("Keyboard") => ShortcutsAction,
+                &gettext("About E-IMZO Manager") => AboutAction,
             }
         }
     }
