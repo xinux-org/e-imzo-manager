@@ -117,4 +117,7 @@ export GTK_DEBUG=interactive
 meson setup build
 meson compile -C build
 ./build/src/gtk-rust-template
+
+# generate translation words from /po/POTFILES.in
+xgettext --directory=.. --files-from=POTFILES.in --from-code=UTF-8 -kgettext -o messages.pot
 ```
