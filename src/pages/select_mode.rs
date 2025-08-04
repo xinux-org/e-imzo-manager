@@ -4,11 +4,11 @@ use relm4::{
     *,
 };
 
-use crate::{
-    utils::{check_file_ownership, get_pfx_files_in_folder},
+use crate::utils::{
+    add_file_row_to_list, check_file_ownership, get_pfx_files_in_folder, i18n,
+    tasks_filename_filters,
 };
 
-use gettextrs::gettext;
 use relm4_components::open_dialog::*;
 use std::{
     fs,
@@ -51,8 +51,8 @@ impl SimpleComponent for SelectModePage {
                     set_vexpand: true,
                     set_hexpand: true,
                     set_icon_name: Some("checkbox-checked-symbolic"),
-                    set_title: &gettext("No certificates"),
-                    set_description: Some(&gettext("Load some certificates to start using the app.")),
+                    set_title: &i18n("No certificates"),
+                    set_description: Some(&i18n("Load some certificates to start using the app.")),
                     gtk::Button {
                         set_halign: gtk::Align::Center,
                         set_focus_on_click: true,
@@ -70,7 +70,7 @@ impl SimpleComponent for SelectModePage {
                     gtk::Label {
                         add_css_class: relm4::css::TITLE_2,
                         #[watch]
-                        set_label: &gettext("Loaded certificates"),
+                        set_label: &i18n("Loaded certificates"),
                         set_margin_all: 1,
                     },
                     set_spacing: 20,
@@ -191,7 +191,7 @@ impl SimpleComponent for SelectModePage {
                     Ok(file_names) => {
                         if file_names.contains(&copied_file.to_string()) {
                             let _ = sender.input(SelectModeMsg::ShowMessage(
-                                gettext("File already exists. You can use it").to_string(),
+                                i18n("File already exists. You can use it").to_string(),
                             ));
                         } else {
                             let _ = fs::copy(&path, format!("/media/DSKEYS/{}", copied_file));
@@ -251,37 +251,4 @@ impl SimpleComponent for SelectModePage {
             SelectModeMsg::None => {}
         }
     }
-}
-
-fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
-    let filename_filter = gtk::FileFilter::default();
-    filename_filter.set_name(Some("PFX (.pfx)"));
-    filename_filter.add_suffix("pfx");
-
-    vec![filename_filter]
-}
-
-fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
-    let hbox = gtk::Box::new(gtk::Orientation::Horizontal, 12);
-    hbox.set_margin_all(12);
-    hbox.set_hexpand(true);
-
-    let icon = gtk::Image::from_icon_name("folder-documents-symbolic");
-    hbox.append(&icon);
-
-    let vbox = gtk::Box::new(gtk::Orientation::Vertical, 4);
-
-    let title = gtk::Label::new(Some(file_name));
-    title.set_xalign(0.0);
-    title.add_css_class("title-3");
-
-    // let subtitle = gtk::Label::new(Some(&format!("/media/DSKEYS/{}", file_name)));
-    // subtitle.set_xalign(0.0);
-    // subtitle.add_css_class("dim-label");
-
-    vbox.append(&title);
-    // vbox.append(&subtitle);
-
-    hbox.append(&vbox);
-    file_list.append(&hbox);
 }

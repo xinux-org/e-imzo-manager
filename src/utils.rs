@@ -1,7 +1,17 @@
-use std::os::unix::fs::MetadataExt;
-use std::path::Path;
-use std::{fs, io, process::Command};
+use gettextrs::gettext;
+use relm4::{
+    gtk::{
+        self,
+        prelude::{BoxExt, WidgetExt},
+    },
+    RelmWidgetExt,
+};
+use std::{fs, io, os::unix::fs::MetadataExt, path::Path, process::Command};
 
+#[allow(dead_code)]
+pub fn i18n(format: &str) -> String {
+    gettext(format)
+}
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
@@ -51,4 +61,37 @@ pub fn check_file_ownership() -> Result<u32, Box<dyn std::error::Error>> {
     let metadata = fs::metadata(path)?;
     let uid = metadata.uid();
     return Ok(uid);
+}
+
+pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
+    let filename_filter = gtk::FileFilter::default();
+    filename_filter.set_name(Some("PFX (.pfx)"));
+    filename_filter.add_suffix("pfx");
+
+    vec![filename_filter]
+}
+
+pub fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
+    let hbox = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+    hbox.set_margin_all(12);
+    hbox.set_hexpand(true);
+
+    let icon = gtk::Image::from_icon_name("folder-documents-symbolic");
+    hbox.append(&icon);
+
+    let vbox = gtk::Box::new(gtk::Orientation::Vertical, 4);
+
+    let title = gtk::Label::new(Some(file_name));
+    title.set_xalign(0.0);
+    title.add_css_class("title-3");
+
+    // let subtitle = gtk::Label::new(Some(&format!("/media/DSKEYS/{}", file_name)));
+    // subtitle.set_xalign(0.0);
+    // subtitle.add_css_class("dim-label");
+
+    vbox.append(&title);
+    // vbox.append(&subtitle);
+
+    hbox.append(&vbox);
+    file_list.append(&hbox);
 }

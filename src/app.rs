@@ -1,3 +1,4 @@
+use crate::utils::i18n;
 use crate::{
     config::{APP_ID, PROFILE},
     modals::{about::AboutDialog, awesome::AwesomeModel},
@@ -7,7 +8,6 @@ use crate::{
     },
     utils::check_service_active,
 };
-use gettextrs::gettext;
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw::{self, prelude::*},
@@ -36,7 +36,7 @@ pub enum AppMsg {
 }
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
-relm4::new_stateless_action!(AwesomeAction, WindowActionGroup, "awesom");
+relm4::new_stateless_action!(AwesomeAction, WindowActionGroup, "awesome");
 relm4::new_stateless_action!(pub ShortcutsAction, WindowActionGroup, "show-help-overlay");
 relm4::new_stateless_action!(AboutAction, WindowActionGroup, "about");
 
@@ -50,9 +50,9 @@ impl SimpleComponent for App {
     menu! {
         primary_menu: {
             section! {
-                &gettext("Awesome e-imzo") => AwesomeAction,
-                &gettext("Keyboard") => ShortcutsAction,
-                &gettext("About E-IMZO Manager") => AboutAction,
+                &i18n("Awesome e-imzo") => AwesomeAction,
+                &i18n("Keyboard") => ShortcutsAction,
+                &i18n("About E-IMZO Manager") => AboutAction,
             }
         }
     }
