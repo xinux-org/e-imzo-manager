@@ -5,8 +5,8 @@ use crate::{
         select_mode::{SelectModeMsg, SelectModePage},
         welcome::WelcomeModel,
     },
+    utils::check_service_active,
 };
-use eimzo::check_service_active;
 use gettextrs::gettext;
 use relm4::{
     actions::{RelmAction, RelmActionGroup},

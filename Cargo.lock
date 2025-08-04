@@ -224,10 +224,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "eimzo"
-version = "0.1.0"
-
-[[package]]
 name = "equivalent"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -589,7 +585,6 @@ dependencies = [
 name = "gtk-rust-template"
 version = "0.1.0"
 dependencies = [
- "eimzo",
  "gettext-rs",
  "relm4",
  "relm4-components",

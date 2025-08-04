@@ -3,6 +3,7 @@ mod config;
 mod app;
 mod modals;
 mod pages;
+mod utils;
 
 use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
 use gettextrs::{gettext, LocaleCategory};

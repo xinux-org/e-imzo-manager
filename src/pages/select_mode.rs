@@ -3,6 +3,11 @@ use relm4::{
     gtk::{self, glib},
     *,
 };
+
+use crate::{
+    utils::{check_file_ownership, get_pfx_files_in_folder},
+};
+
 use gettextrs::gettext;
 use relm4_components::open_dialog::*;
 use std::{
@@ -12,7 +17,6 @@ use std::{
 };
 
 use crate::{app::AppMsg, config::LIBEXECDIR};
-use eimzo::{check_file_ownership, get_pfx_files_in_folder};
 
 pub struct SelectModePage {
     is_path_empty: bool,
