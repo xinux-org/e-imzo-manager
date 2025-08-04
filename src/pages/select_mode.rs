@@ -1,3 +1,4 @@
+use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
     gtk::{self, glib},
@@ -5,8 +6,7 @@ use relm4::{
 };
 
 use crate::utils::{
-    add_file_row_to_list, check_file_ownership, get_pfx_files_in_folder, i18n,
-    tasks_filename_filters,
+    add_file_row_to_list, check_file_ownership, get_pfx_files_in_folder, tasks_filename_filters,
 };
 
 use relm4_components::open_dialog::*;
@@ -51,8 +51,8 @@ impl SimpleComponent for SelectModePage {
                     set_vexpand: true,
                     set_hexpand: true,
                     set_icon_name: Some("checkbox-checked-symbolic"),
-                    set_title: &i18n("No certificates"),
-                    set_description: Some(&i18n("Load some certificates to start using the app.")),
+                    set_title: &gettext("No certificates"),
+                    set_description: Some(&gettext("Load some certificates to start using the app.")),
                     gtk::Button {
                         set_halign: gtk::Align::Center,
                         set_focus_on_click: true,
@@ -70,7 +70,7 @@ impl SimpleComponent for SelectModePage {
                     gtk::Label {
                         add_css_class: relm4::css::TITLE_2,
                         #[watch]
-                        set_label: &i18n("Loaded certificates"),
+                        set_label: &gettext("Loaded certificates"),
                         set_margin_all: 1,
                     },
                     set_spacing: 20,
@@ -191,7 +191,7 @@ impl SimpleComponent for SelectModePage {
                     Ok(file_names) => {
                         if file_names.contains(&copied_file.to_string()) {
                             let _ = sender.input(SelectModeMsg::ShowMessage(
-                                i18n("File already exists. You can use it").to_string(),
+                                gettext("File already exists. You can use it").to_string(),
                             ));
                         } else {
                             let _ = fs::copy(&path, format!("/media/DSKEYS/{}", copied_file));

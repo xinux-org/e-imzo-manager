@@ -1,5 +1,5 @@
 use crate::app::AppMsg;
-use crate::utils::i18n;
+use gettextrs::gettext;
 use relm4::{
     gtk::{
         self,
@@ -45,14 +45,14 @@ impl SimpleComponent for WelcomeModel {
             gtk::Label {
                 add_css_class: relm4::css::TITLE_2,
                 #[watch]
-                set_label: &i18n(&format!("Welcome to E-imzo")),
+                set_label: &gettext(&format!("Welcome to E-imzo")),
                 set_margin_all: 1,
             },
 
             gtk::Label {
                 add_css_class: relm4::css::TITLE_4,
                 #[watch]
-                set_markup: &i18n("It seems you <a href=\"appstream://org.gnome.Calculator.desktop\">don't have e-imzo installed</a>."),
+                set_markup: &gettext("It seems you <a href=\"appstream://org.gnome.Calculator.desktop\">don't have e-imzo installed</a>."),
                 set_use_markup: true,
                 set_margin_all: 5,
                 set_justify: gtk::Justification::Center,
@@ -61,7 +61,7 @@ impl SimpleComponent for WelcomeModel {
             gtk::Label {
                 add_css_class: relm4::css::TITLE_4,
                 #[watch]
-                set_markup: &i18n("Please download and relaunch the app again."),
+                set_markup: &gettext("Please download and relaunch the app again."),
                 set_use_markup: true,
                 set_margin_all: 5,
                 set_justify: gtk::Justification::Center,

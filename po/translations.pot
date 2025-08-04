@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-04 14:36+0500\n"
+"POT-Creation-Date: 2025-08-04 15:50+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,4 +73,42 @@ msgstr ""
 #: data/resources/ui/shortcuts.ui:20
 msgctxt "shortcut window"
 msgid "Quit"
+msgstr ""
+
+#: src/app.rs:53
+msgid "Awesome E-IMZO"
+msgstr ""
+
+#: src/app.rs:54
+msgid "Keyboard"
+msgstr ""
+
+#: src/app.rs:55
+msgid "About E-IMZO Manager"
+msgstr ""
+
+#: src/pages/welcome.rs:55
+msgid ""
+"It seems you <a href=\"appstream://org.gnome.Calculator.desktop\">don't have "
+"e-imzo installed</a>."
+msgstr ""
+
+#: src/pages/welcome.rs:64
+msgid "Please download and relaunch the app again."
+msgstr ""
+
+#: src/pages/select_mode.rs:54
+msgid "No certificates"
+msgstr ""
+
+#: src/pages/select_mode.rs:55
+msgid "Load some certificates to start using the app."
+msgstr ""
+
+#: src/pages/select_mode.rs:73
+msgid "Loaded certificates"
+msgstr ""
+
+#: src/pages/select_mode.rs:194
+msgid "File already exists. You can use it"
 msgstr ""

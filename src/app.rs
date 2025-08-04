@@ -1,4 +1,4 @@
-use crate::utils::i18n;
+use gettextrs::gettext;
 use crate::{
     config::{APP_ID, PROFILE},
     modals::{about::AboutDialog, awesome::AwesomeModel},
@@ -50,9 +50,9 @@ impl SimpleComponent for App {
     menu! {
         primary_menu: {
             section! {
-                &i18n("Awesome e") => AwesomeAction,
-                &i18n("Keyboard") => ShortcutsAction,
-                &i18n("About E-IMZO Manager") => AboutAction,
+                &gettext("Awesome E-IMZO") => AwesomeAction,
+                &gettext("Keyboard") => ShortcutsAction,
+                &gettext("About E-IMZO Manager") => AboutAction,
             }
         }
     }

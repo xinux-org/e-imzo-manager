@@ -1,4 +1,3 @@
-use gettextrs::gettext;
 use relm4::{
     gtk::{
         self,
@@ -7,11 +6,6 @@ use relm4::{
     RelmWidgetExt,
 };
 use std::{fs, io, os::unix::fs::MetadataExt, path::Path, process::Command};
-
-#[allow(dead_code)]
-pub fn i18n(format: &str) -> String {
-    gettext(format)
-}
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
