@@ -1,3 +1,18 @@
+## Development
+```
+# do not run it inside nix-shell
+nix run github:xinux-org/e-imzo
+
+export GTK_DEBUG=interactive
+
+meson setup build
+meson compile -C build
+./build/src/gtk-rust-template
+
+# generate translation words from /po/POTFILES.in
+xgettext --directory=.. --files-from=POTFILES.in --from-code=UTF-8 -kgettext -o messages.pot
+```
+
 
 # GTK + Rust + Relm4 + Meson + Flatpak = <3
 
@@ -108,16 +123,3 @@ Join the GNOME and gtk-rs community!
 
 - [Podcasts](https://gitlab.gnome.org/World/podcasts)
 - [Shortwave](https://gitlab.gnome.org/World/Shortwave)
-
-
-## Development
-```
-export GTK_DEBUG=interactive
-
-meson setup build
-meson compile -C build
-./build/src/gtk-rust-template
-
-# generate translation words from /po/POTFILES.in
-xgettext --directory=.. --files-from=POTFILES.in --from-code=UTF-8 -kgettext -o messages.pot
-```
