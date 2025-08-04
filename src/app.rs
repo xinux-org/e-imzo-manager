@@ -50,7 +50,7 @@ impl SimpleComponent for App {
     menu! {
         primary_menu: {
             section! {
-                &i18n("Awesome e-imzo") => AwesomeAction,
+                &i18n("Awesome e") => AwesomeAction,
                 &i18n("Keyboard") => ShortcutsAction,
                 &i18n("About E-IMZO Manager") => AboutAction,
             }
@@ -70,7 +70,7 @@ impl SimpleComponent for App {
             },
             #[wrap(Some)]
             set_help_overlay: shortcuts = &gtk::Builder::from_resource(
-                    "/com/belmoussaoui/GtkRustTemplate/gtk/help-overlay.ui"
+                    "/org/xinux/EIMZOManager/gtk/help-overlay.ui"
                 )
                 .object::<gtk::ShortcutsWindow>("help_overlay")
                 .unwrap() -> gtk::ShortcutsWindow {

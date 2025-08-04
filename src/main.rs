@@ -33,10 +33,9 @@ fn main() {
     gio::resources_register(&res);
 
     gtk::Window::set_default_icon_name(APP_ID);
-    
 
     let app = main_application();
-    app.set_resource_base_path(Some("/com/belmoussaoui/GtkRustTemplate/"));
+    app.set_resource_base_path(Some("org/xinux/EIMZOManager"));
 
     let mut actions = RelmActionGroup::<AppActionGroup>::new();
 
@@ -56,7 +55,7 @@ fn main() {
 
     let data = res
         .lookup_data(
-            "/com/belmoussaoui/GtkRustTemplate/style.css",
+            "/org/xinux/EIMZOManager/style.css",
             gio::ResourceLookupFlags::NONE,
         )
         .unwrap();

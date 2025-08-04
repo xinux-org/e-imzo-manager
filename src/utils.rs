@@ -63,6 +63,7 @@ pub fn check_file_ownership() -> Result<u32, Box<dyn std::error::Error>> {
     return Ok(uid);
 }
 
+// file selection filter .pfx file
 pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
     let filename_filter = gtk::FileFilter::default();
     filename_filter.set_name(Some("PFX (.pfx)"));
@@ -71,6 +72,7 @@ pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
     vec![filename_filter]
 }
 
+// list of added certificates
 pub fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
     let hbox = gtk::Box::new(gtk::Orientation::Horizontal, 12);
     hbox.set_margin_all(12);

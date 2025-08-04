@@ -3,6 +3,18 @@
 version = 4
 
 [[package]]
+name = "E-IMZO-Manager"
+version = "0.1.0"
+dependencies = [
+ "gettext-rs",
+ "relm4",
+ "relm4-components",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "addr2line"
 version = "0.24.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -579,18 +591,6 @@ dependencies = [
  "libc",
  "pango-sys",
  "system-deps",
-]
-
-[[package]]
-name = "gtk-rust-template"
-version = "0.1.0"
-dependencies = [
- "gettext-rs",
- "relm4",
- "relm4-components",
- "tokio",
- "tracing",
- "tracing-subscriber",
 ]
 
 [[package]]
