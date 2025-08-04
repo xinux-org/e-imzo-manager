@@ -1,55 +1,93 @@
-use adw::prelude::*;
-use relm4::prelude::*;
+use relm4::{
+    gtk::{
+        self,
+        prelude::{BoxExt, WidgetExt},
+    },
+    RelmWidgetExt,
+};
+use std::{fs, io, os::unix::fs::MetadataExt, path::Path, process::Command};
 
-pub async fn delete_dialog(root: &adw::Window, count: usize) -> bool {
-    let ad = adw::AlertDialog::builder()
-        .default_response("cancel")
-        .close_response("cancel")
-        .body(format!("Deleting {count} selected files!"))
-        .heading("Are you sure?")
-        .build();
+pub fn is_service_active(service_name: &str) -> Result<bool, String> {
+    let output = Command::new("systemctl")
+        .args(&["--user", "is-active", service_name])
+        .output()
+        .map_err(|e| format!("Failed to run systemctl: {}", e))?;
 
-    ad.add_responses(&[("cancel", "Cancel"), ("delete", "Delete")]);
-    ad.set_response_appearance("delete", adw::ResponseAppearance::Destructive);
+    let status = String::from_utf8_lossy(&output.stdout).trim().to_string();
 
-    match ad.choose_future(root).await.as_str() {
-        "delete" => true,
-        _ => false,
+    match status.as_str() {
+        "active" => Ok(true),
+        "inactive" | "failed" | "activating" | "deactivating" | "unknown" => Ok(false),
+        _ => Err(format!("Unexpected status: {}", status)),
     }
 }
 
-pub fn notice_dialog(root: &adw::Window, title: &str, message: &str) {
-    let ad = adw::AlertDialog::builder()
-        .default_response("ok")
-        .close_response("ok")
-        .body(message)
-        .heading(title)
-        .body_use_markup(true)
-        .build();
-    ad.add_response("ok", "OK");
-    ad.choose(root, None::<&gtk::gio::Cancellable>, |_| {});
+pub fn check_service_active(service: &str) -> bool {
+    match is_service_active(service) {
+        Ok(active) => active,
+        Err(_e) => {
+            // eprintln!("Error checking service: {}", e);
+            false
+        }
+    }
 }
 
-pub async fn entry_dialog(
-    root: &adw::Window,
-    title: &str,
-    message: &str,
-    default_text: &str,
-) -> Option<String> {
-    let entry = gtk::Entry::new();
-    entry.set_text(default_text);
-    let ad = adw::AlertDialog::builder()
-        .default_response("ok")
-        .close_response("ok")
-        .extra_child(&entry)
-        .body(message)
-        .heading(title)
-        .build();
-    ad.add_response("ok", "OK");
-    ad.add_response("cancel", "Cancel");
-    entry.grab_focus();
-    match ad.choose_future(root).await.as_str() {
-        "ok" => Some(entry.text().as_str().to_owned()),
-        _ => None,
-    }
+pub fn get_pfx_files_in_folder() -> io::Result<Vec<String>> {
+    let path = Path::new("/media/DSKEYS");
+    let entries = fs::read_dir(path)?;
+
+    let pfx_files: Vec<String> = entries
+        .filter_map(|entry| {
+            let path = entry.ok()?.path();
+            if path.is_file() && path.extension()?.to_str()? == "pfx" {
+                path.file_name()?.to_str().map(|s| s.to_owned())
+            } else {
+                None
+            }
+        })
+        .collect();
+
+    Ok(pfx_files)
+}
+
+pub fn check_file_ownership() -> Result<u32, Box<dyn std::error::Error>> {
+    let path = Path::new("/media/DSKEYS");
+    let metadata = fs::metadata(path)?;
+    let uid = metadata.uid();
+    return Ok(uid);
+}
+
+// file selection filter .pfx file
+pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
+    let filename_filter = gtk::FileFilter::default();
+    filename_filter.set_name(Some("PFX (.pfx)"));
+    filename_filter.add_suffix("pfx");
+
+    vec![filename_filter]
+}
+
+// list of added certificates
+pub fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
+    let hbox = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+    hbox.set_margin_all(12);
+    hbox.set_hexpand(true);
+
+    let icon = gtk::Image::from_icon_name("folder-documents-symbolic");
+    hbox.append(&icon);
+
+    let vbox = gtk::Box::new(gtk::Orientation::Vertical, 4);
+
+    let title = gtk::Label::new(Some(file_name));
+    title.set_xalign(0.0);
+    title.add_css_class("title-3");
+
+    // let subtitle = gtk::Label::new(Some(&format!("/media/DSKEYS/{}", file_name)));
+    // subtitle.set_xalign(0.0);
+    // subtitle.add_css_class("dim-label");
+
+    vbox.append(&title);
+    // vbox.append(&subtitle);
+
+    hbox.append(&vbox);
+    file_list.append(&hbox);
 }

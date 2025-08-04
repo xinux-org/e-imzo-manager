@@ -1,3 +1,4 @@
+use gettextrs::gettext;
 use crate::{
     config::{APP_ID, PROFILE},
     modals::{about::AboutDialog, awesome::AwesomeModel},
@@ -5,9 +6,8 @@ use crate::{
         select_mode::{SelectModeMsg, SelectModePage},
         welcome::WelcomeModel,
     },
+    utils::check_service_active,
 };
-use eimzo::check_service_active;
-use gettextrs::gettext;
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw::{self, prelude::*},
@@ -36,7 +36,7 @@ pub enum AppMsg {
 }
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
-relm4::new_stateless_action!(AwesomeAction, WindowActionGroup, "awesom");
+relm4::new_stateless_action!(AwesomeAction, WindowActionGroup, "awesome");
 relm4::new_stateless_action!(pub ShortcutsAction, WindowActionGroup, "show-help-overlay");
 relm4::new_stateless_action!(AboutAction, WindowActionGroup, "about");
 
@@ -50,7 +50,7 @@ impl SimpleComponent for App {
     menu! {
         primary_menu: {
             section! {
-                &gettext("Awesome e-imzo") => AwesomeAction,
+                &gettext("Awesome E-IMZO") => AwesomeAction,
                 &gettext("Keyboard") => ShortcutsAction,
                 &gettext("About E-IMZO Manager") => AboutAction,
             }
@@ -70,7 +70,7 @@ impl SimpleComponent for App {
             },
             #[wrap(Some)]
             set_help_overlay: shortcuts = &gtk::Builder::from_resource(
-                    "/com/belmoussaoui/GtkRustTemplate/gtk/help-overlay.ui"
+                    "/org/xinux/EIMZOManager/gtk/help-overlay.ui"
                 )
                 .object::<gtk::ShortcutsWindow>("help_overlay")
                 .unwrap() -> gtk::ShortcutsWindow {

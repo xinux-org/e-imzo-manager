@@ -1,9 +1,14 @@
+use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
     gtk::{self, glib},
     *,
 };
-use gettextrs::gettext;
+
+use crate::utils::{
+    add_file_row_to_list, check_file_ownership, get_pfx_files_in_folder, tasks_filename_filters,
+};
+
 use relm4_components::open_dialog::*;
 use std::{
     fs,
@@ -12,7 +17,6 @@ use std::{
 };
 
 use crate::{app::AppMsg, config::LIBEXECDIR};
-use eimzo::{check_file_ownership, get_pfx_files_in_folder};
 
 pub struct SelectModePage {
     is_path_empty: bool,
@@ -247,37 +251,4 @@ impl SimpleComponent for SelectModePage {
             SelectModeMsg::None => {}
         }
     }
-}
-
-fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
-    let filename_filter = gtk::FileFilter::default();
-    filename_filter.set_name(Some("PFX (.pfx)"));
-    filename_filter.add_suffix("pfx");
-
-    vec![filename_filter]
-}
-
-fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
-    let hbox = gtk::Box::new(gtk::Orientation::Horizontal, 12);
-    hbox.set_margin_all(12);
-    hbox.set_hexpand(true);
-
-    let icon = gtk::Image::from_icon_name("folder-documents-symbolic");
-    hbox.append(&icon);
-
-    let vbox = gtk::Box::new(gtk::Orientation::Vertical, 4);
-
-    let title = gtk::Label::new(Some(file_name));
-    title.set_xalign(0.0);
-    title.add_css_class("title-3");
-
-    // let subtitle = gtk::Label::new(Some(&format!("/media/DSKEYS/{}", file_name)));
-    // subtitle.set_xalign(0.0);
-    // subtitle.add_css_class("dim-label");
-
-    vbox.append(&title);
-    // vbox.append(&subtitle);
-
-    hbox.append(&vbox);
-    file_list.append(&hbox);
 }
