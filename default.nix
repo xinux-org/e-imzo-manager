@@ -71,6 +71,11 @@ in
       vte-gtk4
     ];
 
+    postInstall = ''
+      ls -la ./src
+      cat ./src/config.rs
+    '';
+
     # Compiler LD variables
     NIX_LDFLAGS = "-L${(getLibFolder pkgs.libiconv)}";
     LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [

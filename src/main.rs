@@ -22,20 +22,22 @@ relm4::new_stateless_action!(QuitAction, AppActionGroup, "quit");
 fn main() {
     gtk::init().unwrap();
     tracing_subscriber::fmt()
-        .with_span_events(tracing_subscriber::fmt::format::FmtSpan::FULL)
-        .with_max_level(tracing::Level::INFO)
+        // .with_span_events(tracing_subscriber::fmt::format::FmtSpan::FULL)
+        // .with_max_level(tracing::Level::INFO)
         .init();
 
     // setup gettext
     setup_gettext();
 
+    glib::set_application_name("E-IMZO Manager");
+    gtk::Window::set_default_icon_name(APP_ID);
+    
     let res = gio::Resource::load(RESOURCES_FILE).expect("Could not load gresource file");
     gio::resources_register(&res);
 
-    gtk::Window::set_default_icon_name(APP_ID);
 
     let app = main_application();
-    app.set_resource_base_path(Some("org/xinux/EIMZOManager"));
+    app.set_resource_base_path(Some("/org/xinux/EIMZOManager/"));
 
     let mut actions = RelmActionGroup::<AppActionGroup>::new();
 
@@ -49,7 +51,6 @@ fn main() {
     actions.register_for_main_application();
 
     app.set_accelerators_for_action::<QuitAction>(&["<Control>q"]);
-    // app.set_accelerators_for_action::<AwesomeAction>(&["<Control>q"]);
 
     let app = RelmApp::from_app(app);
 
