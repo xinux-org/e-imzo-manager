@@ -36,7 +36,7 @@
     },
     "modules" : [
         {
-            "name" : "e-imzo-manager",
+            "name" : "E-IMZO-Manager",
             "buildsystem" : "meson",
             "run-tests" : true,
             "config-opts" : [
