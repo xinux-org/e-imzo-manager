@@ -13,13 +13,13 @@
         "--socket=fallback-x11",
         "--socket=wayland",
         "--device=dri",
-        "--env=RUST_LOG=gtk_rust_template=debug",
+        "--env=RUST_LOG=e-imzo-manager=debug",
         "--env=G_MESSAGES_DEBUG=none",
         "--env=RUST_BACKTRACE=1"
     ],
     "build-options" : {
         "append-path" : "/usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/llvm18/bin",
-        "build-args" : [
+        "build-args": [
             "--share=network"
         ],
         "env" : {
