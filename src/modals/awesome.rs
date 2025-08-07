@@ -2,6 +2,7 @@ use relm4::adw::prelude::*;
 use relm4::gtk;
 use relm4::prelude::*;
 
+
 #[derive(Debug, Clone, Copy)]
 pub struct AwesomeModel;
 
@@ -26,20 +27,37 @@ impl SimpleComponent for AwesomeModel {
                 set_content = &gtk::Box {
                     set_orientation: gtk::Orientation::Vertical,
                     set_margin_all: 6,
-
-                    gtk::Label {
-                        set_markup: "1. <a href=\"https://clients.ahost.uz/login\">ahost.uz</a>",
-                        set_use_markup: true,
-                        set_margin_all: 5,
-                        set_justify: gtk::Justification::Left,
+                    set_spacing: 5,
+                    
+                    gtk::LinkButton {
+                        set_label: "ahost.uz",
+                        set_uri: "https://clients.ahost.uz/login",
                     },
-
-                    gtk::Label {
-                        set_markup: "2. <a href=\"https://id.egov.uz/oz\">id.egov.uz</a>",
-                        set_use_markup: true,
-                        set_margin_all: 5,
-                        set_justify: gtk::Justification::Left,
-                    }
+                    
+                    gtk::LinkButton {
+                        set_label: "id.egov.uz",
+                        set_uri: "https://id.egov.uz/oz",
+                    },
+                    
+                    gtk::LinkButton {
+                        set_label: "didox.uz",
+                        set_uri: "https://didox.uz/login_with_signature",
+                    },
+                    
+                    gtk::LinkButton {
+                        set_label: "birdarcha.uz",
+                        set_uri: "https://new.birdarcha.uz/login",
+                    },
+                    
+                    gtk::LinkButton {
+                        set_label: "e-invoice.uz",
+                        set_uri: "https://e-invoice.uz/register/",
+                    },
+                    
+                    gtk::LinkButton {
+                        set_label: "my.mehnat.uz",
+                        set_uri: "https://my.mehnat.uz/login#",
+                    },
                 }
             }
         }

@@ -71,6 +71,15 @@ in
       vte-gtk4
     ];
 
+    postInstall = ''
+      export LC_ALL=en_US.UTF-8
+    '';
+  #    shellHook = ''
+  #   export LC_ALL=en_US.UTF-8
+  #   export LANG=en_US.UTF-8
+  #   export LOCALE_ARCHIVE=${pkgs.glibcLocales}/lib/locale/locale-archive
+  # '';
+
     # Compiler LD variables
     NIX_LDFLAGS = "-L${(getLibFolder pkgs.libiconv)}";
     LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [

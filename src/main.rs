@@ -29,13 +29,15 @@ fn main() {
     // setup gettext
     setup_gettext();
 
+    glib::set_application_name("E-IMZO Manager");
+    gtk::Window::set_default_icon_name(APP_ID);
+    
     let res = gio::Resource::load(RESOURCES_FILE).expect("Could not load gresource file");
     gio::resources_register(&res);
 
-    gtk::Window::set_default_icon_name(APP_ID);
 
     let app = main_application();
-    app.set_resource_base_path(Some("org/xinux/EIMZOManager"));
+    app.set_resource_base_path(Some("/org/xinux/EIMZOManager/"));
 
     let mut actions = RelmActionGroup::<AppActionGroup>::new();
 
@@ -49,7 +51,6 @@ fn main() {
     actions.register_for_main_application();
 
     app.set_accelerators_for_action::<QuitAction>(&["<Control>q"]);
-    // app.set_accelerators_for_action::<AwesomeAction>(&["<Control>q"]);
 
     let app = RelmApp::from_app(app);
 

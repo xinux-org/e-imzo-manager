@@ -61,8 +61,8 @@ impl SimpleComponent for App {
         main_window = adw::ApplicationWindow::new(&main_application()) {
             set_visible: true,
             // width and height below
-            set_size_request: (400, 600),
-            set_default_size: (400, 600),
+            set_size_request: (500, 600),
+            set_default_size: (500, 600),
 
             connect_close_request[sender] => move |_| {
                 sender.input(AppMsg::Quit);
