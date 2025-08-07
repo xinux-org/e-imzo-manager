@@ -72,9 +72,13 @@ in
     ];
 
     postInstall = ''
-      ls -la ./src
-      cat ./src/config.rs
+      export LC_ALL=en_US.UTF-8
     '';
+  #    shellHook = ''
+  #   export LC_ALL=en_US.UTF-8
+  #   export LANG=en_US.UTF-8
+  #   export LOCALE_ARCHIVE=${pkgs.glibcLocales}/lib/locale/locale-archive
+  # '';
 
     # Compiler LD variables
     NIX_LDFLAGS = "-L${(getLibFolder pkgs.libiconv)}";

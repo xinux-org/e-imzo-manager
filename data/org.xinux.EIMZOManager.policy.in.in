@@ -4,7 +4,7 @@
 <policyconfig>
     <vendor>Xinux Developers</vendor>
     <vendor_url>https://github.com/xinux-org</vendor_url>
-    <action id="org.xinux.NixosConfEditor">
+    <action id="org.xinux.EIMZOManager">
         <description>Give NixOS Configuration Editor root access</description>
         <message>Authentication is required modify the NixOS system configuration</message>
         <defaults>

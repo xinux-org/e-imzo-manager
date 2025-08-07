@@ -7,13 +7,13 @@
         "org.freedesktop.Sdk.Extension.rust-stable",
         "org.freedesktop.Sdk.Extension.llvm18"
     ],
-    "command" : "e-imzo-manager",
+    "command" : "E-IMZO-Manager",
     "finish-args" : [
         "--share=ipc",
         "--socket=fallback-x11",
         "--socket=wayland",
         "--device=dri",
-        "--env=RUST_LOG=e-imzo-manager=debug",
+        "--env=RUST_LOG=E-IMZO-Manager=debug",
         "--env=G_MESSAGES_DEBUG=none",
         "--env=RUST_BACKTRACE=1"
     ],
