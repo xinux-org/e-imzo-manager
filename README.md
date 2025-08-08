@@ -1,3 +1,69 @@
+# Flatpak
+Instructions regarding Flatpak build and deployment.
+
+## Dependencies
+- `org.gnome.Platform`
+- `org.freedesktop.Sdk.Extension.rust-stable`
+
+> The current version of `org.gnome.Platform` is 45.
+
+Install the following dependencies:
+```
+$ flatpak install --runtime org.gnome.Platform org.freedesktop.Sdk.Extension.rust-stable
+```
+
+## Build
+
+#### Development
+To build the development version of the app for Flatpak:
+```bash
+$ flatpak-builder flatpak_build ./build-aux/org.xinux.EIMZOManager.Devel.json
+```
+
+#### Release
+To build the release version of the app for Flatpak:
+```bash
+$ flatpak-builder flatpak_build ./build-aux/org.xinux.EIMZOManager.json
+```
+
+## Test the build
+To verify that the build was successful, run the following:
+
+#### Development
+```bash
+$ flatpak-builder --user --install --force-clean flatpak_build ./build-aux/org.xinux.EIMZOManager.Devel.json
+$ flatpak run org.xinux.EIMZOManager.Devel.json
+```
+
+#### Release
+```bash
+$ flatpak-builder --user --install --force-clean flatpak_build ./build-aux/org.xinux.EIMZOManager.json
+$ flatpak run org.xinux.EIMZOManager.json
+```
+
+## Release to Flathub
+To make a release to Flathub, run [`flatpak.sh`](scripts/flatpak.sh), take the files and upload them to the new release. 
+
+Once they are uploaded, edit [`org.xinux.EIMZOManager.json`](https://github.com/flathub/dev.edfloreshz.Done/blob/master/dev.edfloreshz.Done.json) and replace the `url` of the `source` with the new link of the `tar.xz` file uploaded to the release.
+
+Remember to replace `hash` with a newly generated hash for the `tar.xz` file:
+
+```
+$ sha256sum done-release.tar.xz
+```
+
+```json
+"sources" : [
+    {
+        "type" : "archive",
+        "url" : "https://github.com/done-devs/done/releases/download/version/done-release.tar.xz", // New download url
+        "sha256" : "dcb976ea39287790728399151a9c30926e242a01fa9c68f13ff1d95b48fb2b1f" // New hash
+    }
+]
+```
+
+Then, push changes to https://github.com/flathub/dev.edfloreshz.Done.
+
 ## Development
 ```
 # do not run it inside nix-shell
@@ -24,53 +90,6 @@ A boilerplate template to get started with GTK, Rust, Meson, Flatpak made for GN
 
 ![Main window](data/resources/screenshots/screenshot1.png "Main window")
 </div>
-
-## What does it contains?
-
-- A simple window with a headerbar
-- Bunch of useful files that you SHOULD ship with your application on Linux:
-  - Metainfo: describe your application for the different application stores out there;
-  - Desktop: the application launcher;
-  - Icons: This repo contains three icons, a normal, a nightly & monochromatic icon (symbolic) per the GNOME HIG, exported using [App Icon Preview](https://flathub.org/apps/details/org.gnome.design.AppIconPreview).
-- Flatpak Manifest for nightly builds
-- Dual installation support
-- Uses Meson for building the application
-- Bundles the UI files & the CSS using gresources
-- A pre-commit hook to run rustfmt on your code
-- Tests to validate your Metainfo, Schemas & Desktop files
-- Gsettings to store the window state, more settings could be added
-- Gitlab CI to produce flatpak nightlies
-- i18n support
-
-## How to init a project ?
-
-The template ships a simple python script to init a project easily. It asks you a few questions and replaces & renames all the necessary files.
-
-The script requires having `git` installed on your system.
-
-If you clone this repository, you can run it with:
-
-```shell
-python3 create-project.py
-```
-
-If you don't want to clone the repository, you can run it with:
-
-```shell
-python3 -c "$(wget -q -O - https://raw.githubusercontent.com/Relm4/relm4-template/main/create-project.py)" --online
-```
-
-```shell
-➜ python3 create-project.py
-Welcome to GTK Rust Template
-Name: Contrast
-Project Name: contrast
-Application ID (e.g. org.domain.MyAwesomeApp, see: https://developer.gnome.org/ChooseApplicationID/): org.gnome.design.Contrast
-Author: Bilal Elmoussaoui
-Email: bil.elmoussaoui@gmail.com
-```
-
-A new directory named `contrast` containing the generated project
 
 ## Building the project
 
