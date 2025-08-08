@@ -41,7 +41,7 @@
             "run-tests" : true,
             "buildsystem" : "meson",
             "sources" : [
-                {
+                {asdasd
                     "type" : "dir",
                     "path" : "../"
                 }
