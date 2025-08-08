@@ -38,6 +38,7 @@ in
 
     # Compile time dependencies
     nativeBuildInputs = with pkgs; [
+      appstream
       appstream-glib
       cargo
       rust-analyzer

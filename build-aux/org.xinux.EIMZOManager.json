@@ -1,39 +1,28 @@
 {
-    "id": "org.xinux.EIMZOManager",
-    "runtime": "org.gnome.Platform",
-    "runtime-version": "47",
-    "sdk": "org.gnome.Sdk",
-    "sdk-extensions": [
-        "org.freedesktop.Sdk.Extension.rust-stable",
-        "org.freedesktop.Sdk.Extension.llvm18"
+    "id" : "org.xinux.EIMZOManager",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "47",
+    "sdk" : "org.gnome.Sdk",
+    "sdk-extensions" : [
+        "org.freedesktop.Sdk.Extension.rust-stable"
     ],
     "command": "E-IMZO-Manager",
-    "finish-args": [
+    "finish-args" : [
+        "--share=network",
         "--share=ipc",
         "--socket=fallback-x11",
         "--socket=wayland",
         "--device=dri",
-        "--env=RUST_LOG=gtk_rust_template=debug",
-        "--env=G_MESSAGES_DEBUG=none",
-        "--env=RUST_BACKTRACE=1"
+        "--talk-name=org.freedesktop.secrets"
     ],
-    "build-options": {
-        "append-path": "/usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/llvm18/bin",
+    "build-options" : {
+        "append-path" : "/usr/lib/sdk/rust-stable/bin",
         "build-args": [
             "--share=network"
         ],
-        "env": {
-            "CARGO_REGISTRIES_CRATES_IO_PROTOCOL": "sparse",
-            "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER": "clang",
-            "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=-fuse-ld=/usr/lib/sdk/rust-stable/bin/mold",
-            "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
-            "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=-fuse-ld=/usr/lib/sdk/rust-stable/bin/mold",
+        "env" : {
             "CARGO_HOME": "/run/build/E-IMZO-Manager/cargo"
-        },
-        "test-args": [
-            "--socket=x11",
-            "--share=network"
-        ]
+        }
     },
     "cleanup": [
         "/include",
@@ -48,16 +37,15 @@
     ],
     "modules": [
         {
-            "name": "E-IMZO-Manager",
-            "buildsystem": "meson",
-            "builddir": true,
-            "sources": [
+            "name" : "E-IMZO-Manager",
+            "run-tests" : true,
+            "buildsystem" : "meson",
+            "sources" : [
                 {
-                    "type": "dir",
-                    "path": "../"
+                    "type" : "dir",
+                    "path" : "../"
                 }
             ]
         }
     ]
 }
-
