@@ -2,8 +2,7 @@ name: Release test
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main, bahrom04 ]
 
 jobs:
   flatpak:
