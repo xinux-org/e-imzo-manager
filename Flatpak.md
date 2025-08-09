@@ -2,23 +2,19 @@
 Instructions regarding Flatpak build and deployment.
 
 ## Dependencies
+- `flatpak`
+- `flatpak-builder`
 - `org.gnome.Platform`
 - `org.freedesktop.Sdk.Extension.rust-stable`
 
-> The current version of `org.gnome.Platform` is 45.
+> The current version of `org.gnome.Platform` is 47.
 
 Install the following dependencies:
-```
-$ flatpak install --runtime org.gnome.Platform org.freedesktop.Sdk.Extension.rust-stable
-```
-
-## Building the project
-
-Make sure you have `flatpak` and `flatpak-builder` installed. Then run the commands below. Replace `<application_id>` with the value you entered during project creation. Please note that these commands are just for demonstration purposes. Normally this would be handled by your IDE, such as GNOME Builder or VS Code with the Flatpak extension.
-
 ```shell
-flatpak install --user org.gnome.Sdk//47 org.gnome.Platform//47  org.freedesktop.Sdk.Extension.rust-stable//23.08 org.freedesktop.Sdk.Extension.llvm18
-flatpak-builder --user flatpak_app build-aux/<application_id>.Devel.json
+flatpak install --runtime org.gnome.Platform org.freedesktop.Sdk.Extension.rust-stable
+
+# write --system instead if you want for all system users
+flatpak install --user org.gnome.Sdk//47 org.gnome.Platform//47
 ```
 
 #### Development
@@ -30,7 +26,7 @@ $ flatpak-builder flatpak_build ./build-aux/org.xinux.EIMZOManager.Devel.json
 #### Release
 To build the release version of the app for Flatpak:
 ```bash
-$ flatpak-builder flatpak_build ./build-aux/org.xinux.EIMZOManager.json
+$ flatpak-builder flatpak_build ./build-aux/org.xinux.EIMZOManager.json --force-clean
 ```
 
 ## Test the build
@@ -63,10 +59,10 @@ $ sha256sum done-release.tar.xz
 "sources" : [
     {
         "type" : "archive",
-        "url" : "https://github.com/done-devs/done/releases/download/version/done-release.tar.xz", // New download url
+        "url" : "https://github.com/xinux-org/e-imzo/releases/download/version/done-release.tar.xz", // New download url
         "sha256" : "dcb976ea39287790728399151a9c30926e242a01fa9c68f13ff1d95b48fb2b1f" // New hash
     }
 ]
 ```
 
-Then, push changes to https://github.com/flathub/dev.edfloreshz.Done.
+Then, push changes to https://github.com/flathub/org.xinux.EIMZOManager.
