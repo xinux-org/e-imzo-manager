@@ -3,15 +3,11 @@ name = "E-IMZO-Manager"
 version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
-description = "#description#"
-homepage = "#website#"
-repository = "#repository#"
-authors = ["#author#"]
-publish = false
-
-[features]
-# default = ["development"]
-development = []
+description = "E-IMZO for uzbek state web key signing on Linux"
+homepage = "https://github.com/xinux-org"
+repository = "https://github.com/xinux-org/e-imzo"
+authors = ["Xinux Developers <support@floss.uz>"]
+readme = "README.md"
 
 [profile.release]
 lto = true
@@ -21,9 +17,8 @@ gettext-rs = { version = "0.7", features = ["gettext-system"] }
 relm4 = { version = "0.9.1", features = ["libadwaita", "gnome_47"] }
 relm4-components = "0.9.1"
 tracing = "0.1.41"
-tracing-subscriber = "0.3"
-tokio = { version = "1.47.0", features = ["full"]}
-
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt"]}
+tokio = { version = "1.47.1", default-features = false, features = ["process"]}
 
 [workspace]
 members = [".", "e-helper"]

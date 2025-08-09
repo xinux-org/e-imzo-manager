@@ -10,7 +10,7 @@
 ## Installation
 | Platform   | Command                                 |
 |------------|-----------------------------------------|
-| Flathub    | <a href="https://flathub.org/apps/details/dev.edfloreshz.Done"><img src="https://flathub.org/assets/badges/flathub-badge-en.png" width="150"/></a> |
+| Flathub    | <a href="https://flathub.org/apps/details/org.xinux.EIMZOManager"><img src="https://flathub.org/assets/badges/flathub-badge-en.png" width="150"/></a> |
 
 ## Development
 ```

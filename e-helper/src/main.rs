@@ -26,7 +26,7 @@ enum SubCommands {
 
 fn main() {
     if users::get_effective_uid() != 0 {
-        eprintln!("nixos-conf-editor-helper must be run as root");
+        eprintln!("EIMZOManager must be run as root");
         std::process::exit(1);
     }
 
