@@ -11,7 +11,7 @@
 /vendor
 /.vscode
 .flatpak-builder/
-
+flatpak_app
 .direnv
 result
 *.swp
