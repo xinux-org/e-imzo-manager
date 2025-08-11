@@ -13,7 +13,9 @@
         "--socket=fallback-x11",
         "--socket=wayland",
         "--device=dri",
-        "--talk-name=org.freedesktop.secrets"
+        "--talk-name=org.freedesktop.secrets",
+        "--talk-name=org.freedesktop.Flatpak",
+        "--filesystem=/media"
     ],
     "build-options" : {
         "append-path" : "/usr/lib/sdk/rust-stable/bin",
@@ -42,8 +44,9 @@
             "buildsystem" : "meson",
             "sources" : [
                 {
-                    "type" : "dir",
-                    "path" : "../"
+                    "type": "git",
+                    "branch": "main",
+                    "url": "https://github.com/xinux-org/e-imzo"
                 }
             ]
         }

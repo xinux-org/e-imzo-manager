@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Xinux Developers 2025 <support@floss.uz> -->
 <component type="desktop-application">
-  <id>org.xinux.EIMZOManager</id>
+  <id>@app-id@</id>
   <metadata_license>CC-BY-4.0</metadata_license>
   <name>E-IMZO Manager</name>
   <summary>Improving E-IMZO support and compatibility for Linux</summary>
@@ -35,5 +35,5 @@
   <update_contact>support@floss.uz</update_contact>
   <translation type="gettext">@gettext-package@</translation>
 
-  <launchable type="desktop-id">org.xinux.EIMZOManager.desktop</launchable>
+  <launchable type="desktop-id">@app-id@.desktop</launchable>
 </component>

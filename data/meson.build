@@ -54,6 +54,23 @@ if appstream_util.found()
   )
 endif
 
+# Policy file
+dataconf = configuration_data()
+dataconf.set('pkglibexecdir',
+  libexecdir
+)
+i18n.merge_file(
+  input : configure_file(
+    configuration: dataconf,
+    input : '@0@.policy.in.in'.format(base_id),
+    output: '@BASENAME@'
+  ),
+  output: '@0@.policy'.format(base_id),
+  po_dir: podir,
+  install: true,
+  install_dir: datadir / 'polkit-1' / 'actions'
+)
+
 # GSchema
 gschema_conf = configuration_data()
 gschema_conf.set('app-id', application_id)
