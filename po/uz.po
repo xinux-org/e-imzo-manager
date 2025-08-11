@@ -21,7 +21,7 @@ msgstr ""
 #: data/org.xinux.EIMZOManager.desktop.in.in:3
 #: data/org.xinux.EIMZOManager.metainfo.xml.in.in:7
 msgid "E-IMZO Manager"
-msgstr "E-IMZO Manager haqida"
+msgstr "E-IMZO Manager"
 
 #: data/org.xinux.EIMZOManager.desktop.in.in:4
 msgid "Nix effort for E-IMZO service."
