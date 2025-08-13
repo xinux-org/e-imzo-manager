@@ -1,12 +1,12 @@
 {
-    "id" : "org.xinux.EIMZOManager.Devel",
+    "id" : "uz.xinux.EIMZOManager",
     "runtime" : "org.gnome.Platform",
     "runtime-version" : "47",
     "sdk" : "org.gnome.Sdk",
     "sdk-extensions" : [
         "org.freedesktop.Sdk.Extension.rust-stable"
     ],
-    "command" : "E-IMZO-Manager",
+    "command": "E-IMZO-Manager",
     "finish-args" : [
         "--share=network",
         "--share=ipc",
@@ -42,13 +42,11 @@
             "name" : "E-IMZO-Manager",
             "run-tests" : true,
             "buildsystem" : "meson",
-            "config-opts" : [
-                "-Dprofile=development"
-            ],
             "sources" : [
                 {
-                    "type" : "dir",
-                    "path" : "../"
+                    "type": "git",
+                    "branch": "main",
+                    "url": "https://github.com/xinux-org/e-imzo"
                 }
             ]
         }

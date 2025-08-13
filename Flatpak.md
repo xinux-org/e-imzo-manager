@@ -20,13 +20,13 @@ flatpak install --user org.gnome.Sdk//47 org.gnome.Platform//47
 #### Development
 To build the development version of the app for Flatpak:
 ```bash
-$ flatpak-builder flatpak_build ./build-aux/org.xinux.EIMZOManager.Devel.json
+$ flatpak-builder flatpak_build ./build-aux/uz.xinux.EIMZOManager.Devel.json
 ```
 
 #### Release
 To build the release version of the app for Flatpak:
 ```bash
-$ flatpak-builder flatpak_build ./build-aux/org.xinux.EIMZOManager.json --force-clean
+$ flatpak-builder flatpak_build ./build-aux/uz.xinux.EIMZOManager.json --force-clean
 ```
 
 ## Test the build
@@ -34,20 +34,20 @@ To verify that the build was successful, run the following:
 
 #### Development
 ```bash
-$ flatpak-builder --user --install --force-clean flatpak_build ./build-aux/org.xinux.EIMZOManager.Devel.json
-$ flatpak run org.xinux.EIMZOManager.Devel.json
+$ flatpak-builder --user --install --force-clean flatpak_build ./build-aux/uz.xinux.EIMZOManager.Devel.json
+$ flatpak run uz.xinux.EIMZOManager.Devel.json
 ```
 
 #### Release
 ```bash
-$ flatpak-builder --user --install --force-clean flatpak_build ./build-aux/org.xinux.EIMZOManager.json
-$ flatpak run org.xinux.EIMZOManager.json
+$ flatpak-builder --user --install --force-clean flatpak_build ./build-aux/uz.xinux.EIMZOManager.json
+$ flatpak run uz.xinux.EIMZOManager.json
 ```
 
 ## Release to Flathub
 To make a release to Flathub, run [`flatpak.sh`](scripts/flatpak.sh), take the files and upload them to the new release. 
 
-Once they are uploaded, edit [`org.xinux.EIMZOManager.json`](https://github.com/flathub/dev.edfloreshz.Done/blob/master/dev.edfloreshz.Done.json) and replace the `url` of the `source` with the new link of the `tar.xz` file uploaded to the release.
+Once they are uploaded, edit [`uz.xinux.EIMZOManager.json`](https://github.com/flathub/dev.edfloreshz.Done/blob/master/dev.edfloreshz.Done.json) and replace the `url` of the `source` with the new link of the `tar.xz` file uploaded to the release.
 
 Remember to replace `hash` with a newly generated hash for the `tar.xz` file:
 
@@ -65,4 +65,4 @@ $ sha256sum done-release.tar.xz
 ]
 ```
 
-Then, push changes to https://github.com/flathub/org.xinux.EIMZOManager.
+Then, push changes to https://github.com/flathub/uz.xinux.EIMZOManager.

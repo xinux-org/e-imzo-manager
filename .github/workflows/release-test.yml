@@ -16,5 +16,5 @@ jobs:
       - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
           bundle: EIMZOManager.flatpak
-          manifest-path: ./build-aux/org.xinux.EIMZOManager.json
+          manifest-path: ./build-aux/uz.xinux.EIMZOManager.json
           cache-key: flatpak-builder-${{ github.sha }}

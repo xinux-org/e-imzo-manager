@@ -1,6 +1,6 @@
-data/org.xinux.EIMZOManager.desktop.in.in
-data/org.xinux.EIMZOManager.gschema.xml.in
-data/org.xinux.EIMZOManager.metainfo.xml.in.in
+data/uz.xinux.EIMZOManager.desktop.in.in
+data/uz.xinux.EIMZOManager.gschema.xml.in
+data/uz.xinux.EIMZOManager.metainfo.xml.in.in
 data/resources/ui/shortcuts.ui
 src/app.rs
 src/main.rs
