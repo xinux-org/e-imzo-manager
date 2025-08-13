@@ -20,7 +20,7 @@ flatpak install --user org.gnome.Sdk//47 org.gnome.Platform//47
 #### Development
 To build the development version of the app for Flatpak:
 ```bash
-$ flatpak-builder flatpak_build ./build-aux/uz.xinux.EIMZOManager.Devel.json
+$ flatpak-builder flatpak_build ./build-aux/uz.xinux.EIMZOManager.Devel.json --force-clean
 ```
 
 #### Release

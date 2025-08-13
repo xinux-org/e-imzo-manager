@@ -37,7 +37,7 @@ fn main() {
 
 
     let app = main_application();
-    app.set_resource_base_path(Some("/org/xinux/EIMZOManager/"));
+    app.set_resource_base_path(Some("/uz/xinux/EIMZOManager/"));
 
     let mut actions = RelmActionGroup::<AppActionGroup>::new();
 
@@ -56,7 +56,7 @@ fn main() {
 
     let data = res
         .lookup_data(
-            "/org/xinux/EIMZOManager/style.css",
+            "/uz/xinux/EIMZOManager/style.css",
             gio::ResourceLookupFlags::NONE,
         )
         .unwrap();

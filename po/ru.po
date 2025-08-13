@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-09 16:59+0500\n"
-"PO-Revision-Date: 2025-08-09 17:17+0500\n"
+"PO-Revision-Date: 2025-08-13 10:40+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -18,36 +18,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.5\n"
 
-#: data/org.xinux.EIMZOManager.desktop.in.in:3
-#: data/org.xinux.EIMZOManager.metainfo.xml.in.in:7
+#: data/uz.xinux.EIMZOManager.desktop.in.in:3
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:7
 msgid "E-IMZO Manager"
 msgstr "О менеджере E-IMZO"
 
-#: data/org.xinux.EIMZOManager.desktop.in.in:4
+#: data/uz.xinux.EIMZOManager.desktop.in.in:4
 msgid "Nix effort for E-IMZO service."
 msgstr "Усилия в Linux для сервиса E-IMZO."
 
-#: data/org.xinux.EIMZOManager.desktop.in.in:9
+#: data/uz.xinux.EIMZOManager.desktop.in.in:9
 msgid "Gnome;GTK;"
 msgstr "Gnome;GTK;"
 
-#: data/org.xinux.EIMZOManager.gschema.xml.in:6
+#: data/uz.xinux.EIMZOManager.gschema.xml.in:6
 msgid "Window width"
 msgstr "Ширина окна"
 
-#: data/org.xinux.EIMZOManager.gschema.xml.in:10
+#: data/uz.xinux.EIMZOManager.gschema.xml.in:10
 msgid "Window height"
 msgstr "Высота окна"
 
-#: data/org.xinux.EIMZOManager.gschema.xml.in:14
+#: data/uz.xinux.EIMZOManager.gschema.xml.in:14
 msgid "Window maximized state"
 msgstr "Состояние окна развернуто"
 
-#: data/org.xinux.EIMZOManager.metainfo.xml.in.in:8
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:8
 msgid "Improving E-IMZO support and compatibility for Linux"
 msgstr "Улучшение поддержки и совместимости E-IMZO для Linux"
 
-#: data/org.xinux.EIMZOManager.metainfo.xml.in.in:10
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:10
 msgid ""
 "An electronic digital signature certificate is very important for verifying "
 "the time a document was signed and its legal status."
@@ -55,7 +55,7 @@ msgstr ""
 "Сертификат электронной цифровой подписи очень важен для проверки времени "
 "подписания документа и его юридического статуса."
 
-#: data/org.xinux.EIMZOManager.metainfo.xml.in.in:18
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:18
 msgid "Main window"
 msgstr "Главное окно"
 
