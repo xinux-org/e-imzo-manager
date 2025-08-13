@@ -1,7 +1,7 @@
 {
     "id" : "uz.xinux.EIMZOManager",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "47",
+    "runtime-version" : "48",
     "sdk" : "org.gnome.Sdk",
     "sdk-extensions" : [
         "org.freedesktop.Sdk.Extension.rust-stable"
@@ -14,14 +14,10 @@
         "--socket=wayland",
         "--device=dri",
         "--talk-name=org.freedesktop.secrets",
-        "--talk-name=org.freedesktop.Flatpak",
         "--filesystem=/media"
     ],
     "build-options" : {
         "append-path" : "/usr/lib/sdk/rust-stable/bin",
-        "build-args": [
-            "--share=network"
-        ],
         "env" : {
             "CARGO_HOME": "/run/build/E-IMZO-Manager/cargo"
         }

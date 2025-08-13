@@ -8,9 +8,7 @@ use relm4::{
 use std::{fs, io, os::unix::fs::MetadataExt, path::Path, process::Command};
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
-    let output = Command::new("flatpak-spawn")
-        .arg("--host")
-        .arg("systemctl")
+    let output = Command::new("systemctl")
         .args(&["--user", "is-active", service_name])
         .output()
         .map_err(|e| format!("Failed to run systemctl: {}", e))?;
