@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 16:59+0500\n"
+"POT-Creation-Date: 2025-08-13 10:42+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: data/uz.xinux.EIMZOManager.desktop.in.in:3
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:7
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:6
 msgid "E-IMZO Manager"
 msgstr ""
 
@@ -42,17 +42,17 @@ msgstr ""
 msgid "Window maximized state"
 msgstr ""
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:8
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:7
 msgid "Improving E-IMZO support and compatibility for Linux"
 msgstr ""
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:10
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:9
 msgid ""
 "An electronic digital signature certificate is very important for verifying "
 "the time a document was signed and its legal status."
 msgstr ""
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:18
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:17
 msgid "Main window"
 msgstr ""
 
@@ -105,6 +105,6 @@ msgstr ""
 msgid "Loaded certificates"
 msgstr ""
 
-#: src/pages/select_mode.rs:194
+#: src/pages/select_mode.rs:196
 msgid "File already exists. You can use it"
 msgstr ""

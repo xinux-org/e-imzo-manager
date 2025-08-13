@@ -6,7 +6,7 @@ license = "MIT OR Apache-2.0"
 description = "E-IMZO for uzbek state web key signing on Linux"
 homepage = "https://github.com/xinux-org"
 repository = "https://github.com/xinux-org/e-imzo"
-authors = ["Xinux Developers <support@floss.uz>"]
+authors = ["Xinux Developers <support@oss.uzinfocom.uz>"]
 readme = "README.md"
 
 [profile.release]

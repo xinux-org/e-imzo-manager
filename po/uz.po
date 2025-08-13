@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-09 16:59+0500\n"
-"PO-Revision-Date: 2025-08-09 17:14+0500\n"
+"PO-Revision-Date: 2025-08-13 10:38+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: uz\n"
@@ -18,36 +18,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.5\n"
 
-#: data/org.xinux.EIMZOManager.desktop.in.in:3
-#: data/org.xinux.EIMZOManager.metainfo.xml.in.in:7
+#: data/uz.xinux.EIMZOManager.desktop.in.in:3
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:7
 msgid "E-IMZO Manager"
 msgstr "E-IMZO Manager"
 
-#: data/org.xinux.EIMZOManager.desktop.in.in:4
+#: data/uz.xinux.EIMZOManager.desktop.in.in:4
 msgid "Nix effort for E-IMZO service."
 msgstr "E-IMZO xizmati uchun Nix harakati."
 
-#: data/org.xinux.EIMZOManager.desktop.in.in:9
+#: data/uz.xinux.EIMZOManager.desktop.in.in:9
 msgid "Gnome;GTK;"
 msgstr "Gnome;GTK;"
 
-#: data/org.xinux.EIMZOManager.gschema.xml.in:6
+#: data/uz.xinux.EIMZOManager.gschema.xml.in:6
 msgid "Window width"
 msgstr "Ilova kengligi"
 
-#: data/org.xinux.EIMZOManager.gschema.xml.in:10
+#: data/uz.xinux.EIMZOManager.gschema.xml.in:10
 msgid "Window height"
 msgstr "Ilova balandligi"
 
-#: data/org.xinux.EIMZOManager.gschema.xml.in:14
+#: data/uz.xinux.EIMZOManager.gschema.xml.in:14
 msgid "Window maximized state"
 msgstr "Ilovaning maksimal holati"
 
-#: data/org.xinux.EIMZOManager.metainfo.xml.in.in:8
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:8
 msgid "Improving E-IMZO support and compatibility for Linux"
 msgstr "Linux uchun E-IMZO-ni qo'llab-quvvatlash va muvofiqligini yaxshilash"
 
-#: data/org.xinux.EIMZOManager.metainfo.xml.in.in:10
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:10
 msgid ""
 "An electronic digital signature certificate is very important for verifying "
 "the time a document was signed and its legal status."
@@ -55,7 +55,7 @@ msgstr ""
 "Elektron raqamli imzo sertifikati hujjat imzolangan vaqt va uning huquqiy "
 "holatini tekshirish uchun juda muhimdir."
 
-#: data/org.xinux.EIMZOManager.metainfo.xml.in.in:18
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:18
 msgid "Main window"
 msgstr "Asosiy oyna"
 

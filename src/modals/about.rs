@@ -17,13 +17,13 @@ impl SimpleComponent for AboutDialog {
         adw::AboutDialog::builder()
             .application_name("E-IMZO Manager")
             .application_icon(APP_ID)
-            .license_type(gtk::License::MitX11)
+            .license_type(gtk::License::Apache20)
             .website("https://xinux.uz/")
             .issue_url("https://github.com/xinux-org/e-imzo/issues")
             .version(VERSION)
             .translator_credits("translator-credits")
             .copyright("© 2025 Xinux Developers")
-            .developers(vec!["Baxrom Raxmatov bahrom04", "Bemeritus", "let-rec"])
+            .developers(vec!["Baxrom Raxmatov (bahrom04)", "Bemeritus", "let-rec"])
             .build()
     }
 

@@ -9,7 +9,7 @@ project(
 i18n = import('i18n')
 gnome = import('gnome')
 
-base_id = 'org.xinux.EIMZOManager'
+base_id = 'uz.xinux.EIMZOManager'
 
 dependency('openssl', version: '>= 1.0')
 dependency('glib-2.0', version: '>= 2.66')

@@ -2,7 +2,7 @@
 
 <!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN" "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
 <policyconfig>
-  <action id="org.xinux.EIMZOManager">
+  <action id="uz.xinux.EIMZOManager">
     <description>Allow executing commands for Davinci Resolver</description>+
     <message>Authentication is required to execute commands for Davinci Resolver</message>
     <defaults>

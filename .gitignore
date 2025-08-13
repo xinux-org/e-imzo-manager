@@ -14,5 +14,6 @@
 flatpak_app
 .direnv
 result
+repo
 *.swp
 *.mo
