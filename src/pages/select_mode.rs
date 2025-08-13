@@ -162,9 +162,7 @@ impl SimpleComponent for SelectModePage {
                     self.open_dialog.emit(OpenDialogMsg::Open);
                 } else {
                     relm4::spawn(async move {
-                        let output = tokio::process::Command::new("flatpak-spawn")
-                            .arg("--host")
-                            .arg("pkexec")
+                        let output = tokio::process::Command::new("pkexec")
                             .arg(format!("{}/e-helper", LIBEXECDIR))
                             .output()
                             .await;
