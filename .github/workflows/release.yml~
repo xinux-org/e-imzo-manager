@@ -1,0 +1,42 @@
+name: Test CI
+
+on:
+  push: 
+    branches:
+     - 'release'
+
+jobs:
+  test-flake:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Cache Nix store
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Check flake x86_64-linux host
+        run: nix flake check --system x86_64-linux --show-trace
+
+      - name: Check flake aarch64-linux 
+        run: nix flake check --system aarch64-linux --show-trace
+
+  test-project:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Cache Nix store
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Build project with Nix
+        run: nix build
