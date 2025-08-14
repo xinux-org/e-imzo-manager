@@ -43,18 +43,13 @@ in
       owner = "xinux-org";
       repo = "e-imzo";
       rev = version;
-      sha256 = "2f70547cc55c587a64b13304f90e20589aa10e3c";
+      hash = "sha256-gV644xWN/wy1SgBlAU/C78Xypt84NVktT85jXS4eWtY=";
     };
 
-    cargoDeps = rustPlatform.importCargoLock {
-      lockFile = ./Cargo.lock;
-      # Use this if you have dependencies from git instead
-      # of crates.io in your Cargo.toml
-      # outputHashes = {
-      #   # Sha256 of the git repository, doesn't matter if it's monorepo
-      #   "example-0.1.0" = "sha256-80EwvwMPY+rYyti8DMG4hGEpz/8Pya5TGjsbOBF0P0c=";
-      # };
-    };
+    cargoDeps = rustPlatform.fetchCargoVendor {
+      inherit pname version src;
+      hash = "sha256-rulWG4L/uN6+JBk+SzC0y57Pdw5N0Q1dJlpXGVo+vbQ=";
+  };
 
     # Compile time dependencies
     nativeBuildInputs = [
@@ -99,11 +94,10 @@ in
     ];
 
     meta = with lib; {
-      homepage = manifest.homepage;
-      description = manifest.description;
-      # https://github.com/NixOS/nixpkgs/blob/master/lib/licenses.nix
+      homepage = "https://github.com/xinux-org";
+      description = "E-IMZO for uzbek state web key signing on Linux";
       license = with lib.licenses; [asl20 mit];
-      platforms = with platforms; linux ++ darwin;
+      platforms = platforms.linux;
       maintainers = [
         {
           name = "Xinux Developers";
