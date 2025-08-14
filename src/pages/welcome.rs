@@ -45,17 +45,13 @@ impl SimpleComponent for WelcomeModel {
             gtk::Label {
                 add_css_class: relm4::css::TITLE_2,
                 #[watch]
-                set_label: &gettext(&format!("Welcome to E-imzo")),
+                set_label: &gettext("Welcome to E-imzo"),
                 set_margin_all: 1,
             },
-
-            gtk::Label {
-                add_css_class: relm4::css::TITLE_4,
-                #[watch]
-                set_markup: &gettext("It seems you <a href=\"appstream://org.gnome.Calculator.desktop\">don't have e-imzo installed</a>."),
-                set_use_markup: true,
-                set_margin_all: 5,
-                set_justify: gtk::Justification::Center,
+            
+            gtk::LinkButton {
+                set_label: "e-imzo",
+                set_uri: "https://search.nixos.org/packages?channel=25.05&show=e-imzo&from=0&size=50&sort=relevance&type=packages&query=e-imzo",
             },
 
             gtk::Label {
