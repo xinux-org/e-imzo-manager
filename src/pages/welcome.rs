@@ -1,5 +1,8 @@
+use std::process::Command;
+
 use crate::app::AppMsg;
 use gettextrs::gettext;
+
 use relm4::{
     gtk::{
         self,
@@ -12,6 +15,8 @@ use relm4::{
     *,
 };
 
+use crate::utils::check_service_active;
+
 fn embedded_logo() -> Texture {
     let bytes = include_bytes!("../../.github/assets/e_imzo.png");
     let g_bytes = glib::Bytes::from(&bytes.to_vec());
@@ -22,10 +27,16 @@ fn embedded_logo() -> Texture {
 
 pub struct WelcomeModel;
 
+#[derive(Debug)]
+pub enum Msg {
+    StartService,
+    StopService,
+}
+
 #[relm4::component(pub)]
 impl SimpleComponent for WelcomeModel {
     type Init = ();
-    type Input = ();
+    type Input = Msg;
     type Output = AppMsg;
     type Widgets = AppWidgets;
 
@@ -36,6 +47,20 @@ impl SimpleComponent for WelcomeModel {
             set_vexpand: true,
             set_halign: gtk::Align::Center,
             set_valign: gtk::Align::Center,
+            set_spacing: 5,
+            set_margin_all: 5,
+
+            if check_service_active("e-imzo.service") {
+              gtk::Button {
+                set_label: "Stop e-imzo",
+                connect_clicked => Msg::StopService,
+              }
+            } else {
+              gtk::Button {
+                set_label: "Start e-imzo",
+                connect_clicked => Msg::StartService,
+              }
+            },
 
             gtk::Image {
                 set_pixel_size: 320,
@@ -48,7 +73,7 @@ impl SimpleComponent for WelcomeModel {
                 set_label: &gettext("Welcome to E-imzo"),
                 set_margin_all: 1,
             },
-            
+
             gtk::LinkButton {
                 set_label: "e-imzo",
                 set_uri: "https://search.nixos.org/packages?channel=25.05&show=e-imzo&from=0&size=50&sort=relevance&type=packages&query=e-imzo",
@@ -73,5 +98,24 @@ impl SimpleComponent for WelcomeModel {
         let widgets = view_output!();
 
         ComponentParts { model, widgets }
+    }
+
+    fn update(&mut self, message: Self::Input, sender: ComponentSender<Self>) {
+        match message {
+            Msg::StartService => {
+                let _ = Command::new("systemctl")
+                    .arg("start")
+                    .arg("--user")
+                    .arg("e-imzo.service")
+                    .status();
+            }
+            Msg::StopService => {
+                let _ = Command::new("systemctl")
+                    .arg("stop")
+                    .arg("--user")
+                    .arg("e-imzo.service")
+                    .status();
+            }
+        }
     }
 }
