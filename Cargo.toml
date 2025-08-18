@@ -9,8 +9,13 @@ repository = "https://github.com/xinux-org/e-imzo"
 authors = ["Xinux Developers <support@oss.uzinfocom.uz>"]
 readme = "README.md"
 
+# Optimize release binary as much as possible
 [profile.release]
 lto = true
+codegen-units = 1
+incremental = true
+strip = true
+opt-level = "z"
 
 [dependencies]
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
