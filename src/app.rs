@@ -1,4 +1,3 @@
-use gettextrs::gettext;
 use crate::{
     config::{APP_ID, PROFILE},
     modals::{about::AboutDialog, awesome::AwesomeModel},
@@ -8,6 +7,7 @@ use crate::{
     },
     utils::check_service_active,
 };
+use gettextrs::gettext;
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw::{self, prelude::*},
@@ -16,6 +16,8 @@ use relm4::{
     SimpleComponent,
 };
 use std::convert::identity;
+
+use std::process::Command;
 
 #[derive(Debug, Clone)]
 pub enum Page {
@@ -27,12 +29,17 @@ pub struct App {
     page: Page,
     welcome_page: Controller<WelcomeModel>,
     select_mode_page: Controller<SelectModePage>,
+    service_active: bool,
+    service: gtk::Button,
 }
 
 #[derive(Debug)]
 pub enum AppMsg {
     Quit,
     SelectMode(SelectModeMsg),
+    StartService,
+    StopService,
+    RefreshService(bool),
 }
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
@@ -87,6 +94,7 @@ impl SimpleComponent for App {
                 set_orientation: gtk::Orientation::Vertical,
                 set_vexpand: true,
                 set_hexpand: true,
+
                 adw::HeaderBar {
                     pack_start = &gtk::Button {
                         set_icon_name: "list-add-symbolic",
@@ -94,6 +102,12 @@ impl SimpleComponent for App {
                         connect_clicked => AppMsg::SelectMode(SelectModeMsg::OpenFile),
                         #[watch]
                         set_visible: matches!(model.page, Page::SelectMode),
+                    },
+                    #[name(service)]
+                    pack_start = &gtk::Button {
+                      set_label: "ON",
+                      add_css_class: "suggested-action",
+                      connect_clicked => if !model.service_active {AppMsg::StartService} else {AppMsg::StopService},
                     },
 
                     pack_end = &gtk::MenuButton {
@@ -138,13 +152,17 @@ impl SimpleComponent for App {
             Page::Welcome
         };
 
-        let model = Self {
+        let mut model = Self {
             page: page,
             welcome_page: welcome_page,
             select_mode_page: select_mode_page,
+            service_active: check_service_active("e-imzo.service"),
+            service: gtk::Button::new(),
         };
 
         let widgets = view_output!();
+        let service = widgets.service.clone();
+        model.service = service;
         widgets.load_window_size();
 
         let awesome_action = {
@@ -167,6 +185,13 @@ impl SimpleComponent for App {
             })
         };
 
+        let sender_clone = sender.input_sender().clone();
+        glib::timeout_add_seconds_local(1, move || {
+            let active = check_service_active("e-imzo.service");
+            sender_clone.send(AppMsg::RefreshService(active)).ok();
+            glib::ControlFlow::Continue
+        });
+
         let mut actions = RelmActionGroup::<WindowActionGroup>::new();
         actions.add_action(awesome_action);
         actions.add_action(shortcuts_action);
@@ -181,6 +206,34 @@ impl SimpleComponent for App {
             AppMsg::Quit => main_application().quit(),
             AppMsg::SelectMode(msg) => {
                 self.select_mode_page.emit(msg);
+            }
+            AppMsg::StartService => {
+                let _ = Command::new("systemctl")
+                    .arg("start")
+                    .arg("--user")
+                    .arg("e-imzo.service")
+                    .status();
+                self.service_active = true;
+            }
+            AppMsg::StopService => {
+                let _ = Command::new("systemctl")
+                    .arg("stop")
+                    .arg("--user")
+                    .arg("e-imzo.service")
+                    .status();
+                self.service_active = false;
+            }
+            AppMsg::RefreshService(active) => {
+                self.service_active = active;
+                if check_service_active("e-imzo.service") {
+                    self.service.set_label("OFFrefresh");
+                    self.service.add_css_class("destructive-action");
+                    self.service_active = true;
+                } else {
+                    self.service.set_label("ONrefresh");
+                    self.service.add_css_class("suggested-action");
+                    self.service_active = false;
+                }
             }
         }
     }
