@@ -37,8 +37,7 @@ pub struct App {
 pub enum AppMsg {
     Quit,
     SelectMode(SelectModeMsg),
-    StartService,
-    StopService,
+    StartAndStopService,
     RefreshService(bool),
 }
 
@@ -105,11 +104,8 @@ impl SimpleComponent for App {
                     },
                     #[name(service)]
                     pack_start = &gtk::Button {
-                      set_label: "ON",
-                      add_css_class: "suggested-action",
-                      connect_clicked => if !model.service_active {AppMsg::StartService} else {AppMsg::StopService},
+                      connect_clicked => AppMsg::StartAndStopService,
                     },
-
                     pack_end = &gtk::MenuButton {
                         set_icon_name: "open-menu-symbolic",
                         set_menu_model: Some(&primary_menu),
@@ -207,32 +203,33 @@ impl SimpleComponent for App {
             AppMsg::SelectMode(msg) => {
                 self.select_mode_page.emit(msg);
             }
-            AppMsg::StartService => {
-                let _ = Command::new("systemctl")
-                    .arg("start")
-                    .arg("--user")
-                    .arg("e-imzo.service")
-                    .status();
-                self.service_active = true;
-            }
-            AppMsg::StopService => {
-                let _ = Command::new("systemctl")
-                    .arg("stop")
-                    .arg("--user")
-                    .arg("e-imzo.service")
-                    .status();
-                self.service_active = false;
+            AppMsg::StartAndStopService => {
+                if self.service_active {
+                    let _ = Command::new("systemctl")
+                        .arg("stop")
+                        .arg("--user")
+                        .arg("e-imzo.service")
+                        .status();
+                    self.service_active = false;
+                } else {
+                    let _ = Command::new("systemctl")
+                        .arg("start")
+                        .arg("--user")
+                        .arg("e-imzo.service")
+                        .status();
+                    self.service_active = true;
+                }
             }
             AppMsg::RefreshService(active) => {
                 self.service_active = active;
-                if check_service_active("e-imzo.service") {
-                    self.service.set_label("OFFrefresh");
+                if active {
+                    // self.service.set_label("OFFF");
+                    self.service.remove_css_class("suggested-action");
                     self.service.add_css_class("destructive-action");
-                    self.service_active = true;
                 } else {
-                    self.service.set_label("ONrefresh");
+                    // self.service.set_label("ONN");
+                    self.service.remove_css_class("destructive-action");
                     self.service.add_css_class("suggested-action");
-                    self.service_active = false;
                 }
             }
         }
@@ -247,24 +244,18 @@ impl AppWidgets {
     fn save_window_size(&self) -> Result<(), glib::BoolError> {
         let settings = gio::Settings::new(APP_ID);
         let (width, height) = self.main_window.default_size();
-
         settings.set_int("window-width", width)?;
         settings.set_int("window-height", height)?;
-
         settings.set_boolean("is-maximized", self.main_window.is_maximized())?;
-
         Ok(())
     }
 
     fn load_window_size(&self) {
         let settings = gio::Settings::new(APP_ID);
-
         let width = settings.int("window-width");
         let height = settings.int("window-height");
         let is_maximized = settings.boolean("is-maximized");
-
         self.main_window.set_default_size(width, height);
-
         if is_maximized {
             self.main_window.maximize();
         }
