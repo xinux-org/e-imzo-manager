@@ -127,7 +127,7 @@ impl SimpleComponent for App {
                     Page::SelectMode => gtk::Box {
                         set_orientation: gtk::Orientation::Vertical,
                         set_vexpand: true,
-                        set_hexpand: true,File already exists. You can use it
+                        set_hexpand: true,
                         append: model.select_mode_page.widget()
                     },
                 },
