@@ -39,6 +39,7 @@ pub enum AppMsg {
     SelectMode(SelectModeMsg),
     StartAndStopService,
     RefreshService(bool),
+    ShowMessage(String),
 }
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
@@ -102,15 +103,20 @@ impl SimpleComponent for App {
                         #[watch]
                         set_visible: matches!(model.page, Page::SelectMode),
                     },
+
                     #[name(service)]
                     pack_start = &gtk::Button {
+                      add_css_class: "service-button",
                       connect_clicked => AppMsg::StartAndStopService,
                     },
+
                     pack_end = &gtk::MenuButton {
                         set_icon_name: "open-menu-symbolic",
                         set_menu_model: Some(&primary_menu),
                     }
                 },
+
+                #[transition(SlideLeftRight)]
                 match model.page {
                     Page::Welcome => gtk::Box {
                         set_orientation: gtk::Orientation::Vertical,
@@ -121,7 +127,7 @@ impl SimpleComponent for App {
                     Page::SelectMode => gtk::Box {
                         set_orientation: gtk::Orientation::Vertical,
                         set_vexpand: true,
-                        set_hexpand: true,
+                        set_hexpand: true,File already exists. You can use it
                         append: model.select_mode_page.widget()
                     },
                 },
@@ -197,7 +203,7 @@ impl SimpleComponent for App {
         ComponentParts { model, widgets }
     }
 
-    fn update(&mut self, message: Self::Input, _sender: ComponentSender<Self>) {
+    fn update(&mut self, message: Self::Input, sender: ComponentSender<Self>) {
         match message {
             AppMsg::Quit => main_application().quit(),
             AppMsg::SelectMode(msg) => {
@@ -211,6 +217,10 @@ impl SimpleComponent for App {
                         .arg("e-imzo.service")
                         .status();
                     self.service_active = false;
+                    self.page = Page::Welcome;
+
+                    let _ =
+                        sender.input(AppMsg::ShowMessage("E-imzo Service o'shirildi".to_string()));
                 } else {
                     let _ = Command::new("systemctl")
                         .arg("start")
@@ -218,19 +228,37 @@ impl SimpleComponent for App {
                         .arg("e-imzo.service")
                         .status();
                     self.service_active = true;
+                    self.page = Page::SelectMode;
+                    let _ = sender.input(AppMsg::ShowMessage("E-imzo Service yondi".to_string()));
                 }
             }
             AppMsg::RefreshService(active) => {
                 self.service_active = active;
                 if active {
                     // self.service.set_label("OFFF");
-                    self.service.remove_css_class("suggested-action");
-                    self.service.add_css_class("destructive-action");
+                    self.service.remove_css_class("off");
+                    self.service.add_css_class("on");
                 } else {
                     // self.service.set_label("ONN");
-                    self.service.remove_css_class("destructive-action");
-                    self.service.add_css_class("suggested-action");
+                    self.service.remove_css_class("on");
+                    self.service.add_css_class("off");
                 }
+            }
+            AppMsg::ShowMessage(text) => {
+                let dialog = adw::AlertDialog::builder()
+                    .heading(&text)
+                    .default_response("ok")
+                    .follows_content_size(true)
+                    .build();
+
+                dialog.add_responses(&[("ok", &gettext("OK"))]);
+
+                dialog.connect_response(None, |dialog, response| {
+                    println!("Dialog response: {}", response);
+                    dialog.close();
+                });
+
+                dialog.present(Some(&relm4::main_application().active_window().unwrap()));
             }
         }
     }

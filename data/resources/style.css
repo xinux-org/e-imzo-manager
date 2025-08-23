@@ -2,3 +2,18 @@
   font-size: 36px;
   font-weight: bold;
 }
+
+button.service-button {
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    #border: none;
+}
+
+button.service-button.on {
+    background: #a3be8c;
+}
+
+button.service-button.off {
+    background: #ff2c2c;
+}

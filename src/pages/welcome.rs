@@ -50,18 +50,6 @@ impl SimpleComponent for WelcomeModel {
             set_spacing: 5,
             set_margin_all: 5,
 
-            if check_service_active("e-imzo.service") {
-              gtk::Button {
-                set_label: "Stop e-imzo",
-                connect_clicked => Msg::StopService,
-              }
-            } else {
-              gtk::Button {
-                set_label: "Start e-imzo",
-                connect_clicked => Msg::StartService,
-              }
-            },
-
             gtk::Image {
                 set_pixel_size: 320,
                 set_paintable: Some(&embedded_logo()),
