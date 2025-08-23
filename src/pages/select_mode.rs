@@ -6,7 +6,8 @@ use relm4::{
 };
 
 use crate::utils::{
-    add_file_row_to_list, check_file_ownership, get_pfx_files_in_folder, tasks_filename_filters,
+    add_file_row_to_list, check_file_ownership, get_pfx_files_in_folder, show_alert_dialog,
+    tasks_filename_filters,
 };
 
 use relm4_components::open_dialog::*;
@@ -205,20 +206,7 @@ impl SimpleComponent for SelectModePage {
                 }
             }
             SelectModeMsg::ShowMessage(text) => {
-                let dialog = adw::AlertDialog::builder()
-                    .heading(text)
-                    // .body("")
-                    .default_response("ok")
-                    .follows_content_size(true)
-                    .build();
-
-                dialog.add_responses(&[("OK", "OK")]);
-                dialog.connect_response(None, |dialog, response| {
-                    println!("{:?}", response);
-                    dialog.close();
-                });
-                dialog.set_visible(true);
-                dialog.present(Some(&relm4::main_application().windows()[0]));
+                show_alert_dialog(&text);
             }
             SelectModeMsg::RefreshCertificates => {
                 // Clear current list

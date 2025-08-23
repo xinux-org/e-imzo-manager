@@ -15,8 +15,6 @@ use relm4::{
     *,
 };
 
-use crate::utils::check_service_active;
-
 fn embedded_logo() -> Texture {
     let bytes = include_bytes!("../../.github/assets/e_imzo.png");
     let g_bytes = glib::Bytes::from(&bytes.to_vec());
@@ -88,7 +86,7 @@ impl SimpleComponent for WelcomeModel {
         ComponentParts { model, widgets }
     }
 
-    fn update(&mut self, message: Self::Input, sender: ComponentSender<Self>) {
+    fn update(&mut self, message: Self::Input, _sender: ComponentSender<Self>) {
         match message {
             Msg::StartService => {
                 let _ = Command::new("systemctl")

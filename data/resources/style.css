@@ -11,9 +11,9 @@ button.service-button {
 }
 
 button.service-button.on {
-    background: #a3be8c;
+    background: #23bb23;
 }
 
 button.service-button.off {
-    background: #ff2c2c;
+    background: #d2222d;
 }

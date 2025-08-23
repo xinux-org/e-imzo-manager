@@ -5,7 +5,7 @@ use crate::{
         select_mode::{SelectModeMsg, SelectModePage},
         welcome::WelcomeModel,
     },
-    utils::check_service_active,
+    utils::{check_service_active, show_alert_dialog},
 };
 use gettextrs::gettext;
 use relm4::{
@@ -218,7 +218,6 @@ impl SimpleComponent for App {
                         .status();
                     self.service_active = false;
                     self.page = Page::Welcome;
-
                     let _ =
                         sender.input(AppMsg::ShowMessage("E-imzo Service o'shirildi".to_string()));
                 } else {
@@ -245,20 +244,7 @@ impl SimpleComponent for App {
                 }
             }
             AppMsg::ShowMessage(text) => {
-                let dialog = adw::AlertDialog::builder()
-                    .heading(&text)
-                    .default_response("ok")
-                    .follows_content_size(true)
-                    .build();
-
-                dialog.add_responses(&[("ok", &gettext("OK"))]);
-
-                dialog.connect_response(None, |dialog, response| {
-                    println!("Dialog response: {}", response);
-                    dialog.close();
-                });
-
-                dialog.present(Some(&relm4::main_application().active_window().unwrap()));
+                show_alert_dialog(&text);
             }
         }
     }
