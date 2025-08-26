@@ -5,7 +5,7 @@ use crate::{
         select_mode::{SelectModeMsg, SelectModePage},
         welcome::WelcomeModel,
     },
-    utils::{check_service_active, show_alert_dialog},
+    utils::{check_service_active, check_service_installed, show_alert_dialog},
 };
 use gettextrs::gettext;
 use relm4::{
@@ -16,7 +16,6 @@ use relm4::{
     SimpleComponent,
 };
 use std::convert::identity;
-
 use std::process::Command;
 
 #[derive(Debug, Clone)]
@@ -30,6 +29,7 @@ pub struct App {
     welcome_page: Controller<WelcomeModel>,
     select_mode_page: Controller<SelectModePage>,
     service_active: bool,
+    service_installed: bool,
     service: gtk::Button,
 }
 
@@ -106,6 +106,7 @@ impl SimpleComponent for App {
 
                     #[name(service)]
                     pack_start = &gtk::Button {
+                      set_visible: model.service_installed,
                       add_css_class: "service-button",
                       connect_clicked => AppMsg::StartAndStopService,
                     },
@@ -159,6 +160,7 @@ impl SimpleComponent for App {
             welcome_page: welcome_page,
             select_mode_page: select_mode_page,
             service_active: check_service_active("e-imzo.service"),
+            service_installed: check_service_installed("/etc/systemd/user/e-imzo.service"),
             service: gtk::Button::new(),
         };
 
@@ -189,8 +191,10 @@ impl SimpleComponent for App {
 
         let sender_clone = sender.input_sender().clone();
         glib::timeout_add_seconds_local(1, move || {
-            let active = check_service_active("e-imzo.service");
-            sender_clone.send(AppMsg::RefreshService(active)).ok();
+            if check_service_installed("/etc/systemd/user/e-imzo.service") {
+                let active = check_service_active("e-imzo.service");
+                sender_clone.send(AppMsg::RefreshService(active)).ok();
+            }
             glib::ControlFlow::Continue
         });
 
@@ -219,7 +223,7 @@ impl SimpleComponent for App {
                     self.service_active = false;
                     self.page = Page::Welcome;
                     let _ =
-                        sender.input(AppMsg::ShowMessage("E-imzo Service o'shirildi".to_string()));
+                        sender.input(AppMsg::ShowMessage("E-imzo Service o'chirildi".to_string()));
                 } else {
                     let _ = Command::new("systemctl")
                         .arg("start")
@@ -232,15 +236,15 @@ impl SimpleComponent for App {
                 }
             }
             AppMsg::RefreshService(active) => {
-                self.service_active = active;
-                if active {
-                    // self.service.set_label("OFFF");
-                    self.service.remove_css_class("off");
-                    self.service.add_css_class("on");
-                } else {
-                    // self.service.set_label("ONN");
-                    self.service.remove_css_class("on");
-                    self.service.add_css_class("off");
+                if check_service_installed("/etc/systemd/user/e-imzo.service") {
+                    self.service_active = active;
+                    if active {
+                        self.service.remove_css_class("off");
+                        self.service.add_css_class("on");
+                    } else {
+                        self.service.remove_css_class("on");
+                        self.service.add_css_class("off");
+                    }
                 }
             }
             AppMsg::ShowMessage(text) => {

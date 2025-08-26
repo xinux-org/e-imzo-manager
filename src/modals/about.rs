@@ -24,10 +24,10 @@ impl SimpleComponent for AboutDialog {
             .translator_credits("translator-credits")
             .copyright("© 2025 Xinux Developers")
             .developers(vec![
-                "Baxrom Raxmatov (bahrom04)",
-                "BeMeritus",
-                "Domirando",
-                "let-rec",
+                "Baxrom Raxmatov https://github.com/bahrom04",
+                "BeMeritus https://github.com/bemeritus",
+                "Domirando https://github.com/Domirando",
+                "let-rec https://github.com/let-rec",
             ])
             .build()
     }
