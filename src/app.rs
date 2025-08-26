@@ -243,9 +243,11 @@ impl SimpleComponent for App {
                 if active {
                     self.service.remove_css_class("off");
                     self.service.add_css_class("on");
+                    self.page = Page::SelectMode;
                 } else {
                     self.service.remove_css_class("on");
                     self.service.add_css_class("off");
+                    self.page = Page::Welcome;
                 }
             }
             AppMsg::ShowMessage(text) => {
