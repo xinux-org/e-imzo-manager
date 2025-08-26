@@ -113,19 +113,6 @@ pub fn show_alert_dialog(text: &str) {
     }
 }
 
-// pub fn check_service_installed(service: &str) -> bool {
-//     let status = Command::new("systemctl")
-//         .arg("--user")
-//         .arg("status")
-//         .arg(service)
-//         .status();
-
-//     match status {
-//         Ok(exit) => exit.code() != Some(4),
-//         Err(_) => false,
-//     }
-// }
-
 pub fn check_service_installed(service: &str) -> bool {
     let path = Path::new(service);
 

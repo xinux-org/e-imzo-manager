@@ -1,5 +1,3 @@
-use std::process::Command;
-
 use crate::app::AppMsg;
 use gettextrs::gettext;
 
@@ -25,16 +23,10 @@ fn embedded_logo() -> Texture {
 
 pub struct WelcomeModel;
 
-#[derive(Debug)]
-pub enum Msg {
-    StartService,
-    StopService,
-}
-
 #[relm4::component(pub)]
 impl SimpleComponent for WelcomeModel {
     type Init = ();
-    type Input = Msg;
+    type Input = ();
     type Output = AppMsg;
     type Widgets = AppWidgets;
 
@@ -84,24 +76,5 @@ impl SimpleComponent for WelcomeModel {
         let widgets = view_output!();
 
         ComponentParts { model, widgets }
-    }
-
-    fn update(&mut self, message: Self::Input, _sender: ComponentSender<Self>) {
-        match message {
-            Msg::StartService => {
-                let _ = Command::new("systemctl")
-                    .arg("start")
-                    .arg("--user")
-                    .arg("e-imzo.service")
-                    .status();
-            }
-            Msg::StopService => {
-                let _ = Command::new("systemctl")
-                    .arg("stop")
-                    .arg("--user")
-                    .arg("e-imzo.service")
-                    .status();
-            }
-        }
     }
 }

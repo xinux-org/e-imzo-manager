@@ -236,15 +236,13 @@ impl SimpleComponent for App {
                 }
             }
             AppMsg::RefreshService(active) => {
-                if check_service_installed("/etc/systemd/user/e-imzo.service") {
-                    self.service_active = active;
-                    if active {
-                        self.service.remove_css_class("off");
-                        self.service.add_css_class("on");
-                    } else {
-                        self.service.remove_css_class("on");
-                        self.service.add_css_class("off");
-                    }
+                self.service_active = active;
+                if active {
+                    self.service.remove_css_class("off");
+                    self.service.add_css_class("on");
+                } else {
+                    self.service.remove_css_class("on");
+                    self.service.add_css_class("off");
                 }
             }
             AppMsg::ShowMessage(text) => {
