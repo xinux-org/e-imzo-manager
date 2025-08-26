@@ -24,7 +24,7 @@ meson compile -C build
 ./build/src/E-IMZO-Manager
 
 # generate translation words from /po/POTFILES.in
-xgettext --directory=.. --files-from=POTFILES.in --from-code=UTF-8 -kgettext -o messages.pot
+xgettext --directory=./po --files-from=POTFILES.in --from-code=UTF-8 -kgettext -o translations.pot
 ```
 
 ## Deploy
