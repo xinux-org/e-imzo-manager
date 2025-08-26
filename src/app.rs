@@ -222,8 +222,9 @@ impl SimpleComponent for App {
                         .status();
                     self.service_active = false;
                     self.page = Page::Welcome;
-                    let _ =
-                        sender.input(AppMsg::ShowMessage("E-imzo Service o'chirildi".to_string()));
+                    let _ = sender.input(AppMsg::ShowMessage(
+                        gettext("E-IMZO service stopped").to_string(),
+                    ));
                 } else {
                     let _ = Command::new("systemctl")
                         .arg("start")
@@ -232,7 +233,9 @@ impl SimpleComponent for App {
                         .status();
                     self.service_active = true;
                     self.page = Page::SelectMode;
-                    let _ = sender.input(AppMsg::ShowMessage("E-imzo Service yondi".to_string()));
+                    let _ = sender.input(AppMsg::ShowMessage(
+                        gettext("E-IMZO service started").to_string(),
+                    ));
                 }
             }
             AppMsg::RefreshService(active) => {
@@ -240,9 +243,11 @@ impl SimpleComponent for App {
                 if active {
                     self.service.remove_css_class("off");
                     self.service.add_css_class("on");
+                    self.page = Page::SelectMode;
                 } else {
                     self.service.remove_css_class("on");
                     self.service.add_css_class("off");
+                    self.page = Page::Welcome;
                 }
             }
             AppMsg::ShowMessage(text) => {

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 18:43+0500\n"
-"PO-Revision-Date: 2025-08-14 18:44+0500\n"
+"POT-Creation-Date: 2025-08-26 15:50+0500\n"
+"PO-Revision-Date: 2025-08-26 15:56+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -74,40 +74,48 @@ msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Выйти"
 
-#: src/app.rs:53
+#: src/app.rs:60
 msgid "Awesome E-IMZO"
 msgstr "Список E-IMZO"
 
-#: src/app.rs:54
+#: src/app.rs:61
 msgid "Keyboard"
 msgstr "Клавиатура"
 
-#: src/app.rs:55
+#: src/app.rs:62
 msgid "About E-IMZO Manager"
 msgstr "О менеджере E-IMZO"
 
-#: src/pages/welcome.rs:48
+#: src/app.rs:226
+msgid "E-IMZO service stopped"
+msgstr "Сервис E-IMZO остановлен"
+
+#: src/app.rs:237
+msgid "E-IMZO service started"
+msgstr "Сервис E-IMZO запущен"
+
+#: src/pages/welcome.rs:51
 msgid "Welcome to E-imzo"
 msgstr "Добро пожаловать в E-imzo"
 
-#: src/pages/welcome.rs:60
+#: src/pages/welcome.rs:62
 msgid "Please download and relaunch the app again."
 msgstr "Пожалуйста, загрузите и перезапустите приложение еще раз."
 
-#: src/pages/select_mode.rs:54
+#: src/pages/select_mode.rs:55
 msgid "No certificates"
 msgstr "Сертификатов нет"
 
-#: src/pages/select_mode.rs:55
+#: src/pages/select_mode.rs:56
 msgid "Load some certificates to start using the app."
 msgstr ""
 "Загрузите несколько сертификатов, чтобы начать использовать приложение."
 
-#: src/pages/select_mode.rs:73
+#: src/pages/select_mode.rs:74
 msgid "Loaded certificates"
 msgstr "Загруженные сертификаты"
 
-#: src/pages/select_mode.rs:194
+#: src/pages/select_mode.rs:195
 msgid "File already exists. You can use it"
 msgstr "Файл уже существует. Вы можете его использовать"
 

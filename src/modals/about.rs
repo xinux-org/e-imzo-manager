@@ -29,7 +29,7 @@ impl SimpleComponent for AboutDialog {
                 "Domirando https://github.com/Domirando",
                 "let-rec https://github.com/let-rec",
             ])
-            .release_notes_version("0.1.0")
+            .release_notes_version(VERSION)
             .release_notes(release_notes())
             .build()
     }

@@ -1,6 +1,6 @@
 [package]
 name = "E-IMZO-Manager"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "E-IMZO for uzbek state web key signing on Linux"

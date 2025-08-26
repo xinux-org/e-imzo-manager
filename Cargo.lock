@@ -4,7 +4,7 @@ version = 4
 
 [[package]]
 name = "E-IMZO-Manager"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "gettext-rs",
  "relm4",

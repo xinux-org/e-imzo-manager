@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 18:43+0500\n"
-"PO-Revision-Date: 2025-08-14 18:43+0500\n"
+"POT-Creation-Date: 2025-08-26 15:50+0500\n"
+"PO-Revision-Date: 2025-08-26 15:54+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: uz\n"
@@ -74,39 +74,47 @@ msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Chiqish"
 
-#: src/app.rs:53
+#: src/app.rs:60
 msgid "Awesome E-IMZO"
 msgstr "E-IMZO ro'yxati"
 
-#: src/app.rs:54
+#: src/app.rs:61
 msgid "Keyboard"
 msgstr "Klaviatura"
 
-#: src/app.rs:55
+#: src/app.rs:62
 msgid "About E-IMZO Manager"
 msgstr "E-IMZO Manager haqida"
 
-#: src/pages/welcome.rs:48
+#: src/app.rs:226
+msgid "E-IMZO service stopped"
+msgstr "E-IMZO servisi o‘chirildi"
+
+#: src/app.rs:237
+msgid "E-IMZO service started"
+msgstr "E-IMZO servisi yondi"
+
+#: src/pages/welcome.rs:51
 msgid "Welcome to E-imzo"
 msgstr "E-imzoga xush kelibsiz"
 
-#: src/pages/welcome.rs:60
+#: src/pages/welcome.rs:62
 msgid "Please download and relaunch the app again."
 msgstr "Iltimos, ilovani yuklab oling va qayta ishga tushiring."
 
-#: src/pages/select_mode.rs:54
+#: src/pages/select_mode.rs:55
 msgid "No certificates"
 msgstr "Sertifikatlar yo'q"
 
-#: src/pages/select_mode.rs:55
+#: src/pages/select_mode.rs:56
 msgid "Load some certificates to start using the app."
 msgstr "Ilovadan foydalanishni boshlash uchun ba'zi sertifikatlarni yuklang."
 
-#: src/pages/select_mode.rs:73
+#: src/pages/select_mode.rs:74
 msgid "Loaded certificates"
 msgstr "Sertifikatlarni yuklang"
 
-#: src/pages/select_mode.rs:194
+#: src/pages/select_mode.rs:195
 msgid "File already exists. You can use it"
 msgstr "Fayl allaqachon mavjud. Siz e-imzo kalitini foydalanishingiz mumkin"
 
