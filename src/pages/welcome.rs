@@ -51,7 +51,6 @@ impl SimpleComponent for WelcomeModel {
                 set_label: &gettext("Welcome to E-imzo"),
                 set_margin_all: 1,
             },
-
             gtk::LinkButton {
                 set_label: "e-imzo",
                 set_uri: "https://search.nixos.org/packages?channel=25.05&show=e-imzo&from=0&size=50&sort=relevance&type=packages&query=e-imzo",
