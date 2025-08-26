@@ -29,6 +29,8 @@ impl SimpleComponent for AboutDialog {
                 "Domirando https://github.com/Domirando",
                 "let-rec https://github.com/let-rec",
             ])
+            .release_notes_version("0.1.0")
+            .release_notes(release_notes())
             .build()
     }
 
@@ -46,4 +48,12 @@ impl SimpleComponent for AboutDialog {
     }
 
     fn update_view(&self, _dialog: &mut Self::Widgets, _sender: ComponentSender<Self>) {}
+}
+
+fn release_notes() -> &'static str {
+    r#"<p>This release contains new features and fixes:</p>
+    <ul>
+      <li>New area selection UI</li>
+      <li>Added option to about section of UI</li>
+    </ul>"#
 }
