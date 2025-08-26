@@ -1,4 +1,6 @@
+use gettextrs::gettext;
 use relm4::{
+    adw::{self, prelude::*},
     gtk::{
         self,
         prelude::{BoxExt, WidgetExt},
@@ -90,4 +92,33 @@ pub fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
 
     hbox.append(&vbox);
     file_list.append(&hbox);
+}
+
+pub fn show_alert_dialog(text: &str) {
+    let dialog = adw::AlertDialog::builder()
+        .heading(text)
+        .default_response("ok")
+        .follows_content_size(true)
+        .build();
+
+    dialog.add_responses(&[("ok", &gettext("OK"))]);
+
+    dialog.connect_response(None, |dialog, response| {
+        println!("Dialog response: {}", response);
+        dialog.close();
+    });
+
+    if let Some(win) = relm4::main_application().active_window() {
+        dialog.present(Some(&win));
+    }
+}
+
+pub fn check_service_installed(service: &str) -> bool {
+    let path = Path::new(service);
+
+    if path.exists() {
+        return true;
+    }
+
+    false
 }

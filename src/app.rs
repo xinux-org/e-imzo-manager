@@ -1,4 +1,3 @@
-use gettextrs::gettext;
 use crate::{
     config::{APP_ID, PROFILE},
     modals::{about::AboutDialog, awesome::AwesomeModel},
@@ -6,8 +5,9 @@ use crate::{
         select_mode::{SelectModeMsg, SelectModePage},
         welcome::WelcomeModel,
     },
-    utils::check_service_active,
+    utils::{check_service_active, check_service_installed, show_alert_dialog},
 };
+use gettextrs::gettext;
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw::{self, prelude::*},
@@ -16,6 +16,7 @@ use relm4::{
     SimpleComponent,
 };
 use std::convert::identity;
+use std::process::Command;
 
 #[derive(Debug, Clone)]
 pub enum Page {
@@ -27,12 +28,18 @@ pub struct App {
     page: Page,
     welcome_page: Controller<WelcomeModel>,
     select_mode_page: Controller<SelectModePage>,
+    service_active: bool,
+    service_installed: bool,
+    service: gtk::Button,
 }
 
 #[derive(Debug)]
 pub enum AppMsg {
     Quit,
     SelectMode(SelectModeMsg),
+    StartAndStopService,
+    RefreshService(bool),
+    ShowMessage(String),
 }
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
@@ -87,6 +94,7 @@ impl SimpleComponent for App {
                 set_orientation: gtk::Orientation::Vertical,
                 set_vexpand: true,
                 set_hexpand: true,
+
                 adw::HeaderBar {
                     pack_start = &gtk::Button {
                         set_icon_name: "list-add-symbolic",
@@ -96,11 +104,20 @@ impl SimpleComponent for App {
                         set_visible: matches!(model.page, Page::SelectMode),
                     },
 
+                    #[name(service)]
+                    pack_start = &gtk::Button {
+                      set_visible: model.service_installed,
+                      add_css_class: "service-button",
+                      connect_clicked => AppMsg::StartAndStopService,
+                    },
+
                     pack_end = &gtk::MenuButton {
                         set_icon_name: "open-menu-symbolic",
                         set_menu_model: Some(&primary_menu),
                     }
                 },
+
+                #[transition(SlideLeftRight)]
                 match model.page {
                     Page::Welcome => gtk::Box {
                         set_orientation: gtk::Orientation::Vertical,
@@ -138,13 +155,18 @@ impl SimpleComponent for App {
             Page::Welcome
         };
 
-        let model = Self {
+        let mut model = Self {
             page: page,
             welcome_page: welcome_page,
             select_mode_page: select_mode_page,
+            service_active: check_service_active("e-imzo.service"),
+            service_installed: check_service_installed("/etc/systemd/user/e-imzo.service"),
+            service: gtk::Button::new(),
         };
 
         let widgets = view_output!();
+        let service = widgets.service.clone();
+        model.service = service;
         widgets.load_window_size();
 
         let awesome_action = {
@@ -167,6 +189,15 @@ impl SimpleComponent for App {
             })
         };
 
+        let sender_clone = sender.input_sender().clone();
+        glib::timeout_add_seconds_local(1, move || {
+            if check_service_installed("/etc/systemd/user/e-imzo.service") {
+                let active = check_service_active("e-imzo.service");
+                sender_clone.send(AppMsg::RefreshService(active)).ok();
+            }
+            glib::ControlFlow::Continue
+        });
+
         let mut actions = RelmActionGroup::<WindowActionGroup>::new();
         actions.add_action(awesome_action);
         actions.add_action(shortcuts_action);
@@ -176,11 +207,46 @@ impl SimpleComponent for App {
         ComponentParts { model, widgets }
     }
 
-    fn update(&mut self, message: Self::Input, _sender: ComponentSender<Self>) {
+    fn update(&mut self, message: Self::Input, sender: ComponentSender<Self>) {
         match message {
             AppMsg::Quit => main_application().quit(),
             AppMsg::SelectMode(msg) => {
                 self.select_mode_page.emit(msg);
+            }
+            AppMsg::StartAndStopService => {
+                if self.service_active {
+                    let _ = Command::new("systemctl")
+                        .arg("stop")
+                        .arg("--user")
+                        .arg("e-imzo.service")
+                        .status();
+                    self.service_active = false;
+                    self.page = Page::Welcome;
+                    let _ =
+                        sender.input(AppMsg::ShowMessage("E-imzo Service o'chirildi".to_string()));
+                } else {
+                    let _ = Command::new("systemctl")
+                        .arg("start")
+                        .arg("--user")
+                        .arg("e-imzo.service")
+                        .status();
+                    self.service_active = true;
+                    self.page = Page::SelectMode;
+                    let _ = sender.input(AppMsg::ShowMessage("E-imzo Service yondi".to_string()));
+                }
+            }
+            AppMsg::RefreshService(active) => {
+                self.service_active = active;
+                if active {
+                    self.service.remove_css_class("off");
+                    self.service.add_css_class("on");
+                } else {
+                    self.service.remove_css_class("on");
+                    self.service.add_css_class("off");
+                }
+            }
+            AppMsg::ShowMessage(text) => {
+                show_alert_dialog(&text);
             }
         }
     }
@@ -194,24 +260,18 @@ impl AppWidgets {
     fn save_window_size(&self) -> Result<(), glib::BoolError> {
         let settings = gio::Settings::new(APP_ID);
         let (width, height) = self.main_window.default_size();
-
         settings.set_int("window-width", width)?;
         settings.set_int("window-height", height)?;
-
         settings.set_boolean("is-maximized", self.main_window.is_maximized())?;
-
         Ok(())
     }
 
     fn load_window_size(&self) {
         let settings = gio::Settings::new(APP_ID);
-
         let width = settings.int("window-width");
         let height = settings.int("window-height");
         let is_maximized = settings.boolean("is-maximized");
-
         self.main_window.set_default_size(width, height);
-
         if is_maximized {
             self.main_window.maximize();
         }

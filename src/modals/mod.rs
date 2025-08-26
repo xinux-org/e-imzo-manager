@@ -1,2 +1,2 @@
-pub mod awesome;
 pub mod about;
+pub mod awesome;

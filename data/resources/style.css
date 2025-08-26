@@ -2,3 +2,15 @@
   font-size: 36px;
   font-weight: bold;
 }
+
+button.service-button {
+    border-radius: 50%;
+}
+
+button.service-button.on {
+    background: #23bb23;
+}
+
+button.service-button.off {
+    background: #d2222d;
+}
