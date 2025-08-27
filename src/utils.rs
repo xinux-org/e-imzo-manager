@@ -8,6 +8,7 @@ use relm4::{
     RelmWidgetExt,
 };
 use std::{fs, io, os::unix::fs::MetadataExt, path::Path, process::Command};
+use e_imzo_rs::list_all_certificates;
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
@@ -80,6 +81,7 @@ pub fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
     let vbox = gtk::Box::new(gtk::Orientation::Vertical, 4);
 
     let title = gtk::Label::new(Some(file_name));
+    
     title.set_xalign(0.0);
     title.add_css_class("title-3");
 

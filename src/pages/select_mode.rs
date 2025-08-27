@@ -1,3 +1,4 @@
+use e_imzo_rs::list_all_certificates;
 use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
@@ -149,9 +150,8 @@ impl SimpleComponent for SelectModePage {
         let widgets = view_output!();
         let file_list = widgets.file_list.clone();
         model.file_list = file_list;
-
-        for file_name in &model.certificate {
-            add_file_row_to_list(file_name, &model.file_list);
+       
+        for file_name in &model.certificate {            
         }
         ComponentParts { model, widgets }
     }
