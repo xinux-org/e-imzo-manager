@@ -151,7 +151,8 @@ impl SimpleComponent for SelectModePage {
         let file_list = widgets.file_list.clone();
         model.file_list = file_list;
        
-        for file_name in &model.certificate {            
+        for file_name in &model.certificate {
+            add_file_row_to_list(file_name, &model.file_list);           
         }
         ComponentParts { model, widgets }
     }
