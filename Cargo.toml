@@ -24,7 +24,7 @@ relm4-components = "0.9.1"
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt"]}
 tokio = { version = "1.47.1", default-features = false, features = ["process"]}
-e-imzo-rs = { git = "https://github.com//xinux-org/e-imzo-rs.git" }
+e-imzo-rs = { version = "0.1.0", git = "https://github.com//xinux-org/e-imzo-rs.git" }
 
 [workspace]
 members = [".", "e-helper"]

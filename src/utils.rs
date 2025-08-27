@@ -69,7 +69,7 @@ pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
     vec![filename_filter]
 }
 
-// list of added certificates
+// list of added certificates displayed on Listbox
 pub fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
     let hbox = gtk::Box::new(gtk::Orientation::Horizontal, 12);
     hbox.set_margin_all(12);
@@ -81,16 +81,21 @@ pub fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
     let vbox = gtk::Box::new(gtk::Orientation::Vertical, 4);
 
     let title = gtk::Label::new(Some(file_name));
-    
+
     title.set_xalign(0.0);
     title.add_css_class("title-3");
 
-    // let subtitle = gtk::Label::new(Some(&format!("/media/DSKEYS/{}", file_name)));
-    // subtitle.set_xalign(0.0);
-    // subtitle.add_css_class("dim-label");
+
+    let pfx = list_all_certificates().expect("not found");
+    let alias: Vec<_> = pfx.iter().map(|c| (c.get_alias())).collect();
+    let surname = alias[0].get("surname").cloned();
+
+    let subtitle = gtk::Label::new(surname);
+    subtitle.set_xalign(0.0);
+    subtitle.add_css_class("dim-label");
 
     vbox.append(&title);
-    // vbox.append(&subtitle);
+    vbox.append(&subtitle);
 
     hbox.append(&vbox);
     file_list.append(&hbox);
