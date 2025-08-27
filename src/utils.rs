@@ -1,3 +1,4 @@
+use e_imzo_rs::list_all_certificates;
 use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
@@ -8,7 +9,6 @@ use relm4::{
     RelmWidgetExt,
 };
 use std::{fs, io, os::unix::fs::MetadataExt, path::Path, process::Command};
-use e_imzo_rs::list_all_certificates;
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
@@ -85,12 +85,17 @@ pub fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
     title.set_xalign(0.0);
     title.add_css_class("title-3");
 
+    let data = match list_all_certificates() {
+        Ok(pfx) => {
+            let alias: Vec<_> = pfx.iter().map(|c| (c.get_alias())).collect();
+            let surname = alias[0].get("surname").cloned();
 
-    let pfx = list_all_certificates().expect("not found");
-    let alias: Vec<_> = pfx.iter().map(|c| (c.get_alias())).collect();
-    let surname = alias[0].get("surname").cloned();
+            surname
+        }
+        _ => None,
+    };
 
-    let subtitle = gtk::Label::new(surname);
+    let subtitle = gtk::Label::new(data.as_deref());
     subtitle.set_xalign(0.0);
     subtitle.add_css_class("dim-label");
 

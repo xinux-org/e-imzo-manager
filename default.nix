@@ -26,7 +26,7 @@ in
       lockFile = ./Cargo.lock;
 
       outputHashes = {
-         "e-imzo-rs-0.1.0" = "sha256-4P8Bl/28gkOFA8lMjrab1HuiRa+M8dJlF8gQocvvpUs=";
+         "e-imzo-rs-0.2.1" = "sha256-czjkOKqYv3s7IRLvuEoBugygLNGz5zAgwxM12OeihJo=";
        };
     };
 

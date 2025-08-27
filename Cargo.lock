@@ -303,8 +303,8 @@ dependencies = [
 
 [[package]]
 name = "e-imzo-rs"
-version = "0.1.0"
-source = "git+https://github.com//xinux-org/e-imzo-rs.git#a2f52f92404ae15416edee325772474f44278c99"
+version = "0.2.1"
+source = "git+https://github.com//xinux-org/e-imzo-rs.git#a3de1f30aa28000bfb440e6c6af4860e8c2503f2"
 dependencies = [
  "chrono",
  "env_logger",
