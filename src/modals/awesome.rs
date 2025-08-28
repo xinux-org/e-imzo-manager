@@ -14,7 +14,6 @@ impl SimpleComponent for AwesomeModel {
 
     view! {
         adw::Dialog {
-            // set_content_width: 325,
             set_title: &gettext("List of used e-imzo websites"),
             set_follows_content_size: true,
             set_presentation_mode: adw::DialogPresentationMode::Floating,
@@ -24,40 +23,58 @@ impl SimpleComponent for AwesomeModel {
                 add_top_bar = &adw::HeaderBar,
 
                 #[wrap(Some)]
-                set_content = &gtk::Box {
-                    set_orientation: gtk::Orientation::Vertical,
-                    set_margin_all: 6,
-                    set_spacing: 5,
+                set_content = &adw::PreferencesPage {
+                    adw::PreferencesGroup {
+                        set_title: "Websites",
 
-                    gtk::LinkButton {
-                        set_label: "ahost.uz",
-                        set_uri: "https://clients.ahost.uz/login",
-                    },
+                        adw::ActionRow {
+                            set_title: "ahost.uz",
+                            add_suffix = &gtk::LinkButton::with_label(
+                                "https://clients.ahost.uz/login",
+                                "Open"
+                            ),
+                        },
 
-                    gtk::LinkButton {
-                        set_label: "id.egov.uz",
-                        set_uri: "https://id.egov.uz/oz",
-                    },
+                        adw::ActionRow {
+                            set_title: "id.egov.uz",
+                            add_suffix = &gtk::LinkButton::with_label(
+                                "https://id.egov.uz/oz",
+                                "Open"
+                            ),
+                        },
 
-                    gtk::LinkButton {
-                        set_label: "didox.uz",
-                        set_uri: "https://didox.uz/login_with_signature",
-                    },
+                        adw::ActionRow {
+                            set_title: "didox.uz",
+                            add_suffix = &gtk::LinkButton::with_label(
+                                "https://didox.uz/login_with_signature",
+                                "Open"
+                            ),
+                        },
 
-                    gtk::LinkButton {
-                        set_label: "birdarcha.uz",
-                        set_uri: "https://new.birdarcha.uz/login",
-                    },
+                        adw::ActionRow {
+                            set_title: "birdarcha.uz",
+                            add_suffix = &gtk::LinkButton::with_label(
+                                "https://new.birdarcha.uz/login",
+                                "Open"
+                            ),
+                        },
 
-                    gtk::LinkButton {
-                        set_label: "e-invoice.uz",
-                        set_uri: "https://e-invoice.uz/register/",
-                    },
+                        adw::ActionRow {
+                            set_title: "e-invoice.uz",
+                            add_suffix = &gtk::LinkButton::with_label(
+                                "https://e-invoice.uz/register/",
+                                "Open"
+                            ),
+                        },
 
-                    gtk::LinkButton {
-                        set_label: "my.mehnat.uz",
-                        set_uri: "https://my.mehnat.uz/login#",
-                    },
+                        adw::ActionRow {
+                            set_title: "my.mehnat.uz",
+                            add_suffix = &gtk::LinkButton::with_label(
+                                "https://my.mehnat.uz/login#",
+                                "Open"
+                            ),
+                        },
+                    }
                 }
             }
         }
