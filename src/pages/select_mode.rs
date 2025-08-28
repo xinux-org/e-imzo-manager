@@ -2,7 +2,7 @@ use e_imzo_rs::list_all_certificates;
 use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
-    gtk::{self, glib},
+    gtk::{self},
     *,
 };
 
@@ -22,8 +22,8 @@ use crate::{app::AppMsg, config::LIBEXECDIR};
 
 pub struct SelectModePage {
     is_path_empty: bool,
-    certificate: Vec<String>,
-    file_list: gtk::ListBox,
+    file_list_parent: gtk::Box,
+    file_list: adw::PreferencesGroup,
     open_dialog: Controller<OpenDialog>,
 }
 
@@ -83,12 +83,10 @@ impl SimpleComponent for SelectModePage {
                     set_orientation: gtk::Orientation::Vertical,
 
                     adw::Clamp {
-                        #[name(file_list)]
-                        gtk::ListBox {
-                            #[watch]
-                            set_selection_mode: gtk::SelectionMode::None,
-                            add_css_class: "boxed-list",
-                        },
+                        #[name(file_list_parent)]
+                        gtk::Box {
+
+                        }
                     }
                 }
             },
@@ -100,14 +98,14 @@ impl SimpleComponent for SelectModePage {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let sender_clone = sender.input_sender().clone();
+        // let sender_clone = sender.input_sender().clone();
 
-        glib::timeout_add_seconds_local(2, move || {
-            sender_clone
-                .send(SelectModeMsg::RefreshCertificates)
-                .unwrap();
-            glib::ControlFlow::Continue
-        });
+        // glib::timeout_add_seconds_local(3, move || {
+        //     sender_clone
+        //         .send(SelectModeMsg::RefreshCertificates)
+        //         .unwrap();
+        //     glib::ControlFlow::Continue
+        // });
 
         let open_dialog = OpenDialog::builder()
             .transient_for_native(&root)
@@ -124,36 +122,27 @@ impl SimpleComponent for SelectModePage {
                 OpenDialogResponse::Cancel => SelectModeMsg::None,
             });
 
-        let mut certificate = Vec::<String>::new();
-
-        let path = Path::new("/media/DSKEYS");
-        if path.exists() {
-            match get_pfx_files_in_folder() {
-                Ok(file_names) => {
-                    for file_name in file_names {
-                        certificate.push(file_name.clone());
-                    }
-                }
-                Err(e) => println!(
-                    "Error in Init function eimzo::get_pfx_files_in_folder: {}",
-                    e
-                ),
-            }
-        }
-
         let mut model = SelectModePage {
-            is_path_empty: certificate.is_empty(),
-            certificate: certificate.clone(),
-            file_list: gtk::ListBox::new(),
+            is_path_empty: list_all_certificates().unwrap().is_empty(),
+            file_list_parent: gtk::Box::new(gtk::Orientation::Vertical, 1),
+            file_list: adw::PreferencesGroup::new(),
             open_dialog,
         };
         let widgets = view_output!();
-        let file_list = widgets.file_list.clone();
-        model.file_list = file_list;
-       
-        for file_name in &model.certificate {
-            add_file_row_to_list(file_name, &model.file_list);           
-        }
+        let file_list_parent = widgets.file_list_parent.clone();
+        model.file_list_parent = file_list_parent;
+
+        match list_all_certificates() {
+            Ok(pfx) => {
+                pfx.iter().map(|c| c.get_alias()).for_each(|alias| {
+                    add_file_row_to_list(alias, &model.file_list);
+                });
+                model.file_list_parent.append(&model.file_list);
+            }
+            _ => {
+                println!("asdasd");
+            }
+        };
         ComponentParts { model, widgets }
     }
 
@@ -210,31 +199,24 @@ impl SimpleComponent for SelectModePage {
                 show_alert_dialog(&text);
             }
             SelectModeMsg::RefreshCertificates => {
-                // Clear current list
-                for row in self.file_list.iter_children() {
-                    self.file_list.remove(&row);
-                }
+                self.file_list_parent.remove_all();
+                let new_group = adw::PreferencesGroup::new();
 
-                self.certificate.clear();
+                // Save reference so it can be updated later
+                self.file_list = new_group;
 
-                let path = Path::new("/media/DSKEYS");
-                if path.exists() {
-                    match get_pfx_files_in_folder() {
-                        Ok(file_names) => {
-                            for file_name in file_names {
-                                self.certificate.push(file_name.clone());
-                                add_file_row_to_list(&file_name.clone(), &self.file_list);
-                            }
-                            self.is_path_empty = self.certificate.is_empty();
+                if Path::new("/media/DSKEYS").exists() {
+                    match list_all_certificates() {
+                        Ok(pfx) => {
+                            pfx.iter().map(|c| (c.get_alias())).for_each(|alias| {
+                                add_file_row_to_list(alias, &self.file_list);
+                            });
                         }
-                        Err(e) => println!(
-                            "Error in RefreshCertificates eimzo::get_pfx_files_in_folder: {}",
-                            e
-                        ),
-                    }
-                } else {
-                    // set initial page if no files in folder
-                    self.is_path_empty = self.certificate.is_empty();
+                        _ => {
+                            println!("asdasd");
+                        }
+                    };
+                    self.file_list_parent.append(&self.file_list);
                 }
             }
             SelectModeMsg::None => {}
