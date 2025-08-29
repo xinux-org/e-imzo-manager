@@ -7,8 +7,8 @@ use relm4::{
 };
 
 use crate::utils::{
-    add_file_row_to_list, check_file_ownership, get_pfx_files_in_folder, show_alert_dialog,
-    tasks_filename_filters,
+    add_file_row_to_list, check_file_ownership, get_pfx_files_in_folder,
+    return_pfx_files_in_folder, show_alert_dialog, tasks_filename_filters,
 };
 
 use relm4_components::open_dialog::*;
@@ -123,7 +123,7 @@ impl SimpleComponent for SelectModePage {
             });
 
         let mut model = SelectModePage {
-            is_path_empty: list_all_certificates().unwrap().is_empty(),
+            is_path_empty: return_pfx_files_in_folder().is_empty(),
             file_list_parent: gtk::Box::new(gtk::Orientation::Vertical, 1),
             file_list: adw::PreferencesGroup::new(),
             open_dialog,
@@ -178,23 +178,16 @@ impl SimpleComponent for SelectModePage {
             SelectModeMsg::OpenFileResponse(path) => {
                 let copied_file = &path.file_name().unwrap().to_str().unwrap();
 
-                match get_pfx_files_in_folder() {
-                    Ok(file_names) => {
-                        if file_names.contains(&copied_file.to_string()) {
-                            let _ = sender.input(SelectModeMsg::ShowMessage(
-                                gettext("File already exists. You can use it").to_string(),
-                            ));
-                        } else {
-                            let _ = fs::copy(&path, format!("/media/DSKEYS/{}", copied_file));
-                            let _ = sender.input(SelectModeMsg::RefreshCertificates);
-                        }
-                    }
-                    Err(e) => println!(
-                        "Error OpenFileResponse in function eimzo::get_pfx_files_in_folder: {}",
-                        e
-                    ),
+                if return_pfx_files_in_folder().contains(&copied_file.to_string()) {
+                    let _ = sender.input(SelectModeMsg::ShowMessage(
+                        gettext("File already exists. You can use it").to_string(),
+                    ));
+                } else {
+                    let _ = fs::copy(&path, format!("/media/DSKEYS/{}", copied_file));
+                    let _ = sender.input(SelectModeMsg::RefreshCertificates);
                 }
             }
+
             SelectModeMsg::ShowMessage(text) => {
                 show_alert_dialog(&text);
             }
@@ -212,11 +205,12 @@ impl SimpleComponent for SelectModePage {
                                 add_file_row_to_list(alias, &self.file_list);
                             });
                         }
-                        _ => {
-                            println!("asdasd");
+                        Err(e) => {
+                            eprintln!("list_all_certificates:::::::::::::::: {}", e);
                         }
                     };
                     self.file_list_parent.append(&self.file_list);
+                    self.is_path_empty = return_pfx_files_in_folder().is_empty();
                 }
             }
             SelectModeMsg::None => {}

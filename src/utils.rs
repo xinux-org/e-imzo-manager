@@ -52,6 +52,26 @@ pub fn get_pfx_files_in_folder() -> io::Result<Vec<String>> {
     Ok(pfx_files)
 }
 
+pub fn return_pfx_files_in_folder() -> Vec<String> {
+    let mut certificate = Vec::<String>::new();
+
+    let path = Path::new("/media/DSKEYS");
+    if path.exists() {
+        match get_pfx_files_in_folder() {
+            Ok(file_names) => {
+                for file_name in file_names {
+                    certificate.push(file_name.clone());
+                }
+            }
+            Err(e) => println!(
+                "Error in Init function eimzo::get_pfx_files_in_folder: {}",
+                e
+            ),
+        }
+    }
+    return certificate
+}
+
 pub fn check_file_ownership() -> Result<u32, Box<dyn std::error::Error>> {
     let path = Path::new("/media/DSKEYS");
     let metadata = fs::metadata(path)?;
@@ -69,10 +89,7 @@ pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
 }
 
 // bunch of C code in Rust
-pub fn add_file_row_to_list(
-    alias: HashMap<String, String>,
-    file_list: &adw::PreferencesGroup,
-) {
+pub fn add_file_row_to_list(alias: HashMap<String, String>, file_list: &adw::PreferencesGroup) {
     // all data from certificate
     let validfrom = alias.get("validfrom").unwrap();
     let validto = alias.get("validto").unwrap();
