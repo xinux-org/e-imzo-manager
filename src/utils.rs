@@ -101,7 +101,7 @@ pub fn add_file_row_to_list(
             .css_classes(["dim-label"])
             .build(),
     );
-    serial_number_box.append(&gtk::Label::new(Some(&serial_number)));
+    serial_number_box.append(&gtk::Label::new(Some(&serial_number.to_uppercase())));
 
     let valid_date_box = gtk::Box::new(gtk::Orientation::Horizontal, 12);
     valid_date_box.set_margin_all(12);
