@@ -9,14 +9,11 @@ use crate::{
 };
 use gettextrs::gettext;
 use relm4::{
-    actions::{RelmAction, RelmActionGroup},
-    adw::{self, prelude::*},
-    gtk::{self, gio, glib},
-    main_application, Component, ComponentController, ComponentParts, ComponentSender, Controller,
-    SimpleComponent,
+    actions::{RelmAction, RelmActionGroup}, adw::{self, prelude::*}, gtk::{self, gio, glib}, main_application, prelude::AsyncComponentController, Component, ComponentController, ComponentParts, ComponentSender, Controller, SimpleComponent
 };
 use std::convert::identity;
 use std::process::Command;
+use relm4::component::AsyncComponent;
 
 #[derive(Debug, Clone)]
 pub enum Page {
@@ -27,7 +24,7 @@ pub enum Page {
 pub struct App {
     page: Page,
     welcome_page: Controller<WelcomeModel>,
-    select_mode_page: Controller<SelectModePage>,
+    select_mode_page: relm4::prelude::AsyncController<SelectModePage>,
     service_active: bool,
     service_installed: bool,
     service: gtk::Button,
@@ -223,9 +220,9 @@ impl SimpleComponent for App {
                             .status()
                             .await;
 
-                        sender.input(AppMsg::RefreshService(check_service_active(
-                            "e-imzo.service",
-                        )));
+                        // sender.input(AppMsg::RefreshService(check_service_active(
+                        //     "e-imzo.service",
+                        // )));
                         let _ = sender.input(AppMsg::ShowMessage(
                             gettext("E-IMZO service stopped").to_string(),
                         ));
@@ -239,14 +236,15 @@ impl SimpleComponent for App {
                             .status()
                             .await;
 
-                        sender.input(AppMsg::RefreshService(check_service_active(
-                            "e-imzo.service",
-                        )));
+                        // sender.input(AppMsg::RefreshService(check_service_active(
+                        //     "e-imzo.service",
+                        // )));
 
                         let _ = sender.input(AppMsg::ShowMessage(
                             gettext("E-IMZO service started").to_string(),
                         ));
                     });
+                    self.select_mode_page.emit(SelectModeMsg::SetFileLoadedState(false));
                     self.select_mode_page
                         .emit(SelectModeMsg::RefreshCertificates);
                 }

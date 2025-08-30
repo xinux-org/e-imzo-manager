@@ -2,12 +2,14 @@ use e_imzo_rs::list_all_certificates;
 use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
-    gtk::{self, glib},
+    component::{AsyncComponent, AsyncComponentParts, AsyncComponentSender},
+    gtk::{self},
     *,
 };
 
 use crate::utils::{
-    add_file_row_to_list, check_file_ownership, check_service_active, get_pfx_files_in_folder, return_pfx_files_in_folder, show_alert_dialog, tasks_filename_filters
+    add_file_row_to_list, check_file_ownership, check_service_active, get_pfx_files_in_folder,
+    return_pfx_files_in_folder, show_alert_dialog, tasks_filename_filters,
 };
 
 use relm4_components::open_dialog::*;
@@ -15,12 +17,14 @@ use std::{
     fs,
     path::{Path, PathBuf},
     process::ExitStatus,
+    time::Duration,
 };
 
 use crate::{app::AppMsg, config::LIBEXECDIR};
 
 pub struct SelectModePage {
     is_path_empty: bool,
+    is_file_loaded: bool,
     file_list_parent: gtk::Box,
     file_list: adw::PreferencesGroup,
     open_dialog: Controller<OpenDialog>,
@@ -33,79 +37,81 @@ pub enum SelectModeMsg {
     OpenFileResponse(PathBuf),
     ShowMessage(String),
     RefreshCertificates,
+    SetFileLoadedState(bool),
     None,
 }
 
-#[relm4::component(pub)]
-impl SimpleComponent for SelectModePage {
+#[relm4::component(pub, async)]
+impl AsyncComponent for SelectModePage {
     type Init = ();
     type Input = SelectModeMsg;
     type Output = AppMsg;
     type Widgets = AppWidgets;
+    type CommandOutput = ();
 
     view! {
         gtk::Box {
             set_orientation: gtk::Orientation::Vertical,
 
-            if model.is_path_empty {
-                adw::StatusPage {
-                    set_vexpand: true,
-                    set_hexpand: true,
-                    set_icon_name: Some("checkbox-checked-symbolic"),
-                    set_title: &gettext("No certificates"),
-                    set_description: Some(&gettext("Load some certificates to start using the app.")),
-                    gtk::Button {
-                        set_halign: gtk::Align::Center,
-                        set_focus_on_click: true,
-                        set_css_classes: &["pill", "suggested-action"],
-                        adw::ButtonContent {
-                            set_icon_name: "folder-documents-symbolic",
-                            #[watch]
-                            set_label: "Load .pfx",
-                        },
-                        connect_clicked => SelectModeMsg::OpenFile,
+            if model.is_file_loaded {
+                gtk::Box {
+                    set_orientation: gtk::Orientation::Vertical,
+                    if model.is_path_empty {
+                        adw::StatusPage {
+                            set_vexpand: true,
+                            set_hexpand: true,
+                            set_icon_name: Some("checkbox-checked-symbolic"),
+                            set_title: &gettext("No certificates"),
+                            set_description: Some(&gettext("Load some certificates to start using the app.")),
+                            gtk::Button {
+                                set_halign: gtk::Align::Center,
+                                set_focus_on_click: true,
+                                set_css_classes: &["pill", "suggested-action"],
+                                adw::ButtonContent {
+                                    set_icon_name: "folder-documents-symbolic",
+                                    #[watch]
+                                    set_label: "Load .pfx",
+                                },
+                                connect_clicked => SelectModeMsg::OpenFile,
+                            },
+                        }
+                    } else {
+                        gtk::Box {
+                            gtk::Label {
+                                add_css_class: relm4::css::TITLE_2,
+                                #[watch]
+                                set_label: &gettext("Loaded certificates"),
+                                set_margin_all: 1,
+                            },
+                            set_spacing: 20,
+                            set_margin_start: 10,
+                            set_margin_end: 10,
+                            set_margin_top: 20,
+                            set_margin_bottom: 10,
+                            set_orientation: gtk::Orientation::Vertical,
+
+                            adw::Clamp {
+                                #[name(file_list_parent)]
+                                gtk::Box {}
+                            }
+                        }
                     },
                 }
             } else {
-                gtk::Box {
-                    gtk::Label {
-                        add_css_class: relm4::css::TITLE_2,
-                        #[watch]
-                        set_label: &gettext("Loaded certificates"),
-                        set_margin_all: 1,
-                    },
-                    set_spacing: 20,
-                    set_margin_start: 10,
-                    set_margin_end: 10,
-                    set_margin_top: 20,
-                    set_margin_bottom: 10,
-                    set_orientation: gtk::Orientation::Vertical,
-
-                    adw::Clamp {
-                        #[name(file_list_parent)]
-                        gtk::Box {
-
-                        }
-                    }
+                gtk::Spinner {
+                    start: (),
+                    set_halign: gtk::Align::Center,
+                    set_spinning: true,
                 }
-            },
+            }
         },
     }
 
-    fn init(
+    async fn init(
         _init: Self::Init,
         root: Self::Root,
-        sender: ComponentSender<Self>,
-    ) -> ComponentParts<Self> {
-        // let sender_clone = sender.input_sender().clone();
-
-        // glib::timeout_add_seconds_local(3, move || {
-        //     sender_clone
-        //         .send(SelectModeMsg::RefreshCertificates)
-        //         .unwrap();
-        //     glib::ControlFlow::Continue
-        // });
-
+        sender: AsyncComponentSender<Self>,
+    ) -> AsyncComponentParts<Self> {
         let open_dialog = OpenDialog::builder()
             .transient_for_native(&root)
             .launch(OpenDialogSettings {
@@ -123,6 +129,7 @@ impl SimpleComponent for SelectModePage {
 
         let mut model = SelectModePage {
             is_path_empty: return_pfx_files_in_folder().is_empty(),
+            is_file_loaded: false,
             file_list_parent: gtk::Box::new(gtk::Orientation::Vertical, 1),
             file_list: adw::PreferencesGroup::new(),
             open_dialog,
@@ -135,11 +142,17 @@ impl SimpleComponent for SelectModePage {
             sender.input(SelectModeMsg::RefreshCertificates);
         }
 
-        ComponentParts { model, widgets }
+        AsyncComponentParts { model, widgets }
     }
 
-    fn update(&mut self, msg: SelectModeMsg, sender: ComponentSender<Self>) {
+    async fn update(
+        &mut self,
+        msg: SelectModeMsg,
+        sender: AsyncComponentSender<Self>,
+        _root: &Self::Root,
+    ) {
         match msg {
+            // todo: move this logic code to utils function
             SelectModeMsg::OpenFile => {
                 if Path::new("/media/DSKEYS").exists() && check_file_ownership().unwrap() == 1000 {
                     self.open_dialog.emit(OpenDialogMsg::Open);
@@ -176,42 +189,47 @@ impl SimpleComponent for SelectModePage {
                     ));
                 } else {
                     let _ = fs::copy(&path, format!("/media/DSKEYS/{}", copied_file));
-                    let _ = sender.input(SelectModeMsg::RefreshCertificates);
+                    sender.input(SelectModeMsg::SetFileLoadedState(false));
+                    sender.input(SelectModeMsg::RefreshCertificates);
                 }
             }
-
-            SelectModeMsg::ShowMessage(text) => {
-                show_alert_dialog(&text);
-            }
+             // todo: move this logic code to utils function
             SelectModeMsg::RefreshCertificates => {
                 self.file_list_parent.remove_all();
                 let new_group = adw::PreferencesGroup::new();
                 self.file_list = new_group;
-
                 if Path::new("/media/DSKEYS").exists() {
                     let mut success = false;
-                    for _ in 0..9 {
+                    while !success {
+                        tokio::time::sleep(Duration::from_secs(1)).await;
                         match list_all_certificates() {
                             Ok(pfx) => {
                                 pfx.iter().map(|c| c.get_alias()).for_each(|alias| {
                                     add_file_row_to_list(alias, &self.file_list);
                                 });
+                                self.is_file_loaded = true;
                                 success = true;
-                                break;
                             }
                             Err(e) => {
-                                eprintln!("Waiting for service: {}", e);
+                                eprintln!("Waiting for service activation: {}", e);
+                                self.is_file_loaded = false;
                                 std::thread::sleep(std::time::Duration::from_millis(200));
                             }
                         }
                     }
-
-                    if success {
+                    if self.is_file_loaded {
                         self.file_list_parent.append(&self.file_list);
                         self.is_path_empty = return_pfx_files_in_folder().is_empty();
                     }
                 }
             }
+            SelectModeMsg::SetFileLoadedState(is_loaded) => {
+                self.is_file_loaded = is_loaded;
+            }
+            SelectModeMsg::ShowMessage(text) => {
+                show_alert_dialog(&text);
+            }
+            // when user cancels file selection do nothing
             SelectModeMsg::None => {}
         }
     }
