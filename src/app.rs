@@ -215,27 +215,40 @@ impl SimpleComponent for App {
             }
             AppMsg::StartAndStopService => {
                 if self.service_active {
-                    let _ = Command::new("systemctl")
-                        .arg("stop")
-                        .arg("--user")
-                        .arg("e-imzo.service")
-                        .status();
-                    self.service_active = false;
-                    self.page = Page::Welcome;
-                    let _ = sender.input(AppMsg::ShowMessage(
-                        gettext("E-IMZO service stopped").to_string(),
-                    ));
+                    relm4::spawn(async move {
+                        let _ = tokio::process::Command::new("systemctl")
+                            .arg("stop")
+                            .arg("--user")
+                            .arg("e-imzo.service")
+                            .status()
+                            .await;
+
+                        sender.input(AppMsg::RefreshService(check_service_active(
+                            "e-imzo.service",
+                        )));
+                        let _ = sender.input(AppMsg::ShowMessage(
+                            gettext("E-IMZO service stopped").to_string(),
+                        ));
+                    });
                 } else {
-                    let _ = Command::new("systemctl")
-                        .arg("start")
-                        .arg("--user")
-                        .arg("e-imzo.service")
-                        .status();
-                    self.service_active = true;
-                    self.page = Page::SelectMode;
-                    let _ = sender.input(AppMsg::ShowMessage(
-                        gettext("E-IMZO service started").to_string(),
-                    ));
+                    relm4::spawn(async move {
+                        let _ = tokio::process::Command::new("systemctl")
+                            .arg("start")
+                            .arg("--user")
+                            .arg("e-imzo.service")
+                            .status()
+                            .await;
+
+                        sender.input(AppMsg::RefreshService(check_service_active(
+                            "e-imzo.service",
+                        )));
+
+                        let _ = sender.input(AppMsg::ShowMessage(
+                            gettext("E-IMZO service started").to_string(),
+                        ));
+                    });
+                    self.select_mode_page
+                        .emit(SelectModeMsg::RefreshCertificates);
                 }
             }
             AppMsg::RefreshService(active) => {

@@ -2,13 +2,12 @@ use e_imzo_rs::list_all_certificates;
 use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
-    gtk::{self},
+    gtk::{self, glib},
     *,
 };
 
 use crate::utils::{
-    add_file_row_to_list, check_file_ownership, get_pfx_files_in_folder,
-    return_pfx_files_in_folder, show_alert_dialog, tasks_filename_filters,
+    add_file_row_to_list, check_file_ownership, check_service_active, get_pfx_files_in_folder, return_pfx_files_in_folder, show_alert_dialog, tasks_filename_filters
 };
 
 use relm4_components::open_dialog::*;
@@ -132,17 +131,10 @@ impl SimpleComponent for SelectModePage {
         let file_list_parent = widgets.file_list_parent.clone();
         model.file_list_parent = file_list_parent;
 
-        match list_all_certificates() {
-            Ok(pfx) => {
-                pfx.iter().map(|c| c.get_alias()).for_each(|alias| {
-                    add_file_row_to_list(alias, &model.file_list);
-                });
-                model.file_list_parent.append(&model.file_list);
-            }
-            _ => {
-                println!("asdasd");
-            }
-        };
+        if check_service_active("e-imzo.service") {
+            sender.input(SelectModeMsg::RefreshCertificates);
+        }
+
         ComponentParts { model, widgets }
     }
 
@@ -194,23 +186,30 @@ impl SimpleComponent for SelectModePage {
             SelectModeMsg::RefreshCertificates => {
                 self.file_list_parent.remove_all();
                 let new_group = adw::PreferencesGroup::new();
-
-                // Save reference so it can be updated later
                 self.file_list = new_group;
 
                 if Path::new("/media/DSKEYS").exists() {
-                    match list_all_certificates() {
-                        Ok(pfx) => {
-                            pfx.iter().map(|c| (c.get_alias())).for_each(|alias| {
-                                add_file_row_to_list(alias, &self.file_list);
-                            });
+                    let mut success = false;
+                    for _ in 0..9 {
+                        match list_all_certificates() {
+                            Ok(pfx) => {
+                                pfx.iter().map(|c| c.get_alias()).for_each(|alias| {
+                                    add_file_row_to_list(alias, &self.file_list);
+                                });
+                                success = true;
+                                break;
+                            }
+                            Err(e) => {
+                                eprintln!("Waiting for service: {}", e);
+                                std::thread::sleep(std::time::Duration::from_millis(200));
+                            }
                         }
-                        Err(e) => {
-                            eprintln!("list_all_certificates:::::::::::::::: {}", e);
-                        }
-                    };
-                    self.file_list_parent.append(&self.file_list);
-                    self.is_path_empty = return_pfx_files_in_folder().is_empty();
+                    }
+
+                    if success {
+                        self.file_list_parent.append(&self.file_list);
+                        self.is_path_empty = return_pfx_files_in_folder().is_empty();
+                    }
                 }
             }
             SelectModeMsg::None => {}
