@@ -1,18 +1,10 @@
 {
   stdenv,
   lib,
-  libiconv,
   fetchFromGitHub,
-  gcc,
-  llvmPackages,
-  # nativeBuildInputs
-  appstream,
-  appstream-glib,
   cargo,
-  clippy,
   desktop-file-utils,
-  gettext,
-  git,
+  gnome-desktop,
   meson,
   ninja,
   pkg-config,
@@ -20,91 +12,77 @@
   rustc,
   rustPlatform,
   wrapGAppsHook4,
-  # buildInputs
   gdk-pixbuf,
   glib,
-  gnome-desktop,
   adwaita-icon-theme,
   gtk4,
   libadwaita,
-  libgweather,
   openssl,
-  parted,
-  vte-gtk4,
-}: let
-  # Helpful nix function
-  getLibFolder = pkg: "${pkg}/lib";
-in
-  stdenv.mkDerivation rec {
-    pname = "E-IMZO-Manager";
-    version = "0.1.0";
+  nix-update-script,
+}:
+stdenv.mkDerivation (finalAttrs: {
+  pname = "e-imzo-manager";
+  # todo 
+  version = "0.1.1";
 
-    src = fetchFromGitHub {
-      owner = "xinux-org";
-      repo = "e-imzo";
-      rev = version;
-      hash = "sha256-gV644xWN/wy1SgBlAU/C78Xypt84NVktT85jXS4eWtY=";
-    };
-
-    cargoDeps = rustPlatform.fetchCargoVendor {
-      inherit pname version src;
-      hash = "sha256-rulWG4L/uN6+JBk+SzC0y57Pdw5N0Q1dJlpXGVo+vbQ=";
+  src = fetchFromGitHub {
+    owner = "xinux-org";
+    repo = "e-imzo";
+    tag = finalAttrs.version;
+    # todo
+    hash = "sha256-uDaqkz2VDvqTgi+k8EGGKjLkjoH93xXHQcgUc1NVo30=";
   };
 
-    # Compile time dependencies
-    nativeBuildInputs = [
-      appstream
-      appstream-glib
-      cargo
-      clippy
-      desktop-file-utils
-      gettext
-      git
-      meson
-      ninja
-      pkg-config
-      polkit
-      rustc
-      rustPlatform.cargoSetupHook
-      wrapGAppsHook4
-    ];
+  cargoDeps = rustPlatform.fetchCargoVendor {
+    inherit (finalAttrs) pname version src;
+    # todo
+    hash = "sha256-rulWG4L/uN6+JBk+SzC0y57Pdw5N0Q1dJlpXGVo+vbQ=";
+  };
 
-    # Runtime dependencies which will be shipped
-    # with nix package
-    buildInputs = [
-      desktop-file-utils
-      gdk-pixbuf
-      glib
-      gnome-desktop
-      adwaita-icon-theme
-      gtk4
-      libadwaita
-      libgweather
-      openssl
-      parted
-      rustPlatform.bindgenHook
-      vte-gtk4
-    ];
+  strictDeps = true;
 
-    # Compiler LD variables
-    NIX_LDFLAGS = "-L${(getLibFolder libiconv)}";
-    LD_LIBRARY_PATH = lib.makeLibraryPath [
-      gcc
-      llvmPackages.llvm
-    ];
+  nativeBuildInputs = [
+    meson
+    ninja
+    pkg-config
+    cargo
+    rustPlatform.cargoSetupHook
+    rustc
+    desktop-file-utils
+    wrapGAppsHook4
+  ];
 
-    meta = with lib; {
-      homepage = "https://github.com/xinux-org";
-      description = "E-IMZO for uzbek state web key signing on Linux";
-      license = with lib.licenses; [asl20 mit];
-      platforms = platforms.linux;
-      maintainers = [
-        {
-          name = "Xinux Developers";
-          email = "support@floss.uz";
-          handle = "orzklv";
-          github = "xinux-org";
-        }
-      ];
-    };
-  }
+  buildInputs = [
+    gdk-pixbuf
+    glib
+    gnome-desktop
+    adwaita-icon-theme
+    gtk4
+    libadwaita
+    openssl
+    rustPlatform.bindgenHook
+    polkit
+  ];
+
+  propagatedUserEnvPkgs = [ polkit ];
+
+  postInstall = ''
+    gappsWrapperArgs+=(
+      --suffix PATH : ${lib.makeBinPath finalAttrs.propagatedUserEnvPkgs}
+    )
+  '';
+
+  passthru.updateScript = nix-update-script { };
+
+  meta = {
+    homepage = "https://github.com/xinux-org/e-imzo";
+    mainProgram = "E-IMZO-Manager";
+    description = "GTK application for managing E-IMZO keys";
+    license = with lib.licenses; [
+      asl20
+      mit
+    ];
+    platforms = lib.platforms.linux;
+    teams = [ lib.teams.uzinfocom ];
+  };
+})

@@ -8,15 +8,16 @@ use crate::{
     utils::{check_service_active, check_service_installed, show_alert_dialog},
 };
 use gettextrs::gettext;
+use relm4::component::AsyncComponent;
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw::{self, prelude::*},
     gtk::{self, gio, glib},
-    main_application, Component, ComponentController, ComponentParts, ComponentSender, Controller,
-    SimpleComponent,
+    main_application,
+    prelude::AsyncComponentController,
+    Component, ComponentController, ComponentParts, ComponentSender, Controller, SimpleComponent,
 };
 use std::convert::identity;
-use std::process::Command;
 
 #[derive(Debug, Clone)]
 pub enum Page {
@@ -27,7 +28,7 @@ pub enum Page {
 pub struct App {
     page: Page,
     welcome_page: Controller<WelcomeModel>,
-    select_mode_page: Controller<SelectModePage>,
+    select_mode_page: relm4::prelude::AsyncController<SelectModePage>,
     service_active: bool,
     service_installed: bool,
     service: gtk::Button,
@@ -215,27 +216,29 @@ impl SimpleComponent for App {
             }
             AppMsg::StartAndStopService => {
                 if self.service_active {
-                    let _ = Command::new("systemctl")
+                    let _ = std::process::Command::new("systemctl")
                         .arg("stop")
                         .arg("--user")
                         .arg("e-imzo.service")
                         .status();
-                    self.service_active = false;
-                    self.page = Page::Welcome;
                     let _ = sender.input(AppMsg::ShowMessage(
                         gettext("E-IMZO service stopped").to_string(),
                     ));
                 } else {
-                    let _ = Command::new("systemctl")
+                    let _ = std::process::Command::new("systemctl")
                         .arg("start")
                         .arg("--user")
                         .arg("e-imzo.service")
                         .status();
-                    self.service_active = true;
-                    self.page = Page::SelectMode;
+
                     let _ = sender.input(AppMsg::ShowMessage(
                         gettext("E-IMZO service started").to_string(),
                     ));
+
+                    self.select_mode_page
+                        .emit(SelectModeMsg::SetFileLoadedState(false));
+                    self.select_mode_page
+                        .emit(SelectModeMsg::RefreshCertificates);
                 }
             }
             AppMsg::RefreshService(active) => {

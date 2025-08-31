@@ -7,7 +7,7 @@ use relm4::{
     },
     RelmWidgetExt,
 };
-use std::{fs, io, os::unix::fs::MetadataExt, path::Path, process::Command};
+use std::{collections::HashMap, fs, io, os::unix::fs::MetadataExt, path::Path, process::Command};
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
@@ -52,6 +52,26 @@ pub fn get_pfx_files_in_folder() -> io::Result<Vec<String>> {
     Ok(pfx_files)
 }
 
+pub fn return_pfx_files_in_folder() -> Vec<String> {
+    let mut certificate = Vec::<String>::new();
+
+    let path = Path::new("/media/DSKEYS");
+    if path.exists() {
+        match get_pfx_files_in_folder() {
+            Ok(file_names) => {
+                for file_name in file_names {
+                    certificate.push(file_name.clone());
+                }
+            }
+            Err(e) => println!(
+                "Error in Init function eimzo::get_pfx_files_in_folder: {}",
+                e
+            ),
+        }
+    }
+    return certificate
+}
+
 pub fn check_file_ownership() -> Result<u32, Box<dyn std::error::Error>> {
     let path = Path::new("/media/DSKEYS");
     let metadata = fs::metadata(path)?;
@@ -68,30 +88,65 @@ pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
     vec![filename_filter]
 }
 
-// list of added certificates
-pub fn add_file_row_to_list(file_name: &str, file_list: &gtk::ListBox) {
-    let hbox = gtk::Box::new(gtk::Orientation::Horizontal, 12);
-    hbox.set_margin_all(12);
-    hbox.set_hexpand(true);
+// bunch of C code in Rust
+pub fn add_file_row_to_list(alias: HashMap<String, String>, file_list: &adw::PreferencesGroup) {
+    // all data from certificate
+    let validfrom = alias.get("validfrom").unwrap();
+    let validto = alias.get("validto").unwrap();
+    let full_name = alias.get("cn").unwrap();
+    let serial_number = alias.get("serialnumber").unwrap();
+    let name = alias.get("name").unwrap();
+    let surname = alias.get("surname").unwrap();
 
-    let icon = gtk::Image::from_icon_name("folder-documents-symbolic");
-    hbox.append(&icon);
+    let full_name_box = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+    full_name_box.set_margin_all(12);
+    full_name_box.set_hexpand(true);
+    full_name_box.append(
+        &gtk::Label::builder()
+            .label("F.I.O")
+            .css_classes(["dim-label"])
+            .build(),
+    );
+    full_name_box.append(&gtk::Label::new(Some(&full_name.to_uppercase())));
 
-    let vbox = gtk::Box::new(gtk::Orientation::Vertical, 4);
+    let serial_number_box = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+    serial_number_box.set_margin_all(12);
+    serial_number_box.set_hexpand(true);
+    serial_number_box.append(
+        &gtk::Label::builder()
+            .label("Sertifikat raqami:")
+            .css_classes(["dim-label"])
+            .build(),
+    );
+    serial_number_box.append(&gtk::Label::new(Some(&serial_number.to_uppercase())));
 
-    let title = gtk::Label::new(Some(file_name));
-    title.set_xalign(0.0);
-    title.add_css_class("title-3");
+    let valid_date_box = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+    valid_date_box.set_margin_all(12);
+    valid_date_box.set_hexpand(true);
+    valid_date_box.append(
+        &gtk::Label::builder()
+            .label("Sertifikatning amal qilish muddati:")
+            .css_classes(["dim-label"])
+            .build(),
+    );
+    valid_date_box.append(&gtk::Label::new(Some(&format!(
+        "{} - {}",
+        validfrom, validto
+    ))));
 
-    // let subtitle = gtk::Label::new(Some(&format!("/media/DSKEYS/{}", file_name)));
-    // subtitle.set_xalign(0.0);
-    // subtitle.add_css_class("dim-label");
+    let expander = adw::ExpanderRow::builder()
+        .title(format!(
+            "<b>{} {}</b>",
+            name.to_uppercase(),
+            surname.to_uppercase()
+        ))
+        .use_markup(true)
+        .build();
+    expander.add_row(&adw::ActionRow::builder().child(&full_name_box).build());
+    expander.add_row(&adw::ActionRow::builder().child(&serial_number_box).build());
+    expander.add_row(&adw::ActionRow::builder().child(&valid_date_box).build());
 
-    vbox.append(&title);
-    // vbox.append(&subtitle);
-
-    hbox.append(&vbox);
-    file_list.append(&hbox);
+    file_list.add(&expander);
 }
 
 pub fn show_alert_dialog(text: &str) {
