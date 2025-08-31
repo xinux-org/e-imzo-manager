@@ -24,10 +24,6 @@ in
 
     cargoDeps = pkgs.rustPlatform.importCargoLock {
       lockFile = ./Cargo.lock;
-
-      outputHashes = {
-         "e-imzo-rs-0.2.1" = "sha256-czjkOKqYv3s7IRLvuEoBugygLNGz5zAgwxM12OeihJo=";
-       };
     };
 
     # Compile time dependencies
