@@ -1,4 +1,4 @@
-use e_imzo_rs::list_all_certificates;
+use e_imzo::list_all_certificates;
 use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
@@ -8,8 +8,8 @@ use relm4::{
 };
 
 use crate::utils::{
-    add_file_row_to_list, check_file_ownership, check_service_active, get_pfx_files_in_folder,
-    return_pfx_files_in_folder, show_alert_dialog, tasks_filename_filters,
+    add_file_row_to_list, check_file_ownership, check_service_active, return_pfx_files_in_folder,
+    show_alert_dialog, tasks_filename_filters,
 };
 
 use relm4_components::open_dialog::*;
@@ -98,10 +98,16 @@ impl AsyncComponent for SelectModePage {
                     },
                 }
             } else {
-                gtk::Spinner {
-                    start: (),
+                gtk::Box {
+                    set_vexpand: true,
+                    set_hexpand: true,
+                    set_valign: gtk::Align::Center,
                     set_halign: gtk::Align::Center,
-                    set_spinning: true,
+
+                    adw::Spinner {
+                        set_width_request: 32,
+                        set_height_request: 32,
+                    }
                 }
             }
         },
@@ -193,14 +199,13 @@ impl AsyncComponent for SelectModePage {
                     sender.input(SelectModeMsg::RefreshCertificates);
                 }
             }
-             // todo: move this logic code to utils function
+            // todo: move this logic code to utils function
             SelectModeMsg::RefreshCertificates => {
                 self.file_list_parent.remove_all();
                 let new_group = adw::PreferencesGroup::new();
                 self.file_list = new_group;
                 if Path::new("/media/DSKEYS").exists() {
-                    let mut success = false;
-                    while !success {
+                    while !self.is_file_loaded {
                         tokio::time::sleep(Duration::from_secs(1)).await;
                         match list_all_certificates() {
                             Ok(pfx) => {
@@ -208,7 +213,6 @@ impl AsyncComponent for SelectModePage {
                                     add_file_row_to_list(alias, &self.file_list);
                                 });
                                 self.is_file_loaded = true;
-                                success = true;
                             }
                             Err(e) => {
                                 eprintln!("Waiting for service activation: {}", e);

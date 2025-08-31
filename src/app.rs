@@ -8,12 +8,16 @@ use crate::{
     utils::{check_service_active, check_service_installed, show_alert_dialog},
 };
 use gettextrs::gettext;
+use relm4::component::AsyncComponent;
 use relm4::{
-    actions::{RelmAction, RelmActionGroup}, adw::{self, prelude::*}, gtk::{self, gio, glib}, main_application, prelude::AsyncComponentController, Component, ComponentController, ComponentParts, ComponentSender, Controller, SimpleComponent
+    actions::{RelmAction, RelmActionGroup},
+    adw::{self, prelude::*},
+    gtk::{self, gio, glib},
+    main_application,
+    prelude::AsyncComponentController,
+    Component, ComponentController, ComponentParts, ComponentSender, Controller, SimpleComponent,
 };
 use std::convert::identity;
-use std::process::Command;
-use relm4::component::AsyncComponent;
 
 #[derive(Debug, Clone)]
 pub enum Page {
@@ -212,39 +216,28 @@ impl SimpleComponent for App {
             }
             AppMsg::StartAndStopService => {
                 if self.service_active {
-                    relm4::spawn(async move {
-                        let _ = tokio::process::Command::new("systemctl")
-                            .arg("stop")
-                            .arg("--user")
-                            .arg("e-imzo.service")
-                            .status()
-                            .await;
+                    let _ = std::process::Command::new("systemctl")
+                        .arg("stop")
+                        .arg("--user")
+                        .arg("e-imzo.service")
+                        .status();
 
-                        // sender.input(AppMsg::RefreshService(check_service_active(
-                        //     "e-imzo.service",
-                        // )));
-                        let _ = sender.input(AppMsg::ShowMessage(
-                            gettext("E-IMZO service stopped").to_string(),
-                        ));
-                    });
+                    let _ = sender.input(AppMsg::ShowMessage(
+                        gettext("E-IMZO service stopped").to_string(),
+                    ));
                 } else {
-                    relm4::spawn(async move {
-                        let _ = tokio::process::Command::new("systemctl")
-                            .arg("start")
-                            .arg("--user")
-                            .arg("e-imzo.service")
-                            .status()
-                            .await;
+                    let _ = std::process::Command::new("systemctl")
+                        .arg("start")
+                        .arg("--user")
+                        .arg("e-imzo.service")
+                        .status();
 
-                        // sender.input(AppMsg::RefreshService(check_service_active(
-                        //     "e-imzo.service",
-                        // )));
+                    let _ = sender.input(AppMsg::ShowMessage(
+                        gettext("E-IMZO service started").to_string(),
+                    ));
 
-                        let _ = sender.input(AppMsg::ShowMessage(
-                            gettext("E-IMZO service started").to_string(),
-                        ));
-                    });
-                    self.select_mode_page.emit(SelectModeMsg::SetFileLoadedState(false));
+                    self.select_mode_page
+                        .emit(SelectModeMsg::SetFileLoadedState(false));
                     self.select_mode_page
                         .emit(SelectModeMsg::RefreshCertificates);
                 }
