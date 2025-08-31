@@ -221,7 +221,6 @@ impl SimpleComponent for App {
                         .arg("--user")
                         .arg("e-imzo.service")
                         .status();
-
                     let _ = sender.input(AppMsg::ShowMessage(
                         gettext("E-IMZO service stopped").to_string(),
                     ));
