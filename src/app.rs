@@ -8,12 +8,16 @@ use crate::{
     utils::{check_service_active, check_service_installed, show_alert_dialog},
 };
 use gettextrs::gettext;
+use relm4::component::AsyncComponent;
 use relm4::{
-    actions::{RelmAction, RelmActionGroup}, adw::{self, prelude::*}, gtk::{self, gio, glib}, main_application, prelude::AsyncComponentController, Component, ComponentController, ComponentParts, ComponentSender, Controller, SimpleComponent
+    actions::{RelmAction, RelmActionGroup},
+    adw::{self, prelude::*},
+    gtk::{self, gio, glib},
+    main_application,
+    prelude::AsyncComponentController,
+    Component, ComponentController, ComponentParts, ComponentSender, Controller, SimpleComponent,
 };
 use std::convert::identity;
-use std::process::Command;
-use relm4::component::AsyncComponent;
 
 #[derive(Debug, Clone)]
 pub enum Page {
@@ -244,7 +248,8 @@ impl SimpleComponent for App {
                             gettext("E-IMZO service started").to_string(),
                         ));
                     });
-                    self.select_mode_page.emit(SelectModeMsg::SetFileLoadedState(false));
+                    self.select_mode_page
+                        .emit(SelectModeMsg::SetFileLoadedState(false));
                     self.select_mode_page
                         .emit(SelectModeMsg::RefreshCertificates);
                 }

@@ -29,50 +29,50 @@ impl SimpleComponent for AwesomeModel {
 
                         adw::ActionRow {
                             set_title: "ahost.uz",
-                            add_suffix = &gtk::LinkButton::with_label(
-                                "https://clients.ahost.uz/login",
-                                "Open"
-                            ),
+                            add_suffix = &gtk::LinkButton::builder()
+                                .uri("https://clients.ahost.uz/login")
+                                .child(&gtk::Image::from_icon_name("document-send-symbolic"))
+                                .build(),
                         },
 
                         adw::ActionRow {
                             set_title: "id.egov.uz",
-                            add_suffix = &gtk::LinkButton::with_label(
-                                "https://id.egov.uz/oz",
-                                "Open"
-                            ),
+                            add_suffix = &gtk::LinkButton::builder()
+                                .uri("https://id.egov.uz/oz")
+                                .child(&gtk::Image::from_icon_name("document-send-symbolic"))
+                                .build(),
                         },
 
                         adw::ActionRow {
                             set_title: "didox.uz",
-                            add_suffix = &gtk::LinkButton::with_label(
-                                "https://didox.uz/login_with_signature",
-                                "Open"
-                            ),
+                            add_suffix = &gtk::LinkButton::builder()
+                                .uri("https://didox.uz/login_with_signature")
+                                .child(&gtk::Image::from_icon_name("document-send-symbolic"))
+                                .build(),
                         },
 
                         adw::ActionRow {
                             set_title: "birdarcha.uz",
-                            add_suffix = &gtk::LinkButton::with_label(
-                                "https://new.birdarcha.uz/login",
-                                "Open"
-                            ),
+                            add_suffix = &gtk::LinkButton::builder()
+                                .uri("https://new.birdarcha.uz/login")
+                                .child(&gtk::Image::from_icon_name("document-send-symbolic"))
+                                .build(),
                         },
 
                         adw::ActionRow {
                             set_title: "e-invoice.uz",
-                            add_suffix = &gtk::LinkButton::with_label(
-                                "https://e-invoice.uz/register/",
-                                "Open"
-                            ),
+                            add_suffix = &gtk::LinkButton::builder()
+                                .uri("https://e-invoice.uz/register/")
+                                .child(&gtk::Image::from_icon_name("document-send-symbolic"))
+                                .build(),
                         },
 
                         adw::ActionRow {
                             set_title: "my.mehnat.uz",
-                            add_suffix = &gtk::LinkButton::with_label(
-                                "https://my.mehnat.uz/login#",
-                                "Open"
-                            ),
+                            add_suffix = &gtk::LinkButton::builder()
+                                .uri("https://my.mehnat.uz/login#")
+                                .child(&gtk::Image::from_icon_name("document-send-symbolic"))
+                                .build(),
                         },
                     }
                 }

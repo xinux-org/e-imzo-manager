@@ -8,8 +8,8 @@ use relm4::{
 };
 
 use crate::utils::{
-    add_file_row_to_list, check_file_ownership, check_service_active, get_pfx_files_in_folder,
-    return_pfx_files_in_folder, show_alert_dialog, tasks_filename_filters,
+    add_file_row_to_list, check_file_ownership, check_service_active, return_pfx_files_in_folder,
+    show_alert_dialog, tasks_filename_filters,
 };
 
 use relm4_components::open_dialog::*;
@@ -193,7 +193,7 @@ impl AsyncComponent for SelectModePage {
                     sender.input(SelectModeMsg::RefreshCertificates);
                 }
             }
-             // todo: move this logic code to utils function
+            // todo: move this logic code to utils function
             SelectModeMsg::RefreshCertificates => {
                 self.file_list_parent.remove_all();
                 let new_group = adw::PreferencesGroup::new();
