@@ -6,11 +6,20 @@ use relm4::{
         self,
         prelude::{BoxExt, WidgetExt},
     },
-    RelmWidgetExt,
+    AsyncComponentSender, RelmWidgetExt,
 };
 use std::{
-    collections::HashMap, fs, io, os::unix::fs::MetadataExt, path::Path, process::Command,
+    collections::HashMap,
+    fs, io,
+    os::unix::fs::MetadataExt,
+    path::Path,
+    process::{Command, ExitStatus},
     time::Duration,
+};
+
+use crate::{
+    config::LIBEXECDIR,
+    pages::select_mode::{SelectModeMsg, SelectModePage},
 };
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
@@ -184,6 +193,28 @@ pub async fn refresh_certificates(file_list: &adw::PreferencesGroup) -> &adw::Pr
         }
     }
     return file_list;
+}
+
+// ask password if user has no permission to open /media/DSKEYS folder
+pub fn ask_password(sender: AsyncComponentSender<SelectModePage>) -> () {
+    relm4::spawn(async move {
+        let output = tokio::process::Command::new("pkexec")
+            .arg(format!("{}/e-helper", LIBEXECDIR))
+            .output()
+            .await;
+        match output {
+            Ok(output) => {
+                if !ExitStatus::success(&output.status) {
+                    // do nothing if user canceled entering password
+                    return;
+                }
+                sender.input(SelectModeMsg::OpenFileConfirmed);
+            }
+            Err(e) => {
+                eprintln!("Failed to execute pkexec: {}", e);
+            }
+        }
+    });
 }
 
 pub fn show_alert_dialog(text: &str) {

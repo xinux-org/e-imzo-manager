@@ -7,7 +7,7 @@ use relm4::{
 };
 
 use crate::utils::{
-    check_file_ownership, check_service_active, refresh_certificates,
+    ask_password, check_file_ownership, check_service_active, refresh_certificates,
     return_pfx_files_in_folder, show_alert_dialog, tasks_filename_filters,
 };
 
@@ -15,10 +15,9 @@ use relm4_components::open_dialog::*;
 use std::{
     fs,
     path::{Path, PathBuf},
-    process::ExitStatus,
 };
 
-use crate::{app::AppMsg, config::LIBEXECDIR};
+use crate::app::AppMsg;
 
 pub struct SelectModePage {
     is_path_empty: bool,
@@ -142,6 +141,7 @@ impl AsyncComponent for SelectModePage {
         let file_list_parent = widgets.file_list_parent.clone();
         model.file_list_parent = file_list_parent;
 
+        // when app started prevent this
         if check_service_active("e-imzo.service") {
             sender.input(SelectModeMsg::RefreshCertificates);
         }
@@ -156,29 +156,11 @@ impl AsyncComponent for SelectModePage {
         _root: &Self::Root,
     ) {
         match msg {
-            // todo: move this logic code to utils function
             SelectModeMsg::OpenFile => {
                 if Path::new("/media/DSKEYS").exists() && check_file_ownership().unwrap() == 1000 {
                     self.open_dialog.emit(OpenDialogMsg::Open);
                 } else {
-                    relm4::spawn(async move {
-                        let output = tokio::process::Command::new("pkexec")
-                            .arg(format!("{}/e-helper", LIBEXECDIR))
-                            .output()
-                            .await;
-                        match output {
-                            Ok(output) => {
-                                if !ExitStatus::success(&output.status) {
-                                    // do nothing if user canceled entering password
-                                    return;
-                                }
-                                sender.input(SelectModeMsg::OpenFileConfirmed);
-                            }
-                            Err(e) => {
-                                eprintln!("Failed to execute pkexec: {}", e);
-                            }
-                        }
-                    });
+                    ask_password(sender);
                 }
             }
             SelectModeMsg::OpenFileConfirmed => {
