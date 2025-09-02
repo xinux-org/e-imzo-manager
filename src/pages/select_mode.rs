@@ -35,6 +35,7 @@ pub enum SelectModeMsg {
     ShowMessage(String),
     RefreshCertificates,
     SetFileLoadedState(bool),
+    RemoveCertificates(String),
     None,
 }
 
@@ -184,7 +185,7 @@ impl AsyncComponent for SelectModePage {
                 self.file_list_parent.remove_all();
                 let new_group = adw::PreferencesGroup::new();
                 if Path::new("/media/DSKEYS").exists() {
-                    self.file_list = refresh_certificates(&new_group).await.clone();
+                    self.file_list = refresh_certificates(&new_group, sender).await.clone();
                     self.file_list_parent.append(&self.file_list);
                     self.is_file_loaded = true;
                     self.is_path_empty = return_pfx_files_in_folder().is_empty();
@@ -195,6 +196,16 @@ impl AsyncComponent for SelectModePage {
                 self.is_file_loaded = is_loaded;
             }
             SelectModeMsg::ShowMessage(text) => show_alert_dialog(&text),
+
+            SelectModeMsg::RemoveCertificates(file_name) => {
+                let full_path = Path::new("/media/DSKEYS/").join(format!("{}.pfx", file_name));
+                if let Err(e) = fs::remove_file(&full_path) {
+                    eprintln!("failed {}: {}", full_path.display(), e);
+                } else {
+                    sender.input(SelectModeMsg::RefreshCertificates);
+                    println!("deleted: {}", full_path.display());
+                }
+            }
 
             // when user cancels file selection do nothing
             SelectModeMsg::None => {}

@@ -22,9 +22,14 @@ gettext-rs = { version = "0.7", features = ["gettext-system"] }
 relm4 = { version = "0.9.1", features = ["libadwaita", "gnome_47"] }
 relm4-components = "0.9.1"
 tracing = "0.1.41"
-tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt"]}
-tokio = { version = "1.47.1", default-features = false, features = ["process", "time"]}
-e-imzo = "0.2.2"
+tracing-subscriber = { version = "0.3", default-features = false, features = [
+  "fmt",
+] }
+tokio = { version = "1.47.1", default-features = false, features = [
+  "process",
+  "time",
+] }
+e-imzo = "0.2.4"
 
 [workspace]
 members = [".", "e-helper"]
