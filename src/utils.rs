@@ -1,3 +1,4 @@
+use e_imzo::list_all_certificates;
 use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
@@ -7,7 +8,10 @@ use relm4::{
     },
     RelmWidgetExt,
 };
-use std::{collections::HashMap, fs, io, os::unix::fs::MetadataExt, path::Path, process::Command};
+use std::{
+    collections::HashMap, fs, io, os::unix::fs::MetadataExt, path::Path, process::Command,
+    time::Duration,
+};
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
@@ -63,13 +67,13 @@ pub fn return_pfx_files_in_folder() -> Vec<String> {
                     certificate.push(file_name.clone());
                 }
             }
-            Err(e) => println!(
+            Err(e) => tracing::error!(
                 "Error in Init function eimzo::get_pfx_files_in_folder: {}",
                 e
             ),
         }
     }
-    return certificate
+    return certificate;
 }
 
 pub fn check_file_ownership() -> Result<u32, Box<dyn std::error::Error>> {
@@ -77,6 +81,16 @@ pub fn check_file_ownership() -> Result<u32, Box<dyn std::error::Error>> {
     let metadata = fs::metadata(path)?;
     let uid = metadata.uid();
     return Ok(uid);
+}
+
+pub fn check_service_installed(service: &str) -> bool {
+    let path = Path::new(service);
+
+    if path.exists() {
+        return true;
+    }
+
+    false
 }
 
 // file selection filter .pfx file
@@ -88,8 +102,11 @@ pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
     vec![filename_filter]
 }
 
-// bunch of C code in Rust
-pub fn add_file_row_to_list(alias: HashMap<String, String>, file_list: &adw::PreferencesGroup) {
+// bunch of gtk C style code in Rust
+pub fn add_file_row_to_list(
+    alias: HashMap<String, String>,
+    file_list: &adw::PreferencesGroup,
+) -> &adw::PreferencesGroup {
     // all data from certificate
     let validfrom = alias.get("validfrom").unwrap();
     let validto = alias.get("validto").unwrap();
@@ -147,6 +164,26 @@ pub fn add_file_row_to_list(alias: HashMap<String, String>, file_list: &adw::Pre
     expander.add_row(&adw::ActionRow::builder().child(&valid_date_box).build());
 
     file_list.add(&expander);
+
+    return file_list;
+}
+
+pub async fn refresh_certificates(file_list: &adw::PreferencesGroup) -> &adw::PreferencesGroup {
+    loop {
+        tokio::time::sleep(Duration::from_secs(1)).await;
+        match list_all_certificates() {
+            Ok(pfx) => {
+                pfx.iter().map(|c| c.get_alias()).for_each(|alias| {
+                    add_file_row_to_list(alias, file_list);
+                });
+                break;
+            }
+            Err(e) => {
+                tracing::info!("Waiting for service activation: {}", e);
+            }
+        }
+    }
+    return file_list;
 }
 
 pub fn show_alert_dialog(text: &str) {
@@ -166,14 +203,4 @@ pub fn show_alert_dialog(text: &str) {
     if let Some(win) = relm4::main_application().active_window() {
         dialog.present(Some(&win));
     }
-}
-
-pub fn check_service_installed(service: &str) -> bool {
-    let path = Path::new(service);
-
-    if path.exists() {
-        return true;
-    }
-
-    false
 }

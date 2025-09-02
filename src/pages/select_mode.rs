@@ -1,4 +1,3 @@
-use e_imzo::list_all_certificates;
 use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
@@ -8,8 +7,8 @@ use relm4::{
 };
 
 use crate::utils::{
-    add_file_row_to_list, check_file_ownership, check_service_active, return_pfx_files_in_folder,
-    show_alert_dialog, tasks_filename_filters,
+    check_file_ownership, check_service_active, refresh_certificates,
+    return_pfx_files_in_folder, show_alert_dialog, tasks_filename_filters,
 };
 
 use relm4_components::open_dialog::*;
@@ -17,7 +16,6 @@ use std::{
     fs,
     path::{Path, PathBuf},
     process::ExitStatus,
-    time::Duration,
 };
 
 use crate::{app::AppMsg, config::LIBEXECDIR};
@@ -199,40 +197,22 @@ impl AsyncComponent for SelectModePage {
                     sender.input(SelectModeMsg::RefreshCertificates);
                 }
             }
-            // todo: move this logic code to utils function
             SelectModeMsg::RefreshCertificates => {
                 self.file_list_parent.remove_all();
                 let new_group = adw::PreferencesGroup::new();
-                self.file_list = new_group;
                 if Path::new("/media/DSKEYS").exists() {
-                    while !self.is_file_loaded {
-                        tokio::time::sleep(Duration::from_secs(1)).await;
-                        match list_all_certificates() {
-                            Ok(pfx) => {
-                                pfx.iter().map(|c| c.get_alias()).for_each(|alias| {
-                                    add_file_row_to_list(alias, &self.file_list);
-                                });
-                                self.is_file_loaded = true;
-                            }
-                            Err(e) => {
-                                eprintln!("Waiting for service activation: {}", e);
-                                self.is_file_loaded = false;
-                                std::thread::sleep(std::time::Duration::from_millis(200));
-                            }
-                        }
-                    }
-                    if self.is_file_loaded {
-                        self.file_list_parent.append(&self.file_list);
-                        self.is_path_empty = return_pfx_files_in_folder().is_empty();
-                    }
+                    self.file_list = refresh_certificates(&new_group).await.clone();
+                    self.file_list_parent.append(&self.file_list);
+                    self.is_file_loaded = true;
+                    self.is_path_empty = return_pfx_files_in_folder().is_empty();
                 }
             }
+
             SelectModeMsg::SetFileLoadedState(is_loaded) => {
                 self.is_file_loaded = is_loaded;
             }
-            SelectModeMsg::ShowMessage(text) => {
-                show_alert_dialog(&text);
-            }
+            SelectModeMsg::ShowMessage(text) => show_alert_dialog(&text),
+
             // when user cancels file selection do nothing
             SelectModeMsg::None => {}
         }
