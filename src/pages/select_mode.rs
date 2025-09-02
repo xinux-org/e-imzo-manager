@@ -156,6 +156,7 @@ impl AsyncComponent for SelectModePage {
         _root: &Self::Root,
     ) {
         match msg {
+            // todo: move this logic code to utils function
             SelectModeMsg::OpenFile => {
                 if Path::new("/media/DSKEYS").exists() && check_file_ownership().unwrap() == 1000 {
                     self.open_dialog.emit(OpenDialogMsg::Open);
