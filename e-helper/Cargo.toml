@@ -3,6 +3,14 @@ name = "e-helper"
 version = "0.1.0"
 edition = "2021"
 
+# Optimize release binary as much as possible
+[profile.release]
+lto = true
+codegen-units = 1
+incremental = true
+strip = true
+opt-level = "z"
+
 [dependencies]
 users = "0.11"
 
