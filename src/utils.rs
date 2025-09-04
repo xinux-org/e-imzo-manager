@@ -113,7 +113,7 @@ pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
 
 // bunch of gtk C style code in Rust
 pub fn add_file_row_to_list(
-    c: e_imzo::Certificate,
+    certificate: e_imzo::Certificate,
     alias: HashMap<String, String>,
     file_list: &adw::PreferencesGroup,
     sender: AsyncComponentSender<SelectModePage>,
@@ -122,7 +122,7 @@ pub fn add_file_row_to_list(
     let validfrom: Vec<_> = alias.get("validfrom").unwrap().split(" ").collect();
     let mut validfrom_dmy: Vec<_> = validfrom[0].split(".").collect();
     validfrom_dmy.reverse();
-    
+
     let validto: Vec<_> = alias.get("validto").unwrap().split(" ").collect();
     let mut validto_dmy: Vec<_> = validto[0].split(".").collect();
     validto_dmy.reverse();
@@ -131,7 +131,7 @@ pub fn add_file_row_to_list(
     let serial_number = alias.get("serialnumber").unwrap();
     let name = alias.get("name").unwrap();
     let surname = alias.get("surname").unwrap();
-    let file_name = c.name;
+    let file_name = certificate.name;
 
     let full_name_box = gtk::Box::new(gtk::Orientation::Horizontal, 12);
     full_name_box.set_margin_all(12);
@@ -166,7 +166,8 @@ pub fn add_file_row_to_list(
     );
     valid_date_box.append(&gtk::Label::new(Some(&format!(
         "{} - {}",
-        validfrom_dmy.join("."), validto_dmy.join(".")
+        validfrom_dmy.join("."),
+        validto_dmy.join(".")
     ))));
 
     let remove_button = gtk::Button::new();
@@ -175,36 +176,7 @@ pub fn add_file_row_to_list(
     remove_button.set_align(gtk::Align::End);
 
     remove_button.connect_clicked(move |_| {
-        let dialog = adw::AlertDialog::builder()
-            .heading("Are you sure?")
-            .body("Do you really want to delete this certificate?")
-            .build();
-
-        dialog.add_responses(&[("yes", "Yes"), ("no", "No")]);
-        dialog.set_default_response(Some("no"));
-
-        dialog.set_response_appearance("yes", adw::ResponseAppearance::Destructive);
-        dialog.set_response_appearance("no", adw::ResponseAppearance::Suggested);
-
-        dialog.connect_response(None, {
-            let sender = sender.clone();
-            let file_name = file_name.clone();
-            move |dialog, response| {
-                match response {
-                    "yes" => {
-                        sender.input(SelectModeMsg::RemoveCertificates(file_name.clone()));
-                    }
-                    "no" => {
-                        sender.input(SelectModeMsg::RefreshCertificates);
-                    }
-                    _ => {}
-                }
-                dialog.close();
-            }
-        });
-        if let Some(win) = relm4::main_application().active_window() {
-            dialog.present(Some(&win));
-        }
+        show_remove_file_alert_dialog(file_name.clone(), sender.clone());
     });
 
     let expander = adw::ExpanderRow::builder()
@@ -284,6 +256,39 @@ pub fn show_alert_dialog(text: &str) {
         dialog.close();
     });
 
+    if let Some(win) = relm4::main_application().active_window() {
+        dialog.present(Some(&win));
+    }
+}
+
+pub fn show_remove_file_alert_dialog(file_name: String, sender: AsyncComponentSender<SelectModePage>) -> () {
+    let dialog = adw::AlertDialog::builder()
+        .heading("Are you sure?")
+        .body("Do you really want to delete this certificate?")
+        .build();
+
+    dialog.add_responses(&[("yes", "Yes"), ("no", "No")]);
+    dialog.set_default_response(Some("no"));
+
+    dialog.set_response_appearance("yes", adw::ResponseAppearance::Destructive);
+    dialog.set_response_appearance("no", adw::ResponseAppearance::Suggested);
+
+    dialog.connect_response(None, {
+        let sender = sender.clone();
+        let file_name = file_name.clone();
+        move |dialog, response| {
+            match response {
+                "yes" => {
+                    sender.input(SelectModeMsg::RemoveCertificates(file_name.clone()));
+                }
+                "no" => {
+                    sender.input(SelectModeMsg::RefreshCertificates);
+                }
+                _ => {}
+            }
+            dialog.close();
+        }
+    });
     if let Some(win) = relm4::main_application().active_window() {
         dialog.present(Some(&win));
     }
