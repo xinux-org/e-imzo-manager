@@ -87,7 +87,7 @@ impl AsyncComponent for SelectModePage {
                             set_margin_top: 20,
                             set_margin_bottom: 10,
                             set_orientation: gtk::Orientation::Vertical,
-
+                            set_halign: gtk::Align::Center,
                             adw::Clamp {
                                 #[name(file_list_parent)]
                                 gtk::Box {}
@@ -134,7 +134,13 @@ impl AsyncComponent for SelectModePage {
         let mut model = SelectModePage {
             is_path_empty: return_pfx_files_in_folder().is_empty(),
             is_file_loaded: false,
-            file_list_parent: gtk::Box::new(gtk::Orientation::Vertical, 1),
+            file_list_parent: gtk::Box::builder()
+                .orientation(gtk::Orientation::Vertical)
+                .halign(gtk::Align::Center)
+                .valign(gtk::Align::Center)
+                .hexpand(true)
+                .vexpand(true)
+                .build(),
             file_list: adw::PreferencesGroup::new(),
             open_dialog,
         };

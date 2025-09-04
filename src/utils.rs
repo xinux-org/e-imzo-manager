@@ -118,9 +118,15 @@ pub fn add_file_row_to_list(
     file_list: &adw::PreferencesGroup,
     sender: AsyncComponentSender<SelectModePage>,
 ) -> &adw::PreferencesGroup {
+    // convert string "2027.07.23 17:44:06" into "23.07.2027"
+    let validfrom: Vec<_> = alias.get("validfrom").unwrap().split(" ").collect();
+    let mut validfrom_dmy: Vec<_> = validfrom[0].split(".").collect();
+    validfrom_dmy.reverse();
+    
+    let validto: Vec<_> = alias.get("validto").unwrap().split(" ").collect();
+    let mut validto_dmy: Vec<_> = validto[0].split(".").collect();
+    validto_dmy.reverse();
     // all data from certificate
-    let validfrom = alias.get("validfrom").unwrap();
-    let validto = alias.get("validto").unwrap();
     let full_name = alias.get("cn").unwrap();
     let serial_number = alias.get("serialnumber").unwrap();
     let name = alias.get("name").unwrap();
@@ -160,7 +166,7 @@ pub fn add_file_row_to_list(
     );
     valid_date_box.append(&gtk::Label::new(Some(&format!(
         "{} - {}",
-        validfrom, validto
+        validfrom_dmy.join("."), validto_dmy.join(".")
     ))));
 
     let remove_button = gtk::Button::new();
