@@ -196,6 +196,8 @@ impl AsyncComponent for SelectModePage {
                     self.is_file_loaded = true;
                     self.is_path_empty = return_pfx_files_in_folder().is_empty();
                 }
+                self.is_file_loaded = true;
+
             }
 
             SelectModeMsg::SetFileLoadedState(is_loaded) => {
