@@ -55,7 +55,7 @@ in
     meta = {
       homepage = manifest.homepage;
       description = manifest.description;
-      license = with lib.licenses; [asl20 mit];
+      license = with lib.licenses; [agpl3Plus];
       platforms = lib.platforms.linux;
       teams = [ lib.teams.uzinfocom ];
     };

@@ -2,7 +2,7 @@
 name = "E-IMZO-Manager"
 version = "0.2.0"
 edition = "2021"
-license = "MIT OR Apache-2.0"
+license = "AGPL-3.0"
 description = "E-IMZO for uzbek state web key signing on Linux"
 homepage = "https://github.com/xinux-org"
 repository = "https://github.com/xinux-org/e-imzo"
