@@ -122,7 +122,7 @@ pub fn add_file_row_to_list(
     let validfrom: Vec<_> = alias.get("validfrom").unwrap().split(" ").collect();
     let mut validfrom_dmy: Vec<_> = validfrom[0].split(".").collect();
     validfrom_dmy.reverse();
-    
+
     let validto: Vec<_> = alias.get("validto").unwrap().split(" ").collect();
     let mut validto_dmy: Vec<_> = validto[0].split(".").collect();
     validto_dmy.reverse();
@@ -138,7 +138,7 @@ pub fn add_file_row_to_list(
     full_name_box.set_hexpand(true);
     full_name_box.append(
         &gtk::Label::builder()
-            .label("F.I.O")
+            .label(gettext("Full name"))
             .css_classes(["dim-label"])
             .build(),
     );
@@ -149,7 +149,7 @@ pub fn add_file_row_to_list(
     serial_number_box.set_hexpand(true);
     serial_number_box.append(
         &gtk::Label::builder()
-            .label("Sertifikat raqami:")
+            .label(gettext("Sertificate number:"))
             .css_classes(["dim-label"])
             .build(),
     );
@@ -160,27 +160,28 @@ pub fn add_file_row_to_list(
     valid_date_box.set_hexpand(true);
     valid_date_box.append(
         &gtk::Label::builder()
-            .label("Sertifikatning amal qilish muddati:")
+            .label(gettext("Certificate validity period:"))
             .css_classes(["dim-label"])
             .build(),
     );
     valid_date_box.append(&gtk::Label::new(Some(&format!(
         "{} - {}",
-        validfrom_dmy.join("."), validto_dmy.join(".")
+        validfrom_dmy.join("."),
+        validto_dmy.join(".")
     ))));
 
     let remove_button = gtk::Button::new();
-    remove_button.set_label("Delete");
+    remove_button.set_label(&gettext("Delete"));
     remove_button.add_css_class("destructive-action");
     remove_button.set_align(gtk::Align::End);
 
     remove_button.connect_clicked(move |_| {
         let dialog = adw::AlertDialog::builder()
-            .heading("Are you sure?")
-            .body("Do you really want to delete this certificate?")
+            .heading(gettext("Are you sure?"))
+            .body(gettext("Do you really want to delete this certificate?"))
             .build();
 
-        dialog.add_responses(&[("yes", "Yes"), ("no", "No")]);
+        dialog.add_responses(&[("yes", &gettext("Yes")), ("no", &gettext("No"))]);
         dialog.set_default_response(Some("no"));
 
         dialog.set_response_appearance("yes", adw::ResponseAppearance::Destructive);
