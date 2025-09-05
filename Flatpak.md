@@ -7,7 +7,7 @@ Instructions regarding Flatpak build and deployment.
 - `org.gnome.Platform`
 - `org.freedesktop.Sdk.Extension.rust-stable`
 
-> The current version of `org.gnome.Platform` is 47.
+> The current version of `org.gnome.Platform` is 48.
 
 Install the following dependencies:
 ```shell
