@@ -16,7 +16,7 @@ use relm4::{
 use crate::utils::check_service_installed;
 
 fn embedded_logo() -> Texture {
-    let bytes = include_bytes!("../../.github/assets/e_imzo.png");
+    let bytes = include_bytes!("../../.github/assets/logo.png");
     let g_bytes = glib::Bytes::from(&bytes.to_vec());
     let stream = MemoryInputStream::from_bytes(&g_bytes);
     let pixbuf = Pixbuf::from_stream(&stream, Cancellable::NONE).unwrap();
