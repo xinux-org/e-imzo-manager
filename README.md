@@ -17,39 +17,48 @@ Since NixOS'es nixpkgs has e-imzo service available under the hood, there's no h
 
 ## Development
 
-This application has Linux-only dependencies that would require additional flags to run on MacOS with nix package manager.
+This application has Linux-only dependencies.
+```bash
+# download dependencies
+nix develop 
 
-```
-# Do not run it inside nix-shell!
-nix run github:xinux-org/e-imzo
-
-# Open interactive GTK Debugger
-export GTK_DEBUG=interactive
-
-# Initiate meson environment
+# Initiate meson environment for the first time. This will generate ./src/config.rs
 meson setup build
-meson compile -C build
-./build/src/E-IMZO-Manager
 
-# Generate translation words from /po/POTFILES.in
+# build the project
+nix build --show--trace
+
+# Go one folder back and run bin outside of nix-shell. Otherwise polkit cannot ask password to create /media/DSKEYS for e-imzo server
+cd ..
+./e-imzo/result/bin/E-IMZO-Manager
+
+# Optional. Generate translation words from /po/POTFILES.in if needed.
+cd ./po
 xgettext --directory=.. --files-from=POTFILES.in --from-code=UTF-8 -kgettext -o translations.pot
 ```
 
 ## Building
 
-Building this app requires Linux hosts only. If you are going to only try or use this application, simply run:
+Building this app requires Linux hosts only with nix. If you are going to only try or use this application, simply run:
 
 ```bash
-# Call the flake via nix
+# Call the flake via nix. Do not run it inside nix-shell!
 nix run github:xinux-org/e-imzo
 ```
 
 However, if you were planning to tweak this application or hack, follow the [development](#development) section of this document for more, it includes build steps for development environment.
 
 ## Installation
+```nix
+# add these to your config files or /etc/nixos/configuration.nix 
+environment = {
+  systemPackages = with pkgs; [
+    e-imzo-manager
+  ];
+};
 
-_WIP_
-
+service.e-imzo.enable = true;
+```
 ## FAQ
 
 These are most frequently asked question for developers and hackers.
@@ -62,6 +71,12 @@ There's been cases when we wanted to reproduce totally different behaviors in de
 
 Linux is the first-class citizen and we don't primarilary support these platforms as our main target. However, as GTK supports these platforms and rust can compile to both of them, it's possible to tweak this application and make it work for these platforms.
 
+### What about publishing this app to the Flathub?
+
+Our main target stays on NixOS and nix package manager. App hosted on nixpkgs and porting to flathub requires some code change. That means we are open to help mainteiners who really wants to see E-IMZO Manager on another Linux distros. The software on flathub will be community supported because the software developed by Uzinfocom OSS developers is only supported in nixpkgs and does not take responsibility for the version on flathub.
+
+### Flathub development docs?
+Refer to [Flatpak.md](./Flatpak.md)
 ## License
 
 This project is licensed under the CC-BY-4.0 for text documents at [archive](.github/archive) license due to stricted use of [Soliq.uz](https://soliq.uz)'es policy and AGPL for the manager - see the [LICENSE-CCBY](LICENSE-CCBY) and [LICENSE-AGPL](LICENSE-AGPL) files for details.
