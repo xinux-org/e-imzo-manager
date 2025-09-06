@@ -149,7 +149,7 @@ pub fn add_file_row_to_list(
     serial_number_box.set_hexpand(true);
     serial_number_box.append(
         &gtk::Label::builder()
-            .label(gettext("Sertificate number:"))
+            .label(gettext("Sertificate number"))
             .css_classes(["dim-label"])
             .build(),
     );
@@ -160,7 +160,7 @@ pub fn add_file_row_to_list(
     valid_date_box.set_hexpand(true);
     valid_date_box.append(
         &gtk::Label::builder()
-            .label(gettext("Certificate validity period:"))
+            .label(gettext("Certificate validity period"))
             .css_classes(["dim-label"])
             .build(),
     );
@@ -249,7 +249,7 @@ pub fn show_alert_dialog(text: &str) {
         .follows_content_size(true)
         .build();
 
-    dialog.add_responses(&[("ok", &gettext("OK"))]);
+    dialog.add_responses(&[("ok", &gettext("Ok"))]);
 
     dialog.connect_response(None, |dialog, response| {
         println!("Dialog response: {}", response);
@@ -261,13 +261,16 @@ pub fn show_alert_dialog(text: &str) {
     }
 }
 
-pub fn show_remove_file_alert_dialog(file_name: String, sender: AsyncComponentSender<SelectModePage>) -> () {
+pub fn show_remove_file_alert_dialog(
+    file_name: String,
+    sender: AsyncComponentSender<SelectModePage>,
+) -> () {
     let dialog = adw::AlertDialog::builder()
-        .heading("Are you sure?")
-        .body("Do you really want to delete this certificate?")
+        .heading(gettext("Are you sure?"))
+        .body(gettext("Do you really want to delete this certificate?"))
         .build();
 
-    dialog.add_responses(&[("yes", "Yes"), ("no", "No")]);
+    dialog.add_responses(&[("yes", &gettext("Yes")), ("no", &gettext("No"))]);
     dialog.set_default_response(Some("no"));
 
     dialog.set_response_appearance("yes", adw::ResponseAppearance::Destructive);

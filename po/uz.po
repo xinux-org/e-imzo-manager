@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-05 16:10+0500\n"
-"PO-Revision-Date: 2025-09-05 16:28+0500\n"
+"POT-Creation-Date: 2025-09-06 12:02+0500\n"
+"PO-Revision-Date: 2025-09-06 12:07+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: uz\n"
@@ -67,7 +67,7 @@ msgstr "Umumiy"
 #: data/resources/ui/shortcuts.ui:14
 msgctxt "shortcut window"
 msgid "Show Shortcuts"
-msgstr "Yorliqlarni ko'rsatish"
+msgstr "Yorliqlarni ko‘rsatish"
 
 #: data/resources/ui/shortcuts.ui:20
 msgctxt "shortcut window"
@@ -76,7 +76,7 @@ msgstr "Chiqish"
 
 #: src/app.rs:61
 msgid "Awesome E-IMZO"
-msgstr "E-IMZO ro'yxati"
+msgstr "E-IMZO ro‘yxati"
 
 #: src/app.rs:62
 msgid "Keyboard"
@@ -94,31 +94,70 @@ msgstr "E-IMZO servisi o‘chirildi"
 msgid "E-IMZO service started"
 msgstr "E-IMZO servisi yondi"
 
+#: src/utils.rs:141
+msgid "Full name"
+msgstr "F.I.O"
+
+#: src/utils.rs:152
+msgid "Sertificate number"
+msgstr "Sertifikat raqami"
+
+#: src/utils.rs:163
+msgid "Certificate validity period"
+msgstr "Sertifikatning amal qilish muddati"
+
+#: src/utils.rs:174
+msgid "Delete"
+msgstr "Oʻchirish"
+
+#: src/utils.rs:252
+msgid "Ok"
+msgstr "Ok"
+
+#: src/utils.rs:269
+msgid "Are you sure?"
+msgstr "Ishonchingiz komilmi?"
+
+#: src/utils.rs:270
+msgid "Do you really want to delete this certificate?"
+msgstr "Haqiqatan ham bu sertifikatni oʻchirib tashlamoqchimisiz?"
+
+#: src/utils.rs:273
+msgid "Yes"
+msgstr "Ha"
+
+#: src/utils.rs:273
+msgid "No"
+msgstr "Yo‘q"
+
 #: src/pages/welcome.rs:53
 msgid "Welcome to E-imzo"
 msgstr "E-imzoga xush kelibsiz"
 
-#: src/pages/welcome.rs:61
+#: src/pages/welcome.rs:60
 msgid "Please click the red button to start e-imzo service"
 msgstr "Iltimos e-imzo servisini yoqish uchun qizil tugmani bosing"
 
-#: src/pages/welcome.rs:66
-#, fuzzy
-#| msgid "Please download and relaunch the app again."
+#: src/pages/welcome.rs:65
 msgid "Please download e-imzo service and relaunch the app again."
 msgstr "Iltimos, ilovani yuklab oling va qayta ishga tushiring."
 
+#: src/modals/awesome.rs:17
+msgid "List of used e-imzo websites"
+msgstr "E-imzo qo‘llanilgan veb-saytlar ro‘yxati"
+
 #: src/pages/select_mode.rs:62
 msgid "No certificates"
-msgstr "Sertifikatlar yo'q"
+msgstr "Sertifikatlar yo‘q"
 
 #: src/pages/select_mode.rs:63
 msgid "Load some certificates to start using the app."
-msgstr "Ilovadan foydalanishni boshlash uchun ba'zi sertifikatlarni yuklang."
+msgstr ""
+"Ilovadan foydalanishni boshlash uchun ayrim sertifikatlarni yuklab oling."
 
 #: src/pages/select_mode.rs:81
 msgid "Loaded keys"
-msgstr "Yuklangan kalitlar"
+msgstr "Mavjud kalitlar"
 
 #: src/pages/select_mode.rs:182
 msgid "File already exists. You can use it"

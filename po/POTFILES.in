@@ -4,5 +4,7 @@ data/uz.xinux.EIMZOManager.metainfo.xml.in.in
 data/resources/ui/shortcuts.ui
 src/app.rs
 src/main.rs
+src/utils.rs
 src/pages/welcome.rs
+src/modals/awesome.rs
 src/pages/select_mode.rs

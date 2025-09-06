@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-05 16:10+0500\n"
+"POT-Creation-Date: 2025-09-06 12:02+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,16 +91,56 @@ msgstr ""
 msgid "E-IMZO service started"
 msgstr ""
 
+#: src/utils.rs:141
+msgid "Full name"
+msgstr ""
+
+#: src/utils.rs:152
+msgid "Sertificate number"
+msgstr ""
+
+#: src/utils.rs:163
+msgid "Certificate validity period"
+msgstr ""
+
+#: src/utils.rs:174
+msgid "Delete"
+msgstr ""
+
+#: src/utils.rs:252
+msgid "Ok"
+msgstr ""
+
+#: src/utils.rs:269
+msgid "Are you sure?"
+msgstr ""
+
+#: src/utils.rs:270
+msgid "Do you really want to delete this certificate?"
+msgstr ""
+
+#: src/utils.rs:273
+msgid "Yes"
+msgstr ""
+
+#: src/utils.rs:273
+msgid "No"
+msgstr ""
+
 #: src/pages/welcome.rs:53
 msgid "Welcome to E-imzo"
 msgstr ""
 
-#: src/pages/welcome.rs:61
+#: src/pages/welcome.rs:60
 msgid "Please click the red button to start e-imzo service"
 msgstr ""
 
-#: src/pages/welcome.rs:66
+#: src/pages/welcome.rs:65
 msgid "Please download e-imzo service and relaunch the app again."
+msgstr ""
+
+#: src/modals/awesome.rs:17
+msgid "List of used e-imzo websites"
 msgstr ""
 
 #: src/pages/select_mode.rs:62
