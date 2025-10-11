@@ -43,7 +43,7 @@ Building this app requires Linux hosts only with nix. If you are going to only t
 
 ```bash
 # Call the flake via nix. Do not run it inside nix-shell!
-nix run github:xinux-org/e-imzo
+nix run github:xinux-org/e-imzo-manager
 ```
 
 However, if you were planning to tweak this application or hack, follow the [development](#development) section of this document for more, it includes build steps for development environment.
