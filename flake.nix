@@ -13,6 +13,7 @@
   };
 
   outputs = {
+    self,
     nixpkgs,
     flake-utils,
     ...
@@ -29,5 +30,11 @@
 
       # Output package
       packages.default = pkgs.callPackage ./. {inherit pkgs;};
-    });
+    }) // {
+      # Hydra CI jobs
+      hydraJobs = {
+        inherit (self)
+          packages;
+      };
+    };
 }
