@@ -33,8 +33,7 @@
     }) // {
       # Hydra CI jobs
       hydraJobs = {
-        inherit (self)
-          packages;
+        inherit (self.packages) x86_64-linux aarch64-linux;
       };
     };
 }
