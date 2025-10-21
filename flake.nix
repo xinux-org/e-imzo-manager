@@ -3,10 +3,10 @@
 
   inputs = {
     # Stable for keeping thins clean
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
 
     # # Fresh and new for testing
-    # nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # The flake-utils library
     flake-utils.url = "github:numtide/flake-utils";
