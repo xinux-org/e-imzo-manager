@@ -58,6 +58,6 @@ in
       license = with lib.licenses; [agpl3Plus];
       platforms = lib.platforms.linux;
       # teams = [ lib.teams.uzinfocom ];
-      maintainers = with lib.maintainers; [ bahrom04 bemeritus];
+      maintainers = ["bahrom04" "bemeritus"];
     };
   }
