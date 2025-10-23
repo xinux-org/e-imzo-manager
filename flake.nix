@@ -35,7 +35,6 @@
       # Hydra CI jobs
       hydraJobs = {
         packages = self.packages.x86_64-linux.default;
-        devShells = self.devShells.x86_64-linux.default;
       };
     };
 }
