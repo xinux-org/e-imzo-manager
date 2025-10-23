@@ -10,10 +10,6 @@ use crate::{
 use gettextrs::gettext;
 use relm4::component::AsyncComponent;
 use relm4::{
-
-
-
-    
     actions::{RelmAction, RelmActionGroup},
     adw::{self, prelude::*},
     gtk::{self, gio, glib},
