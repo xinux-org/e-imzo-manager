@@ -30,10 +30,12 @@
 
       # Output package
       packages.default = pkgs.callPackage ./. {inherit pkgs;};
-    }) // {
+    })
+    // {
       # Hydra CI jobs
       hydraJobs = {
-        inherit (self.packages.x86_64-linux) default;
+        packages = self.packages.x86_64-linux.default;
+        devShells = self.devShells.x86_64-linux.default;
       };
     };
 }
