@@ -33,7 +33,6 @@ impl SimpleComponent for Localhost {
         ) {
             eprintln!("Failed to open URL: {}", err);
         }
-
         ComponentParts { model, widgets }
     }
 }

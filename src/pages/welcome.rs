@@ -67,20 +67,6 @@ impl SimpleComponent for WelcomeModel {
               }
             },
 
-            gtk::Label {
-              add_css_class: relm4::css::TITLE_2,
-              #[watch]
-              set_markup: "It seems you <a href=\"https://127.0.0.1:64443/\">don't have e-imzo installed</a>.",
-              set_use_markup: true,
-              set_margin_all: 10,
-              set_justify: gtk::Justification::Center,
-            },
-
-            gtk::LinkButton {
-                set_label: &gettext("Please download e-imzo service and relaunch the app again."),
-                set_uri: "https://127.0.0.1:64443/",
-            },
-
             // gtk::Label {
             //     add_css_class: relm4::css::TITLE_4,
             //     #[watch]
