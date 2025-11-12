@@ -1,6 +1,6 @@
 use crate::{
     config::{APP_ID, PROFILE},
-    modals::{about::AboutDialog, awesome::AwesomeModel},
+    modals::{about::AboutDialog, awesome::AwesomeModel, localhost::Localhost},
     pages::{
         select_mode::{SelectModeMsg, SelectModePage},
         welcome::WelcomeModel,
@@ -47,6 +47,7 @@ relm4::new_action_group!(pub WindowActionGroup, "win");
 relm4::new_stateless_action!(AwesomeAction, WindowActionGroup, "awesome");
 relm4::new_stateless_action!(pub ShortcutsAction, WindowActionGroup, "show-help-overlay");
 relm4::new_stateless_action!(AboutAction, WindowActionGroup, "about");
+relm4::new_stateless_action!(LocalhostAction, WindowActionGroup, "localhost");
 
 #[relm4::component(pub)]
 impl SimpleComponent for App {
@@ -59,6 +60,7 @@ impl SimpleComponent for App {
         primary_menu: {
             section! {
                 &gettext("Awesome E-IMZO") => AwesomeAction,
+                &gettext("E-IMZO Host") => LocalhostAction,
                 &gettext("Keyboard") => ShortcutsAction,
                 &gettext("About E-IMZO Manager") => AboutAction,
             }
@@ -190,6 +192,12 @@ impl SimpleComponent for App {
             })
         };
 
+        let localhost_action = {
+            RelmAction::<LocalhostAction>::new_stateless(move |_| {
+                Localhost::builder().launch(()).detach();
+            })
+        };
+
         let sender_clone = sender.input_sender().clone();
         glib::timeout_add_seconds_local(1, move || {
             if check_service_installed("/etc/systemd/user/e-imzo.service") {
@@ -203,6 +211,7 @@ impl SimpleComponent for App {
         actions.add_action(awesome_action);
         actions.add_action(shortcuts_action);
         actions.add_action(about_action);
+        actions.add_action(localhost_action);
         actions.register_for_widget(&widgets.main_window);
 
         ComponentParts { model, widgets }
