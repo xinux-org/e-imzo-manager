@@ -80,7 +80,7 @@ msgstr "E-IMZO ro‘yxati"
 
 #: src/app.rs:62
 msgid "Keyboard"
-msgstr "Klaviatura"
+msgstr "Yorliqlar"
 
 #: src/app.rs:63
 msgid "About E-IMZO Manager"

@@ -6,5 +6,5 @@ Exec=E-IMZO-Manager
 Terminal=false
 Categories=System;
 Keywords=Gnome;GTK;
-Icon=uz.xinux.EIMZOManager
+Icon=@icon@
 StartupNotify=true
