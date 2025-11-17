@@ -13,16 +13,16 @@
   </categories>
   <screenshots>
     <screenshot type="default">
-      <image>https://github.com/xinux-org/e-imzo/blob/main/data/resources/screenshots/select_mode.png</image>
+      <image>https://github.com/xinux-org/e-imzo-manager/blob/main/data/resources/screenshots/select_mode.png</image>
       <caption>Main window</caption>
     </screenshot>
   </screenshots>
   <url type="homepage">https://github.com/xinux-org</url>
-  <url type="bugtracker">https://github.com/xinux-org/e-imzo/issues</url>
+  <url type="bugtracker">https://github.com/xinux-org/e-imzo-manager/issues</url>
   <!-- Source code repository -->
-  <url type="vcs-browser">https://github.com/xinux-org/e-imzo</url>
+  <url type="vcs-browser">https://github.com/xinux-org/e-imzo-manager</url>
   <!-- Translation repository -->
-  <url type="translate">https://github.com/xinux-org/e-imzo/tree/main/po</url>
+  <url type="translate">https://github.com/xinux-org/e-imzo-manager/tree/main/po</url>
 
   <content_rating type="oars-1.1" />
   <releases>
