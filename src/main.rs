@@ -12,6 +12,7 @@ use relm4::{
     gtk::{self, gio, glib, prelude::*},
     main_application, RelmApp,
 };
+use tracing::{error, info};
 
 use crate::config::RESOURCES_FILE;
 use app::App;
@@ -27,14 +28,26 @@ fn main() {
         .with_max_level(tracing::Level::INFO)
         .init();
 
+    glib::set_application_name("E-IMZO-Manager");
+    gtk::Window::set_default_icon_name(APP_ID);
+
     // setup gettext
     setup_gettext();
 
-    glib::set_application_name("E-IMZO Manager");
-    gtk::Window::set_default_icon_name(APP_ID);
+    if let Ok(res) = gio::Resource::load(RESOURCES_FILE) {
+        info!("Resource loaded: {}", RESOURCES_FILE);
+        gio::resources_register(&res);
 
-    let res = gio::Resource::load(RESOURCES_FILE).expect("Could not load gresource file");
-    gio::resources_register(&res);
+        let data = res
+            .lookup_data(
+                "/uz/xinux/EIMZOManager/style.css",
+                gio::ResourceLookupFlags::NONE,
+            )
+            .unwrap();
+        relm4::set_global_css(&glib::GString::from_utf8_checked(data.to_vec()).unwrap());
+    } else {
+        error!("Failed to load resources");
+    }
 
     let app = main_application();
     app.set_resource_base_path(Some("/uz/xinux/EIMZOManager/"));
@@ -53,7 +66,7 @@ fn main() {
     app.set_accelerators_for_action::<QuitAction>(&["<Control>q"]);
 
     let provider = gtk::CssProvider::new();
-    provider.load_from_path("/data/resources/style.css");
+    provider.load_from_path("./data/resources/style.css");
     gtk::style_context_add_provider_for_display(
         &gdk::Display::default().unwrap(),
         &provider,
@@ -61,14 +74,6 @@ fn main() {
     );
 
     let app = RelmApp::from_app(app);
-
-    let data = res
-        .lookup_data(
-            "/uz/xinux/EIMZOManager/style.css",
-            gio::ResourceLookupFlags::NONE,
-        )
-        .unwrap();
-    relm4::set_global_css(&glib::GString::from_utf8_checked(data.to_vec()).unwrap());
 
     app.visible_on_activate(false).run::<App>(());
 }
