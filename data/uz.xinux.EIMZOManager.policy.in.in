@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN" "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
+<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN" 
+ "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
 <policyconfig>
   <action id="uz.xinux.EIMZOManager">
-    <description>Allow executing commands for Davinci Resolver</description>+
-    <message>Authentication is required to execute commands for Davinci Resolver</message>
+    <vendor>Xinux Developers</vendor>
+    <vendor_url>https://github.com/xinux-org</vendor_url>
+    <description>Give NixOS Configuration Editor root access</description>
+    <message>Authentication is required modify the NixOS system configuration</message>
     <defaults>
-      <allow_any>auth_admin_keep</allow_any>
-      <allow_inactive>auth_admin_keep</allow_inactive>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
     <annotate key="org.freedesktop.policykit.exec.path">@pkglibexecdir@/e-helper</annotate>  

@@ -8,32 +8,17 @@
   <description>
     <p>An electronic digital signature certificate is very important for verifying the time a document was signed and its legal status.</p>
   </description>
-  <categories>
-    <category>System</category>
-  </categories>
   <screenshots>
     <screenshot type="default">
       <image>https://github.com/xinux-org/e-imzo-manager/blob/main/data/resources/screenshots/select_mode.png</image>
       <caption>Main window</caption>
     </screenshot>
   </screenshots>
-  <url type="homepage">https://github.com/xinux-org</url>
+  <url type="homepage">https://github.com/xinux-org/e-imzo-manager</url>
   <url type="bugtracker">https://github.com/xinux-org/e-imzo-manager/issues</url>
-  <!-- Source code repository -->
-  <url type="vcs-browser">https://github.com/xinux-org/e-imzo-manager</url>
-  <!-- Translation repository -->
   <url type="translate">https://github.com/xinux-org/e-imzo-manager/tree/main/po</url>
-
-  <content_rating type="oars-1.1" />
-  <releases>
-    <release version="0.1.0" date="2025-08-11" />
-  </releases>
-  <developer id="xinux.uz">
-    <name translate="no">Xinux Developers</name>
-  </developer>
-
+  <developer_name>Xinux Developers</developer_name>
   <update_contact>support@floss.uz</update_contact>
   <translation type="gettext">@gettext-package@</translation>
-
   <launchable type="desktop-id">@app-id@.desktop</launchable>
 </component>
