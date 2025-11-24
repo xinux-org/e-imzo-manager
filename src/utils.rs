@@ -202,9 +202,9 @@ pub async fn refresh_certificates(
     sender: AsyncComponentSender<SelectModePage>,
 ) -> &adw::PreferencesGroup {
     loop {
-        let mut eimzo = EIMZO::new();
+        let eimzo = EIMZO::new();
         match eimzo {
-            Ok(ref mut e) => match e.list_all_certificates() {
+            Ok(mut e) => match e.list_all_certificates() {
                 Ok(pfx) => {
                     pfx.iter()
                         .map(|c| (c, c.get_alias()))
@@ -217,7 +217,7 @@ pub async fn refresh_certificates(
                     tracing::info!("Waiting for service activation: {}", e);
                 }
             },
-            Err(ref e) => {
+            Err(e) => {
                 tracing::info!("Error during connecting to e_imzo: {}", e);
                 
             }
