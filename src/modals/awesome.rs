@@ -26,6 +26,14 @@ impl SimpleComponent for AwesomeModel {
                 set_content = &adw::PreferencesPage {
                     adw::PreferencesGroup {
                         adw::ActionRow {
+                            set_title: "my.gov.uz",
+                            add_suffix = &gtk::LinkButton::builder()
+                                .uri("https://my.gov.uz/uz")
+                                .child(&gtk::Image::from_icon_name("document-send-symbolic"))
+                                .build(),
+                        },
+
+                        adw::ActionRow {
                             set_title: "ahost.uz",
                             add_suffix = &gtk::LinkButton::builder()
                                 .uri("https://clients.ahost.uz/login")
