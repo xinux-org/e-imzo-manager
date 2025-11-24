@@ -204,7 +204,7 @@ pub async fn refresh_certificates(
     loop {
         let eimzo = EIMZO::new();
         match eimzo {
-            Ok(mut e) => match e.list_all_certificates() {
+            Ok(mut connected) => match connected.list_all_certificates() {
                 Ok(pfx) => {
                     pfx.iter()
                         .map(|c| (c, c.get_alias()))
