@@ -29,7 +29,7 @@
       devShells.default = import ./shell.nix {inherit pkgs;};
 
       # Output package
-      packages.default = pkgs.callPackage ./. {inherit pkgs;};
+      packages.default = pkgs.callPackage ./. {};
     })
     // {
       # Hydra CI jobs
