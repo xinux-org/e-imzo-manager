@@ -8,26 +8,27 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-06 12:02+0500\n"
-"PO-Revision-Date: 2025-09-06 12:03+0500\n"
+"POT-Creation-Date: 2025-11-24 18:20+0500\n"
+"PO-Revision-Date: 2025-11-24 18:27+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
 #: data/uz.xinux.EIMZOManager.desktop.in.in:2
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:6
-msgid "E-IMZO Manager"
+#, fuzzy
+#| msgid "E-IMZO Manager"
+msgid "E-IMZO-Manager"
 msgstr "О менеджере E-IMZO"
 
 #: data/uz.xinux.EIMZOManager.desktop.in.in:3
 msgid "Nix effort for E-IMZO service."
 msgstr "Усилия в Linux для сервиса E-IMZO."
 
-#: data/uz.xinux.EIMZOManager.desktop.in.in:8
+#: data/uz.xinux.EIMZOManager.desktop.in.in:9
 msgid "Gnome;GTK;"
 msgstr "Gnome;GTK;"
 
@@ -43,6 +44,10 @@ msgstr "Высота окна"
 msgid "Window maximized state"
 msgstr "Состояние окна развернуто"
 
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:6
+msgid "E-IMZO Manager"
+msgstr "О менеджере E-IMZO"
+
 #: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:7
 msgid "Improving E-IMZO support and compatibility for Linux"
 msgstr "Улучшение поддержки и совместимости E-IMZO для Linux"
@@ -55,9 +60,13 @@ msgstr ""
 "Сертификат электронной цифровой подписи очень важен для проверки времени "
 "подписания документа и его юридического статуса."
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:17
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:14
 msgid "Main window"
 msgstr "Главное окно"
+
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:20
+msgid "Xinux Developers"
+msgstr "Разработчики Xinux"
 
 #: data/resources/ui/shortcuts.ui:11
 msgctxt "shortcut window"
@@ -74,23 +83,27 @@ msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Выйти"
 
-#: src/app.rs:61
+#: src/app.rs:62
 msgid "Awesome E-IMZO"
 msgstr "Список E-IMZO"
 
-#: src/app.rs:62
+#: src/app.rs:63
+msgid "Open https://127.0.0.1:64443/"
+msgstr "Открыть https://127.0.0.1:64443/"
+
+#: src/app.rs:64
 msgid "Keyboard"
 msgstr "Клавиатура"
 
-#: src/app.rs:63
+#: src/app.rs:65
 msgid "About E-IMZO Manager"
 msgstr "О менеджере E-IMZO"
 
-#: src/app.rs:225
+#: src/app.rs:234
 msgid "E-IMZO service stopped"
 msgstr "Сервис E-IMZO остановлен"
 
-#: src/app.rs:235
+#: src/app.rs:244
 msgid "E-IMZO service started"
 msgstr "Сервис E-IMZO запущен"
 
@@ -154,6 +167,10 @@ msgstr "Сертификатов нет"
 msgid "Load some certificates to start using the app."
 msgstr ""
 "Загрузите несколько сертификатов, чтобы начать использовать приложение."
+
+#: src/pages/select_mode.rs:71
+msgid "Load .pfx"
+msgstr "Загрузить .pfx"
 
 #: src/pages/select_mode.rs:81
 msgid "Loaded keys"

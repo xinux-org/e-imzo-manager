@@ -68,7 +68,7 @@ impl AsyncComponent for SelectModePage {
                                 adw::ButtonContent {
                                     set_icon_name: "folder-documents-symbolic",
                                     #[watch]
-                                    set_label: "Load .pfx",
+                                    set_label: &gettext("Load .pfx"),
                                 },
                                 connect_clicked => SelectModeMsg::OpenFile,
                             },

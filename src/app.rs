@@ -60,7 +60,7 @@ impl SimpleComponent for App {
         primary_menu: {
             section! {
                 &gettext("Awesome E-IMZO") => AwesomeAction,
-                &gettext("E-IMZO Host") => LocalhostAction,
+                &gettext("Open https://127.0.0.1:64443/") => LocalhostAction,
                 &gettext("Keyboard") => ShortcutsAction,
                 &gettext("About E-IMZO Manager") => AboutAction,
             }

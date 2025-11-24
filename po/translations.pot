@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-06 12:02+0500\n"
+"POT-Creation-Date: 2025-11-24 18:20+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,15 +18,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: data/uz.xinux.EIMZOManager.desktop.in.in:2
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:6
-msgid "E-IMZO Manager"
+msgid "E-IMZO-Manager"
 msgstr ""
 
 #: data/uz.xinux.EIMZOManager.desktop.in.in:3
 msgid "Nix effort for E-IMZO service."
 msgstr ""
 
-#: data/uz.xinux.EIMZOManager.desktop.in.in:8
+#: data/uz.xinux.EIMZOManager.desktop.in.in:9
 msgid "Gnome;GTK;"
 msgstr ""
 
@@ -42,6 +41,10 @@ msgstr ""
 msgid "Window maximized state"
 msgstr ""
 
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:6
+msgid "E-IMZO Manager"
+msgstr ""
+
 #: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:7
 msgid "Improving E-IMZO support and compatibility for Linux"
 msgstr ""
@@ -52,8 +55,12 @@ msgid ""
 "the time a document was signed and its legal status."
 msgstr ""
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:17
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:14
 msgid "Main window"
+msgstr ""
+
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:20
+msgid "Xinux Developers"
 msgstr ""
 
 #: data/resources/ui/shortcuts.ui:11
@@ -71,23 +78,27 @@ msgctxt "shortcut window"
 msgid "Quit"
 msgstr ""
 
-#: src/app.rs:61
+#: src/app.rs:62
 msgid "Awesome E-IMZO"
 msgstr ""
 
-#: src/app.rs:62
+#: src/app.rs:63
+msgid "Open https://127.0.0.1:64443/"
+msgstr ""
+
+#: src/app.rs:64
 msgid "Keyboard"
 msgstr ""
 
-#: src/app.rs:63
+#: src/app.rs:65
 msgid "About E-IMZO Manager"
 msgstr ""
 
-#: src/app.rs:225
+#: src/app.rs:234
 msgid "E-IMZO service stopped"
 msgstr ""
 
-#: src/app.rs:235
+#: src/app.rs:244
 msgid "E-IMZO service started"
 msgstr ""
 
@@ -149,6 +160,10 @@ msgstr ""
 
 #: src/pages/select_mode.rs:63
 msgid "Load some certificates to start using the app."
+msgstr ""
+
+#: src/pages/select_mode.rs:71
+msgid "Load .pfx"
 msgstr ""
 
 #: src/pages/select_mode.rs:81

@@ -24,7 +24,7 @@ impl SimpleComponent for Localhost {
     ) -> ComponentParts<Self> {
         let model = Self;
         let widgets = view_output!();
-        let window = relm4::main_application().active_window();
+        // let window = relm4::main_application().active_window();
         // root.present(window.as_ref());
 
         if let Err(err) = AppInfo::launch_default_for_uri(
