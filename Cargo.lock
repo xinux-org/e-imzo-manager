@@ -299,9 +299,9 @@ dependencies = [
 
 [[package]]
 name = "e-imzo"
-version = "0.2.4"
+version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bde853f317f9df6f7955eb2273083c231178dd54a74d008ca1f58804b4dee7a3"
+checksum = "8a570748e04e098451e067e5d76bbf838c1663f1b0fb054d313ef4234c77a3e9"
 dependencies = [
  "chrono",
  "env_logger",

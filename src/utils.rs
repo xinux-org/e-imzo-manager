@@ -1,4 +1,4 @@
-use e_imzo::list_all_certificates;
+use e_imzo::EIMZO;
 use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
@@ -113,7 +113,7 @@ pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
 
 // bunch of gtk C style code in Rust
 pub fn add_file_row_to_list(
-    certificate: e_imzo::Certificate,
+    certificate: e_imzo::prelude::Certificate,
     alias: HashMap<String, String>,
     file_list: &adw::PreferencesGroup,
     sender: AsyncComponentSender<SelectModePage>,
@@ -202,19 +202,27 @@ pub async fn refresh_certificates(
     sender: AsyncComponentSender<SelectModePage>,
 ) -> &adw::PreferencesGroup {
     loop {
-        match list_all_certificates() {
-            Ok(pfx) => {
-                pfx.iter()
-                    .map(|c| (c, c.get_alias()))
-                    .for_each(|(c, alias)| {
-                        add_file_row_to_list(c.clone(), alias, file_list, sender.clone());
-                    });
-                break;
-            }
-            Err(e) => {
-                tracing::info!("Waiting for service activation: {}", e);
+        let mut eimzo = EIMZO::new();
+        match eimzo {
+            Ok(ref mut e) => match e.list_all_certificates() {
+                Ok(pfx) => {
+                    pfx.iter()
+                        .map(|c| (c, c.get_alias()))
+                        .for_each(|(c, alias)| {
+                            add_file_row_to_list(c.clone(), alias, file_list, sender.clone());
+                        });
+                    break;
+                }
+                Err(e) => {
+                    tracing::info!("Waiting for service activation: {}", e);
+                }
+            },
+            Err(ref e) => {
+                tracing::info!("Error during connecting to e_imzo: {}", e);
+                
             }
         }
+
         tokio::time::sleep(Duration::from_secs(1)).await;
     }
     return file_list;
