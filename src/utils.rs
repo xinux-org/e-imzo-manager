@@ -1,4 +1,4 @@
-use e_imzo::EIMZO;
+use e_imzo::{error::EIMZOError, EIMZO};
 use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
@@ -201,31 +201,26 @@ pub async fn refresh_certificates(
     file_list: &adw::PreferencesGroup,
     sender: AsyncComponentSender<SelectModePage>,
 ) -> &adw::PreferencesGroup {
-    loop {
-        let eimzo = EIMZO::new();
-        match eimzo {
-            Ok(mut connected) => match connected.list_all_certificates() {
-                Ok(pfx) => {
-                    pfx.iter()
-                        .map(|c| (c, c.get_alias()))
-                        .for_each(|(c, alias)| {
-                            add_file_row_to_list(c.clone(), alias, file_list, sender.clone());
-                        });
-                    break;
-                }
-                Err(e) => {
-                    tracing::info!("Waiting for service activation: {}", e);
-                }
-            },
-            Err(e) => {
-                tracing::info!("Error during connecting to e_imzo: {}", e);
-                
-            }
-        }
-
-        tokio::time::sleep(Duration::from_secs(1)).await;
-    }
+    let _ = get_all_certificates(file_list, sender).await;
     return file_list;
+}
+
+pub async fn get_all_certificates(
+    file_list: &adw::PreferencesGroup,
+    sender: AsyncComponentSender<SelectModePage>,
+) -> Result<(), EIMZOError> {
+    loop {
+        tokio::time::sleep(Duration::from_secs(1)).await;
+
+        let mut eimzo = EIMZO::new()?;
+        let pfx = eimzo.list_all_certificates()?;
+        pfx.iter()
+            .map(|c| (c, c.get_alias()))
+            .for_each(|(c, alias)| {
+                add_file_row_to_list(c.clone(), alias, file_list, sender.clone());
+            });
+        break Ok(());
+    }
 }
 
 // ask password if user has no permission to open /media/DSKEYS folder
