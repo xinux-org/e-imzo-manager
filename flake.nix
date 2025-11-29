@@ -6,7 +6,7 @@
     # nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
 
     # # Fresh and new for testing
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:xinux-org/nixpkgs/nixos-unstable";
 
     # The flake-utils library
     flake-utils.url = "github:numtide/flake-utils";
