@@ -2,11 +2,11 @@
   description = "A beginning of an awesome project bootstrapped with github:bleur-org/templates";
 
   inputs = {
-    # Stable for keeping thins clean
+    # # Fresh and new for testing
     # nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
 
-    # # Fresh and new for testing
-    nixpkgs.url = "github:xinux-org/nixpkgs/nixos-unstable";
+    # Stable for keeping thins clean
+    nixpkgs.url = "github:xinux-org/nixpkgs/nixos-25.11";
 
     # The flake-utils library
     flake-utils.url = "github:numtide/flake-utils";
