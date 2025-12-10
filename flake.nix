@@ -3,11 +3,11 @@
 
   inputs = {
     # Stable for keeping thins clean
-    # nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-
     # # Fresh and new for testing
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
+    
+    crane.url = "github:ipetkov/crane";
+    
     # The flake-utils library
     flake-utils.url = "github:numtide/flake-utils";
   };
@@ -16,25 +16,26 @@
     self,
     nixpkgs,
     flake-utils,
+    crane,
     ...
   }:
   # @ inputs
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = import nixpkgs {inherit system;};
-    in {
+    in rec{
       # Nix script formatter
       formatter = pkgs.alejandra;
 
       # Development environment
       devShells.default = import ./shell.nix {inherit pkgs;};
-
+      
       # Output package
-      packages.default = pkgs.callPackage ./. {};
-    })
-    // {
-      # Hydra CI jobs
-      hydraJobs = {
-        packages = self.packages.x86_64-linux.default;
-      };
-    };
+      packages.default = pkgs.callPackage ./. {inherit crane pkgs;};
+    });
+    # // {
+    #   # Hydra CI jobs
+    #   hydraJobs = {
+    #     packages = self.packages.x86_64-linux.default;
+    #   };
+    # };
 }

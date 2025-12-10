@@ -7,56 +7,81 @@
     };
   in
     import nixpkgs {overlays = [];},
+  crane,
   ...
 }: let
   # Helpful nix function
   lib = pkgs.lib;
+  getLibFolder = pkg: "${pkg}/lib";
 
   # Manifest via Cargo.toml
   manifest = (pkgs.lib.importTOML ./Cargo.toml).package;
+
+  craneLib = crane.mkLib pkgs;
+
+  commonBuildInputs = with pkgs; [
+    gtk4
+    libadwaita
+    openssl
+    polkit
+  ];
+
+  commonNativeBuildInputs = with pkgs; [
+    appstream-glib
+    desktop-file-utils
+    gettext
+    git
+    meson
+    ninja
+    pkg-config
+    # polkit
+    wrapGAppsHook4
+  ];
+
+  cargoArtifacts = craneLib.buildDepsOnly {
+    src = craneLib.cleanCargoSource ./.;
+    strictDeps = true;
+
+    nativeBuildInputs = commonNativeBuildInputs;
+    buildInputs = commonBuildInputs;
+  };
 in
-  pkgs.stdenv.mkDerivation {
+craneLib.buildPackage {
+   # pkgs.stdenv.mkDerivation {
     pname = manifest.name;
     version = manifest.version;
+    strictDeps = true;
 
-    # Your govnocodes
     src = pkgs.lib.cleanSource ./.;
+    # src = craneLib.cleanCargoSource ./.;
 
-    cargoDeps = pkgs.rustPlatform.importCargoLock {
-      lockFile = ./Cargo.lock;
-    };
+    inherit cargoArtifacts;
 
-    # Compile time dependencies
-    nativeBuildInputs = with pkgs; [
-      meson
-      ninja
-      pkg-config
-      cargo
-      rustPlatform.cargoSetupHook
-      rustc
-      desktop-file-utils
-      wrapGAppsHook4
-    ];
+    nativeBuildInputs = commonNativeBuildInputs;
+    buildInputs = commonBuildInputs;
 
-    # Runtime dependencies which will be shipped
-    # with nix package
-    buildInputs = with pkgs; [
-      gdk-pixbuf
-      glib
-      gnome-desktop
-      adwaita-icon-theme
-      gtk4
-      libadwaita
-      openssl
-      rustPlatform.bindgenHook
-      polkit
-    ];
+    configurePhase = ''
+      mesonConfigurePhase
+      runHook postConfigure
+    '';
 
-    meta = {
-      homepage = manifest.homepage;
-      description = manifest.description;
-      license = with lib.licenses; [agpl3Plus];
-      platforms = lib.platforms.linux;
-      teams = [lib.teams.uzinfocom];
-    };
+    buildPhase = ''
+      runHook preBuild
+      ninjaBuildPhase
+      runHook postBuild
+    '';
+
+    installPhase = ''
+      runHook preInstall
+      mesonInstallPhase
+
+      # ninjaInstallPhase
+
+      runHook postInstall
+    '';
+
+    # buildPhaseCargoCommand = "cargo build --release";
+    # installPhaseCommand = "";
+    doNotPostBuildInstallCargoBinaries = true;
+    checkPhase = false;
   }
