@@ -27,7 +27,6 @@
   ];
 
   commonNativeBuildInputs = with pkgs; [
-    appstream-glib
     desktop-file-utils
     gettext
     git

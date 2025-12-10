@@ -50,8 +50,6 @@ in
       pkg-config
       libgweather
       gnome-desktop
-      appstream
-      appstream-glib
       wrapGAppsHook4
       desktop-file-utils
       gobject-introspection

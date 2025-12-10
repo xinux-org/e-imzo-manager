@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>@app-id@</id>
+  <id>uz.xinux.EIMZOManager</id>
   <metadata_license>CC-BY-4.0</metadata_license>
   <name>E-IMZO Manager</name>
   <summary>Improving E-IMZO support and compatibility for Linux</summary>

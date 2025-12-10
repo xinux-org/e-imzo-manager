@@ -91,7 +91,6 @@ cargo_build = custom_target(
     # '&&',
     # 'exit',  '1',
     '&&',
-    # 'cp', 'target' / rust_target / meson.project_name(), '@OUTPUT@',
     'cp', '/build/source/target/' / rust_target / meson.project_name(), '@OUTPUT@',
 
 
