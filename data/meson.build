@@ -42,34 +42,16 @@ appdata_file = i18n.merge_file(
   install: true,
   install_dir: datadir / 'metainfo'
 )
-
 # Validate Appdata
-if appstream_util.found()
+if appstreamcli.found()
   test(
-    'validate-appdata', appstream_util,
+    'validate-appdata', appstreamcli,
     args: [
-      'validate', '--nonet', appdata_file.full_path()
+      'validate', '--no-net', '--explain', appdata_file.full_path()
     ],
     depends: appdata_file,
   )
 endif
-
-# Policy file
-dataconf = configuration_data()
-dataconf.set('pkglibexecdir',
-  libexecdir
-)
-i18n.merge_file(
-  input : configure_file(
-    configuration: dataconf,
-    input : '@0@.policy.in.in'.format(base_id),
-    output: '@BASENAME@'
-  ),
-  output: '@0@.policy'.format(base_id),
-  po_dir: podir,
-  install: true,
-  install_dir: datadir / 'polkit-1' / 'actions'
-)
 
 # GSchema
 gschema_conf = configuration_data()
@@ -83,12 +65,10 @@ configure_file(
   install_dir: datadir / 'glib-2.0' / 'schemas'
 )
 
-# Validate GSchema
-if glib_compile_schemas.found()
-  test(
-    'validate-gschema', glib_compile_schemas,
-    args: [
-      '--strict', '--dry-run', meson.current_build_dir()
-    ],
-  )
-endif
+# Validata GSchema
+test(
+  'validate-gschema', glib_compile_schemas,
+  args: [
+    '--strict', '--dry-run', meson.current_build_dir()
+  ],
+)

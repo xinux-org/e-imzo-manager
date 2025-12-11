@@ -1,6 +1,6 @@
 global_conf = configuration_data()
-cargo_options = [ '--manifest-path', meson.project_source_root() / 'e-helper' /  'Cargo.toml' ]
-cargo_options += [ '--target-dir', meson.project_build_root() / 'e-helper' /  'src' ]
+# cargo_options = [ '--manifest-path', meson.project_source_root() / 'e-helper' /  'Cargo.toml' ]
+# cargo_options += [ '--target-dir', meson.project_build_root() / 'e-helper' /  'src' ]
 
 if get_option('profile') == 'default'
   cargo_options += [ '--release' ]
@@ -11,7 +11,8 @@ else
   message('Building in debug mode')
 endif
 
-cargo_env = [ 'CARGO_HOME=' + meson.project_build_root() / 'e-helper' / 'cargo-home' ]
+cargo_env = [ 'CARGO_HOME=' + '/build/source' / 'e-helper' / 'cargo-home' ]
+
 
 cargo_build = custom_target(
   'cargo-build',
@@ -21,12 +22,13 @@ cargo_build = custom_target(
   console: true,
   install: true,
   install_dir: get_option('libexecdir'),
+  depends: resources,
   command: [
-    'env',
-    cargo_env,
+    # 'env',
+    # cargo_env,
     cargo, 'build',
-    cargo_options,
+    ['--release', '--manifest-path', meson.project_source_root() / 'Cargo.toml'],
     '&&',
-    'cp', 'e-helper' / 'src' / rust_target / 'e-helper', '@OUTPUT@',
+    'cp', '/build/source/target/' / rust_target / 'e-helper', '@OUTPUT@',
   ]
 )
