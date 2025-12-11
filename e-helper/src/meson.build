@@ -1,6 +1,5 @@
 global_conf = configuration_data()
 # cargo_options = [ '--manifest-path', meson.project_source_root() / 'e-helper' /  'Cargo.toml' ]
-# cargo_options = [ '-r', meson.project_source_root() / 'e-helper' /  'Cargo.toml' ]
 # cargo_options += [ '--target-dir', meson.project_build_root() / 'e-helper' /  'src' ]
 
 if get_option('profile') == 'default'
