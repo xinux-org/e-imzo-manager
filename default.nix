@@ -1,18 +1,10 @@
 {
-  pkgs ? let
-    lock = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.nixpkgs.locked;
-    nixpkgs = fetchTarball {
-      url = "https://github.com/nixos/nixpkgs/archive/${lock.rev}.tar.gz";
-      sha256 = lock.narHash;
-    };
-  in
-    import nixpkgs {overlays = [];},
+  pkgs,
   crane,
   ...
 }: let
   # Helpful nix function
   lib = pkgs.lib;
-  getLibFolder = pkg: "${pkg}/lib";
 
   # Manifest via Cargo.toml
   manifest = (pkgs.lib.importTOML ./Cargo.toml).package;
@@ -33,7 +25,6 @@
     meson
     ninja
     pkg-config
-    # polkit
     wrapGAppsHook4
   ];
 
@@ -45,14 +36,12 @@
     buildInputs = commonBuildInputs;
   };
 in
-craneLib.buildPackage {
-   # pkgs.stdenv.mkDerivation {
+  craneLib.buildPackage {
     pname = manifest.name;
     version = manifest.version;
     strictDeps = true;
 
     src = pkgs.lib.cleanSource ./.;
-    # src = craneLib.cleanCargoSource ./.;
 
     inherit cargoArtifacts;
 
@@ -73,14 +62,17 @@ craneLib.buildPackage {
     installPhase = ''
       runHook preInstall
       mesonInstallPhase
-
-      # ninjaInstallPhase
-
       runHook postInstall
     '';
 
-    # buildPhaseCargoCommand = "cargo build --release";
-    # installPhaseCommand = "";
     doNotPostBuildInstallCargoBinaries = true;
     checkPhase = false;
+
+    meta = {
+      homepage = manifest.homepage;
+      description = manifest.description;
+      license = with lib.licenses; [agpl3Plus];
+      platforms = lib.platforms.linux;
+      teams = [lib.teams.uzinfocom];
+    };
   }
