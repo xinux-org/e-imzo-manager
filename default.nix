@@ -1,12 +1,6 @@
 {
-  pkgs ? let
-    lock = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.nixpkgs.locked;
-    nixpkgs = fetchTarball {
-      url = "https://github.com/nixos/nixpkgs/archive/${lock.rev}.tar.gz";
-      sha256 = lock.narHash;
-    };
-  in
-    import nixpkgs {overlays = [];},
+  pkgs,
+  crane,
   ...
 }: let
   # Helpful nix function
@@ -14,43 +8,65 @@
 
   # Manifest via Cargo.toml
   manifest = (pkgs.lib.importTOML ./Cargo.toml).package;
+
+  craneLib = crane.mkLib pkgs;
+
+  commonBuildInputs = with pkgs; [
+    gtk4
+    libadwaita
+    openssl
+    polkit
+  ];
+
+  commonNativeBuildInputs = with pkgs; [
+    desktop-file-utils
+    gettext
+    git
+    meson
+    ninja
+    pkg-config
+    wrapGAppsHook4
+  ];
+
+  cargoArtifacts = craneLib.buildDepsOnly {
+    src = craneLib.cleanCargoSource ./.;
+    strictDeps = true;
+
+    nativeBuildInputs = commonNativeBuildInputs;
+    buildInputs = commonBuildInputs;
+  };
 in
-  pkgs.stdenv.mkDerivation {
+  craneLib.buildPackage {
     pname = manifest.name;
     version = manifest.version;
+    strictDeps = true;
 
-    # Your govnocodes
     src = pkgs.lib.cleanSource ./.;
 
-    cargoDeps = pkgs.rustPlatform.importCargoLock {
-      lockFile = ./Cargo.lock;
-    };
+    inherit cargoArtifacts;
 
-    # Compile time dependencies
-    nativeBuildInputs = with pkgs; [
-      meson
-      ninja
-      pkg-config
-      cargo
-      rustPlatform.cargoSetupHook
-      rustc
-      desktop-file-utils
-      wrapGAppsHook4
-    ];
+    nativeBuildInputs = commonNativeBuildInputs;
+    buildInputs = commonBuildInputs;
 
-    # Runtime dependencies which will be shipped
-    # with nix package
-    buildInputs = with pkgs; [
-      gdk-pixbuf
-      glib
-      gnome-desktop
-      adwaita-icon-theme
-      gtk4
-      libadwaita
-      openssl
-      rustPlatform.bindgenHook
-      polkit
-    ];
+    configurePhase = ''
+      mesonConfigurePhase
+      runHook postConfigure
+    '';
+
+    buildPhase = ''
+      runHook preBuild
+      ninjaBuildPhase
+      runHook postBuild
+    '';
+
+    installPhase = ''
+      runHook preInstall
+      mesonInstallPhase
+      runHook postInstall
+    '';
+
+    doNotPostBuildInstallCargoBinaries = true;
+    checkPhase = false;
 
     meta = {
       homepage = manifest.homepage;

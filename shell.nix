@@ -1,14 +1,4 @@
-{
-  pkgs ? let
-    lock = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.nixpkgs.locked;
-    nixpkgs = fetchTarball {
-      url = "https://github.com/nixos/nixpkgs/archive/${lock.rev}.tar.gz";
-      sha256 = lock.narHash;
-    };
-  in
-    import nixpkgs {overlays = [];},
-  ...
-}: let
+{pkgs, ...}: let
   # Manifest via Cargo.toml
   manifest = (pkgs.lib.importTOML ./Cargo.toml).package;
 in
@@ -50,8 +40,6 @@ in
       pkg-config
       libgweather
       gnome-desktop
-      appstream
-      appstream-glib
       wrapGAppsHook4
       desktop-file-utils
       gobject-introspection
