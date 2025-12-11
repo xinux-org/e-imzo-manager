@@ -4,7 +4,7 @@
   inputs = {
     # Stable for keeping thins clean
     # # Fresh and new for testing
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:xinux-org/nixpkgs/nixos-unstable";
 
     crane.url = "github:ipetkov/crane";
 
