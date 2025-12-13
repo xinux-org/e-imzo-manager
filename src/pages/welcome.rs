@@ -1,6 +1,6 @@
 use crate::app::AppMsg;
+use crate::utils::check_service_installed;
 use gettextrs::gettext;
-
 use relm4::{
     gtk::{
         self,
@@ -12,16 +12,6 @@ use relm4::{
     },
     *,
 };
-
-use crate::utils::check_service_installed;
-
-fn embedded_logo() -> Texture {
-    let bytes = include_bytes!("../../.github/assets/logo.png");
-    let g_bytes = glib::Bytes::from(&bytes.to_vec());
-    let stream = MemoryInputStream::from_bytes(&g_bytes);
-    let pixbuf = Pixbuf::from_stream(&stream, Cancellable::NONE).unwrap();
-    Texture::for_pixbuf(&pixbuf)
-}
 
 pub struct WelcomeModel;
 
@@ -87,4 +77,12 @@ impl SimpleComponent for WelcomeModel {
 
         ComponentParts { model, widgets }
     }
+}
+
+fn embedded_logo() -> Texture {
+    let bytes = include_bytes!("../../.github/assets/logo.png");
+    let g_bytes = glib::Bytes::from(&bytes.to_vec());
+    let stream = MemoryInputStream::from_bytes(&g_bytes);
+    let pixbuf = Pixbuf::from_stream(&stream, Cancellable::NONE).unwrap();
+    Texture::for_pixbuf(&pixbuf)
 }
