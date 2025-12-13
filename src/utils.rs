@@ -16,6 +16,7 @@ use std::{
     process::{Command, ExitStatus},
     time::Duration,
 };
+use tracing::warn;
 
 use crate::{
     config::LIBEXECDIR,
@@ -194,15 +195,7 @@ pub fn add_file_row_to_list(
 
     file_list.add(&expander);
 
-    return file_list;
-}
-
-pub async fn refresh_certificates(
-    file_list: &adw::PreferencesGroup,
-    sender: AsyncComponentSender<SelectModePage>,
-) -> &adw::PreferencesGroup {
-    let _ = get_all_certificates(file_list, sender).await;
-    return file_list;
+    file_list
 }
 
 pub async fn get_all_certificates(
@@ -211,16 +204,32 @@ pub async fn get_all_certificates(
 ) -> Result<(), EIMZOError> {
     loop {
         tokio::time::sleep(Duration::from_secs(1)).await;
-
         let mut eimzo = EIMZO::new()?;
-        let pfx = eimzo.list_all_certificates()?;
-        pfx.iter()
-            .map(|c| (c, c.get_alias()))
-            .for_each(|(c, alias)| {
-                add_file_row_to_list(c.clone(), alias, file_list, sender.clone());
-            });
-        break Ok(());
+        let pfx = eimzo.list_all_certificates();
+
+        match pfx {
+            Ok(cer) => {
+                cer.iter()
+                    .map(|c| (c, c.get_alias()))
+                    .for_each(|(c, alias)| {
+                        add_file_row_to_list(c.clone(), alias, file_list, sender.clone());
+                    });
+                break Ok(());
+            }
+            Err(e) => {
+                warn!("Connection not yet established: {e:?}")
+            }
+        }
     }
+}
+
+pub async fn refresh_certificates(
+    file_list: &adw::PreferencesGroup,
+    sender: AsyncComponentSender<SelectModePage>,
+) -> &adw::PreferencesGroup {
+    tokio::time::sleep(Duration::from_secs(1)).await;
+    let _ = get_all_certificates(file_list, sender).await;
+    file_list
 }
 
 // ask password if user has no permission to open /media/DSKEYS folder
@@ -267,7 +276,7 @@ pub fn show_alert_dialog(text: &str) {
 pub fn show_remove_file_alert_dialog(
     file_name: String,
     sender: AsyncComponentSender<SelectModePage>,
-) -> () {
+) {
     let dialog = adw::AlertDialog::builder()
         .heading(gettext("Are you sure?"))
         .body(gettext("Do you really want to delete this certificate?"))
