@@ -90,7 +90,12 @@ impl AsyncComponent for SelectModePage {
                             set_halign: gtk::Align::Center,
                             adw::Clamp {
                                 #[name(file_list_parent)]
-                                gtk::Box {}
+                                gtk::Box {
+                                  set_orientation: gtk::Orientation::Vertical,
+                                  set_vexpand: true,
+                                  set_hexpand: true,
+                                  set_halign: gtk::Align::Center,
+                                }
                             }
                         }
                     },
@@ -131,22 +136,23 @@ impl AsyncComponent for SelectModePage {
                 OpenDialogResponse::Cancel => SelectModeMsg::None,
             });
 
+        let file_list_parent = gtk::Box::builder()
+            .orientation(gtk::Orientation::Vertical)
+            .halign(gtk::Align::Center)
+            .valign(gtk::Align::Center)
+            .hexpand(true)
+            .vexpand(true)
+            .build();
+
         let mut model = SelectModePage {
             is_path_empty: return_pfx_files_in_folder().is_empty(),
             is_file_loaded: false,
-            file_list_parent: gtk::Box::builder()
-                .orientation(gtk::Orientation::Vertical)
-                .halign(gtk::Align::Center)
-                .valign(gtk::Align::Center)
-                .hexpand(true)
-                .vexpand(true)
-                .build(),
+            file_list_parent,
             file_list: adw::PreferencesGroup::new(),
             open_dialog,
         };
         let widgets = view_output!();
-        let file_list_parent = widgets.file_list_parent.clone();
-        model.file_list_parent = file_list_parent;
+        model.file_list_parent = widgets.file_list_parent.clone();
 
         // when app started prevent this
         if check_service_active("e-imzo.service") {
@@ -178,7 +184,7 @@ impl AsyncComponent for SelectModePage {
                 let copied_file = &path.file_name().unwrap().to_str().unwrap();
 
                 if return_pfx_files_in_folder().contains(&copied_file.to_string()) {
-                    let _ = sender.input(SelectModeMsg::ShowMessage(
+                    sender.input(SelectModeMsg::ShowMessage(
                         gettext("File already exists. You can use it").to_string(),
                     ));
                 } else {
