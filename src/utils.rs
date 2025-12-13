@@ -224,7 +224,7 @@ pub async fn get_all_certificates(
 }
 
 // ask password if user has no permission to open /media/DSKEYS folder
-pub fn ask_password(sender: AsyncComponentSender<SelectModePage>) -> () {
+pub fn ask_password(sender: AsyncComponentSender<SelectModePage>) {
     relm4::spawn(async move {
         let output = tokio::process::Command::new("pkexec")
             .arg(format!("{}/e-helper", LIBEXECDIR))
