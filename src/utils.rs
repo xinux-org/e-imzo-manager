@@ -6,6 +6,7 @@ use relm4::{
         self,
         prelude::{BoxExt, WidgetExt},
     },
+    prelude::DynamicIndex,
     AsyncComponentSender, RelmWidgetExt,
 };
 use std::{
@@ -22,6 +23,14 @@ use crate::{
     config::LIBEXECDIR,
     pages::select_mode::{SelectModeMsg, SelectModePage},
 };
+
+// const RANGE: usize;
+pub fn hide_sensitive_string(name: String, symbol: char, range: usize) -> String {
+    name.chars()
+        .enumerate()
+        .map(|(i, c)| if i <= range { c } else { symbol })
+        .collect()
+}
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
@@ -177,7 +186,7 @@ pub fn add_file_row_to_list(
     remove_button.set_align(gtk::Align::End);
 
     remove_button.connect_clicked(move |_| {
-        show_remove_file_alert_dialog(file_name.clone(), sender.clone());
+        // show_remove_file_alert_dialog(file_name.clone(), sender.clone());
     });
 
     let expander = adw::ExpanderRow::builder()
@@ -274,6 +283,7 @@ pub fn show_alert_dialog(text: &str) {
 }
 
 pub fn show_remove_file_alert_dialog(
+    index: DynamicIndex,
     file_name: String,
     sender: AsyncComponentSender<SelectModePage>,
 ) {
@@ -294,7 +304,7 @@ pub fn show_remove_file_alert_dialog(
         move |dialog, response| {
             match response {
                 "yes" => {
-                    sender.input(SelectModeMsg::RemoveCertificates(file_name.clone()));
+                    sender.input(SelectModeMsg::RemoveCertificates(index.clone(), file_name.clone()));
                 }
                 "no" => {
                     sender.input(SelectModeMsg::RefreshCertificates);

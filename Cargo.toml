@@ -19,7 +19,7 @@ opt-level = "z"
 
 [dependencies]
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
-relm4 = { version = "0.9.1", features = ["libadwaita", "gnome_47"] }
+relm4 = { version = "0.10.0", features = ["libadwaita", "gnome_47"] }
 relm4-components = "0.9.1"
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3", default-features = false, features = [
