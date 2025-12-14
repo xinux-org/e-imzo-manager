@@ -1,8 +1,6 @@
 #[rustfmt::skip]
 mod config;
-mod app;
-mod modals;
-mod pages;
+mod ui;
 mod utils;
 
 use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
@@ -15,7 +13,7 @@ use relm4::{
 use tracing::{error, info};
 
 use crate::config::RESOURCES_FILE;
-use app::App;
+use ui::window::App;
 use gtk::gdk;
 
 relm4::new_action_group!(AppActionGroup, "app");

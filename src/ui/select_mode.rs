@@ -1,14 +1,15 @@
+use crate::ui::window::AppMsg;
 use crate::utils::{
     ask_password, check_file_ownership, check_service_active, hide_sensitive_string,
-    return_pfx_files_in_folder, show_alert_dialog, tasks_filename_filters,
+    return_pfx_files_in_folder, show_alert_dialog, show_remove_file_alert_dialog,
+    tasks_filename_filters,
 };
 use e_imzo::EIMZO;
 use gettextrs::gettext;
-use relm4::factory::FactoryVecDeque;
-use relm4::factory::{FactoryComponent, FactorySender};
 use relm4::{
     adw::{self, prelude::*},
     component::{AsyncComponent, AsyncComponentParts, AsyncComponentSender},
+    factory::*,
     gtk::{self},
     prelude::*,
     *,
@@ -21,8 +22,7 @@ use std::{
 };
 use tracing::warn;
 
-use crate::app::AppMsg;
-
+#[derive(Debug)]
 pub struct SelectModePage {
     is_path_empty: bool,
     is_file_loaded: bool,
@@ -32,13 +32,18 @@ pub struct SelectModePage {
 
 #[derive(Debug)]
 pub enum SelectModeMsg {
+    // Open file
     OpenFile,
     OpenFileConfirmed,
     OpenFileResponse(PathBuf),
+    // Alerts
     ShowMessage(String),
+    ShowRemoveFileMsg(DynamicIndex, String),
+    // File CRUD
     RefreshCertificates,
     SetFileLoadedState(bool),
     RemoveCertificates(DynamicIndex, String),
+    // AddCertificates(CertificateRow),
     None,
 }
 
@@ -47,7 +52,6 @@ impl AsyncComponent for SelectModePage {
     type Init = ();
     type Input = SelectModeMsg;
     type Output = AppMsg;
-    type Widgets = AppWidgets;
     type CommandOutput = ();
 
     view! {
@@ -146,7 +150,7 @@ impl AsyncComponent for SelectModePage {
                 .launch_default()
                 .forward(sender.input_sender(), |msg| match msg {
                     CertificateRowOutput::RemoveRequested(index, file) => {
-                        SelectModeMsg::RemoveCertificates(index, file)
+                        SelectModeMsg::ShowRemoveFileMsg(index.clone(), file.clone())
                     }
                 });
 
@@ -175,7 +179,6 @@ impl AsyncComponent for SelectModePage {
         _root: &Self::Root,
     ) {
         match msg {
-            // todo: move this logic code to utils function
             SelectModeMsg::OpenFile => {
                 if Path::new("/media/DSKEYS").exists() && check_file_ownership().unwrap() == 1000 {
                     self.open_dialog.emit(OpenDialogMsg::Open);
@@ -196,105 +199,119 @@ impl AsyncComponent for SelectModePage {
                 } else {
                     let _ = fs::copy(&path, format!("/media/DSKEYS/{}", copied_file));
                     sender.input(SelectModeMsg::SetFileLoadedState(false));
+                    // implement adding feature by updating e_imzo crate
+                    // self.file_list_factory.guard().push_back(data);
                     sender.input(SelectModeMsg::RefreshCertificates);
                 }
             }
+            // Alerts
+            SelectModeMsg::ShowMessage(text) => show_alert_dialog(&text),
+            SelectModeMsg::ShowRemoveFileMsg(index, file_name) => {
+                show_remove_file_alert_dialog(index, file_name, sender)
+            }
             SelectModeMsg::RefreshCertificates => {
-                self.is_file_loaded = false;
-                let mut rows = Vec::new();
+                // todo: create getting spesific file from e_imzo
+                // instead of list_all_certificates. It saves much time
+                // creates new list of PreferenceGroup elements when new file added
+                self.file_list_factory.guard().clear();
+                let pfx_files_in_folder = return_pfx_files_in_folder();
 
-                if Path::new("/media/DSKEYS").exists() {
-                    tokio::time::sleep(Duration::from_secs(1)).await;
-                    let mut eimzo = EIMZO::new().expect("no connection");
-                    let pfx = eimzo.list_all_certificates();
+                tokio::time::sleep(Duration::from_millis(1400)).await;
 
-                    match pfx {
-                        Ok(cer) => {
-                            cer.iter()
-                                .map(|c| (c, c.get_alias()))
-                                .for_each(|(c, alias)| {
-                                    // convert string "2027.07.23 17:44:06" into "23.07.2027"
-                                    let validfrom: Vec<_> =
-                                        alias.get("validfrom").unwrap().split(" ").collect();
-                                    let mut validfrom_dmy: Vec<_> =
-                                        validfrom[0].split(".").collect();
-                                    validfrom_dmy.reverse();
+                // todo fix this .expect()
+                let mut eimzo = EIMZO::new().expect("no connection");
+                let pfx = eimzo.list_all_certificates();
 
-                                    let validto: Vec<_> =
-                                        alias.get("validto").unwrap().split(" ").collect();
-                                    let mut validto_dmy: Vec<_> = validto[0].split(".").collect();
-                                    validto_dmy.reverse();
+                match pfx {
+                    Ok(cer) => {
+                        cer.iter()
+                            .map(|c| (c, c.get_alias()))
+                            .for_each(|(c, alias)| {
+                                let file_name = c.name.clone();
 
-                                    // all data from certificate
-                                    let full_name = format!(
-                                        "Full name: {}",
-                                        alias
-                                            .get("cn")
-                                            .expect("Full name not found")
-                                            .to_uppercase()
-                                    );
-                                    let serial_number = format!(
-                                        "Seriya raqami: {}",
-                                        alias.get("serialnumber").expect("Serial number not found")
-                                    );
-                                    let name: String = hide_sensitive_string(
-                                        alias.get("name").unwrap().clone(),
-                                        '*',
-                                        2,
-                                    );
-                                    let surname = hide_sensitive_string(
-                                        alias.get("surname").unwrap().clone(),
-                                        '*',
-                                        2,
-                                    );
-                                    let title = format!("{} {}", name, surname).to_uppercase();
+                                // convert string "2027.07.23 17:44:06" into "23.07.2027"
+                                let validfrom: Vec<_> =
+                                    alias.get("validfrom").unwrap().split(" ").collect();
+                                let mut validfrom_dmy: Vec<_> = validfrom[0].split(".").collect();
+                                validfrom_dmy.reverse();
 
-                                    let file_name = c.name.clone(); // for deletion
-                                    let validity = format!(
-                                        "Sertifikat amal qilish muddati: {} - {}",
-                                        validfrom_dmy.join("."),
-                                        validto_dmy.join(".")
-                                    );
+                                let validto: Vec<_> =
+                                    alias.get("validto").unwrap().split(" ").collect();
+                                let mut validto_dmy: Vec<_> = validto[0].split(".").collect();
+                                validto_dmy.reverse();
 
-                                    rows.push(CertificateRow {
-                                        title: title.to_owned(),
-                                        file_name: file_name.to_owned(),
-                                        full_name_line: full_name.to_owned(),
-                                        serial_number_line: serial_number.to_owned(),
-                                        validity_line: validity,
-                                    });
-                                });
-                            self.is_file_loaded = true;
-                        }
-                        Err(e) => {
-                            warn!("Connection not yet established: {e:?}")
-                        }
+                                // ... (rest of alias extraction: full_name, serial_number, etc.) ...
+                                let full_name = format!(
+                                    "Full name: {}",
+                                    alias.get("cn").expect("Full name not found").to_uppercase()
+                                );
+                                let serial_number = format!(
+                                    "Seriya raqami: {}",
+                                    alias.get("serialnumber").expect("Serial number not found")
+                                );
+                                // ... and so on ...
+                                let name: String = hide_sensitive_string(
+                                    alias.get("name").unwrap().clone(),
+                                    '*',
+                                    2,
+                                );
+                                let surname = hide_sensitive_string(
+                                    alias.get("surname").unwrap().clone(),
+                                    '*',
+                                    2,
+                                );
+                                let title = format!("{} {}", name, surname).to_uppercase();
+                                let validity = format!(
+                                    "Sertifikat amal qilish muddati: {} - {}",
+                                    validfrom_dmy.join("."),
+                                    validto_dmy.join(".")
+                                );
+
+                                let data = CertificateRow {
+                                    title: title.to_owned(),
+                                    file_name: file_name.to_owned(),
+                                    full_name_line: full_name.to_owned(),
+                                    serial_number_line: serial_number.to_owned(),
+                                    validity_line: validity,
+                                };
+                                self.file_list_factory.guard().push_back(data);
+                            });
+                        // The Enum SelectModeMsg::SetFileLoadedState giving panic 
+                        // if you press  on/off button faster then 1400 miliseconds
+                        self.is_file_loaded = true;
                     }
-                    self.is_path_empty = return_pfx_files_in_folder().is_empty();
+                    Err(e) => {
+                        warn!("Connection not yet established: {e:?}")
+                    }
                 }
-                self.file_list_factory.extend(rows);
+                // Use the function return value stored outside the loop
+                self.is_path_empty = pfx_files_in_folder.is_empty();
             }
 
             SelectModeMsg::SetFileLoadedState(is_loaded) => {
                 self.is_file_loaded = is_loaded;
             }
-            SelectModeMsg::ShowMessage(text) => show_alert_dialog(&text),
 
             SelectModeMsg::RemoveCertificates(index, file_name) => {
                 let full_path = Path::new("/media/DSKEYS/").join(format!("{}.pfx", file_name));
                 if let Err(e) = fs::remove_file(&full_path) {
                     eprintln!("failed {}: {}", full_path.display(), e);
                 } else {
-                    // sender.input(SelectModeMsg::RefreshCertificates);
                     self.file_list_factory.guard().remove(index.current_index());
-                    if self.file_list_factory.is_empty() {
-                        self.is_path_empty = return_pfx_files_in_folder().is_empty();
+                    if self.file_list_factory.is_empty() && return_pfx_files_in_folder().is_empty()
+                    {
+                        self.is_path_empty = true;
                     }
                     println!("deleted: {}", full_path.display());
                 }
             }
+            // todo.
+            // SelectMode::AddCertificates(file) => {
+            //   // self.file_list_factory.guard().
+            //     // (self.file_list_factory.guard().push_back(file))
+            // }
 
-            // when user cancels file selection do nothing
+            // when user cancels file selection or deletion do nothing
             SelectModeMsg::None => {}
         }
     }
