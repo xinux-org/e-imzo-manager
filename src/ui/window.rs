@@ -1,7 +1,7 @@
 use crate::{
     config::{APP_ID, PROFILE},
-    modals::{about::AboutDialog, awesome::AwesomeModel, localhost::Localhost},
-    pages::{
+    ui::{about::AboutDialog, awesome::AwesomeModel, localhost::Localhost},
+    ui::{
         select_mode::{SelectModeMsg, SelectModePage},
         welcome::WelcomeModel,
     },
@@ -159,9 +159,9 @@ impl SimpleComponent for App {
         };
 
         let mut model = Self {
-            page: page,
-            welcome_page: welcome_page,
-            select_mode_page: select_mode_page,
+            page,
+            welcome_page,
+            select_mode_page,
             service_active: check_service_active("e-imzo.service"),
             service_installed: check_service_installed("/etc/systemd/user/e-imzo.service"),
             service: gtk::Button::new(),
@@ -230,7 +230,7 @@ impl SimpleComponent for App {
                         .arg("--user")
                         .arg("e-imzo.service")
                         .status();
-                    let _ = sender.input(AppMsg::ShowMessage(
+                    sender.input(AppMsg::ShowMessage(
                         gettext("E-IMZO service stopped").to_string(),
                     ));
                 } else {
@@ -240,12 +240,13 @@ impl SimpleComponent for App {
                         .arg("e-imzo.service")
                         .status();
 
-                    let _ = sender.input(AppMsg::ShowMessage(
+                    sender.input(AppMsg::ShowMessage(
                         gettext("E-IMZO service started").to_string(),
                     ));
 
                     self.select_mode_page
                         .emit(SelectModeMsg::SetFileLoadedState(false));
+                    
                     self.select_mode_page
                         .emit(SelectModeMsg::RefreshCertificates);
                 }

@@ -1,6 +1,5 @@
 // use gettextrs::gettext;
 use gio::AppInfo;
-use relm4::adw::prelude::*;
 use relm4::gtk;
 use relm4::prelude::*;
 

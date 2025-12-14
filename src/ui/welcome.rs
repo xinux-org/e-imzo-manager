@@ -1,4 +1,4 @@
-use crate::app::AppMsg;
+use crate::ui::window::AppMsg;
 use crate::utils::check_service_installed;
 use gettextrs::gettext;
 use relm4::{
