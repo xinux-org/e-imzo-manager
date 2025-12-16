@@ -17,7 +17,7 @@ use relm4::{
     prelude::AsyncComponentController,
     Component, ComponentController, ComponentParts, ComponentSender, Controller, SimpleComponent,
 };
-use std::convert::identity;
+use std::{convert::identity, time::Duration};
 
 #[derive(Debug, Clone)]
 pub enum Page {
@@ -42,7 +42,7 @@ pub enum AppMsg {
     StartAndStopService,
     RefreshService(bool),
     ShowMessage(String),
-    ServiceLimiter,
+    ServiceLimiter(bool),
 }
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
@@ -234,7 +234,6 @@ impl SimpleComponent for App {
                 if self.service_limiter {
                     return;
                 }
-
                 self.service_limiter = true;
 
                 if self.service_active {
@@ -263,10 +262,8 @@ impl SimpleComponent for App {
                     self.select_mode_page
                         .emit(SelectModeMsg::RefreshCertificates);
                 }
-
-                let sender_clone = sender.clone();
-                glib::timeout_add_seconds_local_once(2, move || {
-                    sender_clone.input(AppMsg::ServiceLimiter);
+                glib::timeout_add_local_once(Duration::from_millis(1650), move || {
+                    sender.input(AppMsg::ServiceLimiter(false));
                 });
             }
             AppMsg::RefreshService(active) => {
@@ -284,9 +281,7 @@ impl SimpleComponent for App {
             AppMsg::ShowMessage(text) => {
                 show_alert_dialog(&text);
             }
-            AppMsg::ServiceLimiter => {
-                self.service_limiter = false;
-            }
+            AppMsg::ServiceLimiter(is_clicable) => self.service_limiter = is_clicable,
         }
     }
 
