@@ -114,7 +114,14 @@ impl AsyncComponent for SelectModePage {
                       set_hexpand: true,
                       set_valign: gtk::Align::Center,
                       set_halign: gtk::Align::Center,
-
+                      set_orientation: gtk::Orientation::Vertical,
+                      
+                      gtk::Label {
+                        set_label: &gettext("Loading keys"),
+                        add_css_class: relm4::css::TITLE_1,
+                        set_margin_bottom: 25,
+                      },
+                      
                       adw::Spinner {
                           set_width_request: 32,
                           set_height_request: 32,
