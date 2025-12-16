@@ -32,6 +32,7 @@ pub struct App {
     service_active: bool,
     service_installed: bool,
     service: gtk::Button,
+    service_limiter: bool,
 }
 
 #[derive(Debug)]
@@ -41,6 +42,7 @@ pub enum AppMsg {
     StartAndStopService,
     RefreshService(bool),
     ShowMessage(String),
+    ServiceLimiter,
 }
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
@@ -109,9 +111,11 @@ impl SimpleComponent for App {
 
                     #[name(service)]
                     pack_start = &gtk::Button {
-                      set_visible: model.service_installed,
-                      add_css_class: "service-button",
-                      connect_clicked => AppMsg::StartAndStopService,
+                        set_visible: model.service_installed,
+                        add_css_class: "service-button",
+                        connect_clicked => AppMsg::StartAndStopService,
+                        #[watch]
+                        set_sensitive: !model.service_limiter,
                     },
 
                     pack_end = &gtk::MenuButton {
@@ -165,6 +169,7 @@ impl SimpleComponent for App {
             service_active: check_service_active("e-imzo.service"),
             service_installed: check_service_installed("/etc/systemd/user/e-imzo.service"),
             service: gtk::Button::new(),
+            service_limiter: false,
         };
 
         let widgets = view_output!();
@@ -219,11 +224,19 @@ impl SimpleComponent for App {
 
     fn update(&mut self, message: Self::Input, sender: ComponentSender<Self>) {
         match message {
-            AppMsg::Quit => main_application().quit(),
+            AppMsg::Quit => {
+                main_application().quit();
+            }
             AppMsg::SelectMode(msg) => {
                 self.select_mode_page.emit(msg);
             }
             AppMsg::StartAndStopService => {
+                if self.service_limiter {
+                    return;
+                }
+
+                self.service_limiter = true;
+
                 if self.service_active {
                     let _ = std::process::Command::new("systemctl")
                         .arg("stop")
@@ -246,10 +259,15 @@ impl SimpleComponent for App {
 
                     self.select_mode_page
                         .emit(SelectModeMsg::SetFileLoadedState(false));
-                    
+
                     self.select_mode_page
                         .emit(SelectModeMsg::RefreshCertificates);
                 }
+
+                let sender_clone = sender.clone();
+                glib::timeout_add_seconds_local_once(2, move || {
+                    sender_clone.input(AppMsg::ServiceLimiter);
+                });
             }
             AppMsg::RefreshService(active) => {
                 self.service_active = active;
@@ -265,6 +283,9 @@ impl SimpleComponent for App {
             }
             AppMsg::ShowMessage(text) => {
                 show_alert_dialog(&text);
+            }
+            AppMsg::ServiceLimiter => {
+                self.service_limiter = false;
             }
         }
     }
