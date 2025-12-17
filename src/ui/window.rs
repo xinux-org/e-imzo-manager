@@ -29,6 +29,7 @@ pub struct App {
     page: Page,
     welcome_page: Controller<WelcomeModel>,
     select_mode_page: relm4::prelude::AsyncController<SelectModePage>,
+    // toggle_button_text: String,
     service_active: bool,
     service_installed: bool,
     service: gtk::Button,
@@ -102,6 +103,7 @@ impl SimpleComponent for App {
 
                 adw::HeaderBar {
                     pack_start = &gtk::Button {
+                        set_tooltip_text: Some(&gettext("Add key")),
                         set_icon_name: "list-add-symbolic",
                         add_css_class: "flat",
                         connect_clicked => AppMsg::SelectMode(SelectModeMsg::OpenFile),
@@ -111,6 +113,9 @@ impl SimpleComponent for App {
 
                     #[name(service)]
                     pack_start = &gtk::Button {
+                        #[watch]
+                        // set_tooltip_text: Some(model.toggle_button_text),
+                        set_tooltip_text: Some(&gettext("on/of e-imzo service")),
                         set_visible: model.service_installed,
                         add_css_class: "service-button",
                         connect_clicked => AppMsg::StartAndStopService,
@@ -167,6 +172,7 @@ impl SimpleComponent for App {
             welcome_page,
             select_mode_page,
             service_active: check_service_active("e-imzo.service"),
+            // toggle_button_text: "",
             service_installed: check_service_installed("/etc/systemd/user/e-imzo.service"),
             service: gtk::Button::new(),
             service_limiter: false,
@@ -272,6 +278,8 @@ impl SimpleComponent for App {
                     self.service.remove_css_class("off");
                     self.service.add_css_class("on");
                     self.page = Page::SelectMode;
+                    // do something here in order to change 
+                    // tool tip of this toggle button
                 } else {
                     self.service.remove_css_class("on");
                     self.service.add_css_class("off");
