@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-24 18:20+0500\n"
+"POT-Creation-Date: 2025-12-17 12:55+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,25 +41,25 @@ msgstr ""
 msgid "Window maximized state"
 msgstr ""
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:6
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:5
 msgid "E-IMZO Manager"
 msgstr ""
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:7
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:6
 msgid "Improving E-IMZO support and compatibility for Linux"
 msgstr ""
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:9
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:8
 msgid ""
 "An electronic digital signature certificate is very important for verifying "
 "the time a document was signed and its legal status."
 msgstr ""
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:14
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:13
 msgid "Main window"
 msgstr ""
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:20
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:19
 msgid "Xinux Developers"
 msgstr ""
 
@@ -78,98 +78,95 @@ msgctxt "shortcut window"
 msgid "Quit"
 msgstr ""
 
-#: src/app.rs:62
-msgid "Awesome E-IMZO"
-msgstr ""
-
-#: src/app.rs:63
-msgid "Open https://127.0.0.1:64443/"
-msgstr ""
-
-#: src/app.rs:64
-msgid "Keyboard"
-msgstr ""
-
-#: src/app.rs:65
-msgid "About E-IMZO Manager"
-msgstr ""
-
-#: src/app.rs:234
-msgid "E-IMZO service stopped"
-msgstr ""
-
-#: src/app.rs:244
-msgid "E-IMZO service started"
-msgstr ""
-
-#: src/utils.rs:141
-msgid "Full name"
-msgstr ""
-
-#: src/utils.rs:152
-msgid "Sertificate number"
-msgstr ""
-
-#: src/utils.rs:163
-msgid "Certificate validity period"
-msgstr ""
-
-#: src/utils.rs:174
-msgid "Delete"
-msgstr ""
-
-#: src/utils.rs:252
+#: src/utils.rs:140
 msgid "Ok"
 msgstr ""
 
-#: src/utils.rs:269
+#: src/utils.rs:158
 msgid "Are you sure?"
 msgstr ""
 
-#: src/utils.rs:270
+#: src/utils.rs:159
 msgid "Do you really want to delete this certificate?"
 msgstr ""
 
-#: src/utils.rs:273
+#: src/utils.rs:162
 msgid "Yes"
 msgstr ""
 
-#: src/utils.rs:273
+#: src/utils.rs:162
 msgid "No"
 msgstr ""
 
-#: src/pages/welcome.rs:53
+#: src/ui/about.rs:56
+msgid ""
+"<p>This release contains new features and fixes:</p>\n"
+"  <ul>\n"
+"    <li>New area selection UI</li>\n"
+"    <li>Added option to about section of UI</li>\n"
+"  </ul>"
+msgstr ""
+
+#: src/ui/window.rs:64
+msgid "Awesome E-IMZO"
+msgstr ""
+
+#: src/ui/window.rs:65
+msgid "Open https://127.0.0.1:64443/"
+msgstr ""
+
+#: src/ui/window.rs:66
+msgid "Keyboard"
+msgstr ""
+
+#: src/ui/window.rs:67
+msgid "About E-IMZO Manager"
+msgstr ""
+
+#: src/ui/window.rs:246
+msgid "E-IMZO service stopped"
+msgstr ""
+
+#: src/ui/window.rs:256
+msgid "E-IMZO service started"
+msgstr ""
+
+#: src/ui/welcome.rs:43
 msgid "Welcome to E-imzo"
 msgstr ""
 
-#: src/pages/welcome.rs:60
+#: src/ui/welcome.rs:50
 msgid "Please click the red button to start e-imzo service"
 msgstr ""
 
-#: src/pages/welcome.rs:65
+#: src/ui/welcome.rs:55
 msgid "Please download e-imzo service and relaunch the app again."
 msgstr ""
 
-#: src/modals/awesome.rs:17
+#: src/ui/awesome.rs:17
 msgid "List of used e-imzo websites"
 msgstr ""
 
-#: src/pages/select_mode.rs:62
+#: src/ui/select_mode.rs:75
 msgid "No certificates"
 msgstr ""
 
-#: src/pages/select_mode.rs:63
+#: src/ui/select_mode.rs:76
 msgid "Load some certificates to start using the app."
 msgstr ""
 
-#: src/pages/select_mode.rs:71
+#: src/ui/select_mode.rs:84
 msgid "Load .pfx"
 msgstr ""
 
-#: src/pages/select_mode.rs:81
+#: src/ui/select_mode.rs:94
 msgid "Loaded keys"
 msgstr ""
 
-#: src/pages/select_mode.rs:182
+#: src/ui/select_mode.rs:126
+msgid "Loading keys"
+msgstr ""
+
+#: src/ui/select_mode.rs:206
 msgid "File already exists. You can use it"
 msgstr ""

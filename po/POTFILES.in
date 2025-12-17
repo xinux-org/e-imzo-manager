@@ -2,9 +2,11 @@ data/uz.xinux.EIMZOManager.desktop.in.in
 data/uz.xinux.EIMZOManager.gschema.xml.in
 data/uz.xinux.EIMZOManager.metainfo.xml.in.in
 data/resources/ui/shortcuts.ui
-src/app.rs
 src/main.rs
 src/utils.rs
-src/pages/welcome.rs
-src/modals/awesome.rs
-src/pages/select_mode.rs
+src/ui/about.rs
+src/ui/window.rs
+src/ui/welcome.rs
+src/ui/awesome.rs
+src/ui/localhost.rs
+src/ui/select_mode.rs

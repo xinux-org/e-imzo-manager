@@ -1,4 +1,5 @@
 use adw::prelude::AdwDialogExt;
+use gettextrs::gettext;
 use gtk::prelude::GtkApplicationExt;
 use relm4::{adw, gtk, ComponentParts, ComponentSender, SimpleComponent};
 
@@ -50,10 +51,12 @@ impl SimpleComponent for AboutDialog {
     fn update_view(&self, _dialog: &mut Self::Widgets, _sender: ComponentSender<Self>) {}
 }
 
-fn release_notes() -> &'static str {
-    r#"<p>This release contains new features and fixes:</p>
-    <ul>
-      <li>New area selection UI</li>
-      <li>Added option to about section of UI</li>
-    </ul>"#
+fn release_notes() -> String {
+    gettext(
+        r#"<p>This release contains new features and fixes:</p>
+  <ul>
+    <li>New area selection UI</li>
+    <li>Added option to about section of UI</li>
+  </ul>"#,
+    )
 }

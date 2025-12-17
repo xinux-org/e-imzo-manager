@@ -144,8 +144,8 @@ impl AsyncComponent for SelectModePage {
             .launch(OpenDialogSettings {
                 create_folders: false,
                 folder_mode: false,
-                cancel_label: "Cancel".into(),
-                accept_label: "Open".into(),
+                cancel_label: gettext("Cancel"),
+                accept_label: gettext("Open"),
                 is_modal: true,
                 filters: tasks_filename_filters(),
             })
