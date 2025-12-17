@@ -115,17 +115,19 @@ impl AsyncComponent for SelectModePage {
                       set_valign: gtk::Align::Center,
                       set_halign: gtk::Align::Center,
                       set_orientation: gtk::Orientation::Vertical,
-                      
+
+                      adw::Spinner {
+                          set_width_request: 40,
+                          set_height_request: 40,
+                          set_margin_bottom: 25,
+                      },
+
                       gtk::Label {
                         set_label: &gettext("Loading keys"),
-                        add_css_class: relm4::css::TITLE_1,
-                        set_margin_bottom: 25,
+                        add_css_class: relm4::css::TITLE_2,
+
                       },
-                      
-                      adw::Spinner {
-                          set_width_request: 32,
-                          set_height_request: 32,
-                      }
+
                   }
               },
             },
@@ -223,15 +225,15 @@ impl AsyncComponent for SelectModePage {
                 self.file_list_factory.guard().clear();
 
                 let pfx_files_in_folder = return_pfx_files_in_folder();
-                
+
                 // wait enough to wait e-imzo.service activation
                 tokio::time::sleep(Duration::from_millis(1600)).await;
 
                 // Hmm..., When service active and user launches app then toggle button
                 // changes from gray to green. If user press toggle button in
                 // grey color stage which is NOT YET connected to e_imzo sdk then EIMZO
-                // returns unnessary error saying “Connection refused”. Why press grey 
-                // button before 1600 mileseconds because user wants deactivate service 
+                // returns unnessary error saying “Connection refused”. Why press grey
+                // button before 1600 mileseconds because user wants deactivate service
                 // very fast when app launched
                 EIMZO::new().map_or_else(
                     |e| warn!("No connection because service is stopped: {e:?}"),
