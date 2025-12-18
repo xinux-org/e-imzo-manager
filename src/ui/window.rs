@@ -34,6 +34,7 @@ pub struct App {
     service_installed: bool,
     service: gtk::Button,
     service_limiter: bool,
+    tooltip_text: String,
 }
 
 #[derive(Debug)]
@@ -114,8 +115,8 @@ impl SimpleComponent for App {
                     #[name(service)]
                     pack_start = &gtk::Button {
                         #[watch]
-                        // set_tooltip_text: Some(model.toggle_button_text),
-                        set_tooltip_text: Some(&gettext("on/of e-imzo service")),
+                        set_tooltip_text: Some(&model.tooltip_text),
+                        #[watch]
                         set_visible: model.service_installed,
                         add_css_class: "service-button",
                         connect_clicked => AppMsg::StartAndStopService,
@@ -167,15 +168,23 @@ impl SimpleComponent for App {
             Page::Welcome
         };
 
+        let service_active = check_service_active("e-imzo.service");
+        let tooltip_text = if service_active {
+            gettext("Service is ON - Click to stop")
+        } else {
+            gettext("Service is OFF - Click to start")
+        };
+
         let mut model = Self {
             page,
             welcome_page,
             select_mode_page,
-            service_active: check_service_active("e-imzo.service"),
+            service_active,
             // toggle_button_text: "",
             service_installed: check_service_installed("/etc/systemd/user/e-imzo.service"),
             service: gtk::Button::new(),
             service_limiter: false,
+            tooltip_text,
         };
 
         let widgets = view_output!();
@@ -278,12 +287,12 @@ impl SimpleComponent for App {
                     self.service.remove_css_class("off");
                     self.service.add_css_class("on");
                     self.page = Page::SelectMode;
-                    // do something here in order to change 
-                    // tool tip of this toggle button
+                    self.tooltip_text = gettext("Service is ON - Click to stop");
                 } else {
                     self.service.remove_css_class("on");
                     self.service.add_css_class("off");
                     self.page = Page::Welcome;
+                    self.tooltip_text = gettext("Service is OFF - Click to start");
                 }
             }
             AppMsg::ShowMessage(text) => {
