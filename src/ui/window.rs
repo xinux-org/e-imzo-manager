@@ -29,7 +29,6 @@ pub struct App {
     page: Page,
     welcome_page: Controller<WelcomeModel>,
     select_mode_page: relm4::prelude::AsyncController<SelectModePage>,
-    // toggle_button_text: String,
     service_active: bool,
     service_installed: bool,
     service: gtk::Button,
@@ -74,7 +73,6 @@ impl SimpleComponent for App {
         #[root]
         main_window = adw::ApplicationWindow::new(&main_application()) {
             set_visible: true,
-            // width and height below
             set_size_request: (500, 600),
             set_default_size: (500, 600),
 
@@ -162,13 +160,13 @@ impl SimpleComponent for App {
             .launch(())
             .forward(sender.input_sender(), identity);
 
-        let page: Page = if check_service_active("e-imzo.service") {
+        let service_active = check_service_active("e-imzo.service");
+        let page: Page = if service_active {
             Page::SelectMode
         } else {
             Page::Welcome
         };
 
-        let service_active = check_service_active("e-imzo.service");
         let tooltip_text = if service_active {
             gettext("Service is ON - Click to stop")
         } else {
@@ -180,7 +178,6 @@ impl SimpleComponent for App {
             welcome_page,
             select_mode_page,
             service_active,
-            // toggle_button_text: "",
             service_installed: check_service_installed("/etc/systemd/user/e-imzo.service"),
             service: gtk::Button::new(),
             service_limiter: false,
