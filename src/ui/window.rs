@@ -1,14 +1,19 @@
 use crate::{
+    action_register,
     config::{APP_ID, PROFILE},
-    ui::{about::AboutDialog, awesome::AwesomeModel, localhost::Localhost},
+    shortcut_register, shortcut_register_ws,
     ui::{
+        about::AboutDialog,
+        awesome::AwesomeModel,
+        localhost::Localhost,
         select_mode::{SelectModeMsg, SelectModePage},
+        shortcuts::{Shortcut, ShortcutsDialog, ShortcutsDialogInit},
         welcome::WelcomeModel,
     },
     utils::{check_service_active, check_service_installed, show_alert_dialog},
 };
 use gettextrs::gettext;
-use relm4::component::AsyncComponent;
+use relm4::{actions::AccelsPlus, component::AsyncComponent};
 use relm4::{
     actions::{RelmAction, RelmActionGroup},
     adw::{self, prelude::*},
@@ -51,6 +56,11 @@ relm4::new_stateless_action!(AwesomeAction, WindowActionGroup, "awesome");
 relm4::new_stateless_action!(pub ShortcutsAction, WindowActionGroup, "show-help-overlay");
 relm4::new_stateless_action!(AboutAction, WindowActionGroup, "about");
 relm4::new_stateless_action!(LocalhostAction, WindowActionGroup, "localhost");
+relm4::new_stateless_action!(
+    StartAndStopServiceAction,
+    WindowActionGroup,
+    "start-and-stop-service"
+);
 
 #[relm4::component(pub)]
 impl SimpleComponent for App {
@@ -79,15 +89,6 @@ impl SimpleComponent for App {
             connect_close_request[sender] => move |_| {
                 sender.input(AppMsg::Quit);
                 glib::Propagation::Stop
-            },
-            #[wrap(Some)]
-            set_help_overlay: shortcuts = &gtk::Builder::from_resource(
-                    "/uz/xinux/EIMZOManager/gtk/help-overlay.ui"
-                )
-                .object::<gtk::ShortcutsWindow>("help_overlay")
-                .unwrap() -> gtk::ShortcutsWindow {
-                    set_transient_for: Some(&main_window),
-                    set_application: Some(&main_application()),
             },
 
             add_css_class?: if PROFILE == "Devel" {
@@ -189,33 +190,37 @@ impl SimpleComponent for App {
         model.service = service;
         widgets.load_window_size();
 
-        let awesome_action = {
-            RelmAction::<AwesomeAction>::new_stateless(move |_| {
-                tracing::info!("AwesomeAction triggered");
-                AwesomeModel::builder().launch(()).detach();
-            })
-        };
+        let mut actions = RelmActionGroup::<WindowActionGroup>::new();
+        let app = root.application().unwrap();
+        let mut shortcuts = vec![];
 
-        let shortcuts_action = {
-            let shortcuts = widgets.shortcuts.clone();
-            RelmAction::<ShortcutsAction>::new_stateless(move |_| {
-                shortcuts.present();
-            })
-        };
+        shortcuts.push(Shortcut {
+            label: "Quit".to_string(),
+            accelerator: "<Control>q".to_string(),
+        });
 
-        let about_action = {
-            RelmAction::<AboutAction>::new_stateless(move |_| {
-                AboutDialog::builder().launch(()).detach();
-            })
-        };
+        shortcut_register_ws!(
+            (app, shortcuts, actions, sender),
+            gettext("Start/Stop Service") => "<Control>r",
+            StartAndStopServiceAction => AppMsg::StartAndStopService
+        );
+        shortcut_register!(
+            (app, shortcuts, actions),
+            gettext("Awesome e-imzo") => "<Control>a",
+            AwesomeAction => { AwesomeModel::builder().launch(()).detach(); }
+        );
 
-        let localhost_action = {
-            RelmAction::<LocalhostAction>::new_stateless(move |_| {
-                Localhost::builder().launch(()).detach();
-            })
-        };
+        action_register!(actions, ShortcutsAction => {
+          ShortcutsDialog::builder()
+            .launch(ShortcutsDialogInit(shortcuts.clone()))
+            .detach();
+        });
+        action_register!(actions, AboutAction => { AboutDialog::builder().launch(()).detach(); });
+        action_register!(actions, LocalhostAction => { Localhost::builder().launch(()).detach(); });
 
-        let sender_clone = sender.input_sender().clone();
+        actions.register_for_widget(&widgets.main_window);
+
+        let sender_clone = sender.clone().input_sender().clone();
         glib::timeout_add_seconds_local(1, move || {
             if check_service_installed("/etc/systemd/user/e-imzo.service") {
                 let active = check_service_active("e-imzo.service");
@@ -223,13 +228,6 @@ impl SimpleComponent for App {
             }
             glib::ControlFlow::Continue
         });
-
-        let mut actions = RelmActionGroup::<WindowActionGroup>::new();
-        actions.add_action(awesome_action);
-        actions.add_action(shortcuts_action);
-        actions.add_action(about_action);
-        actions.add_action(localhost_action);
-        actions.register_for_widget(&widgets.main_window);
 
         ComponentParts { model, widgets }
     }
