@@ -13,8 +13,8 @@ use relm4::{
 use tracing::{error, info};
 
 use crate::config::RESOURCES_FILE;
-use ui::window::App;
 use gtk::gdk;
+use ui::window::App;
 
 relm4::new_action_group!(AppActionGroup, "app");
 relm4::new_stateless_action!(QuitAction, AppActionGroup, "quit");
