@@ -6,7 +6,6 @@ mod utils;
 use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
 use gettextrs::LocaleCategory;
 use relm4::{
-    actions::{AccelsPlus, RelmAction, RelmActionGroup},
     gtk::{self, gio, glib, prelude::*},
     main_application, RelmApp,
 };
@@ -16,8 +15,7 @@ use crate::config::RESOURCES_FILE;
 use gtk::gdk;
 use ui::window::App;
 
-relm4::new_action_group!(AppActionGroup, "app");
-relm4::new_stateless_action!(QuitAction, AppActionGroup, "quit");
+
 
 fn main() {
     gtk::init().unwrap();
@@ -50,19 +48,6 @@ fn main() {
     let app = main_application();
     app.set_resource_base_path(Some("/uz/xinux/EIMZOManager/"));
 
-    let mut actions = RelmActionGroup::<AppActionGroup>::new();
-
-    let quit_action = {
-        let app = app.clone();
-        RelmAction::<QuitAction>::new_stateless(move |_| {
-            app.quit();
-        })
-    };
-    actions.add_action(quit_action);
-    actions.register_for_main_application();
-
-    app.set_accelerators_for_action::<QuitAction>(&["<Control>q"]);
-
     let provider = gtk::CssProvider::new();
     provider.load_from_path("./data/resources/style.css");
     gtk::style_context_add_provider_for_display(
@@ -73,7 +58,7 @@ fn main() {
 
     let app = RelmApp::from_app(app);
 
-    app.visible_on_activate(false).run::<App>(());
+    app.visible_on_activate(true).run::<App>(());
 }
 
 fn setup_gettext() {
