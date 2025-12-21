@@ -61,6 +61,7 @@ relm4::new_stateless_action!(
     WindowActionGroup,
     "start-and-stop-service"
 );
+relm4::new_stateless_action!(QuitAction, WindowActionGroup, "quit");
 
 #[relm4::component(pub)]
 impl SimpleComponent for App {
@@ -82,7 +83,7 @@ impl SimpleComponent for App {
     view! {
         #[root]
         main_window = adw::ApplicationWindow::new(&main_application()) {
-            set_visible: true,
+            // set_visible: true,
             set_size_request: (500, 600),
             set_default_size: (500, 600),
 
@@ -194,10 +195,12 @@ impl SimpleComponent for App {
         let app = root.application().unwrap();
         let mut shortcuts = vec![];
 
-        shortcuts.push(Shortcut {
-            label: "Quit".to_string(),
-            accelerator: "<Control>q".to_string(),
-        });
+
+        shortcut_register_ws!(
+          (app, shortcuts, actions, sender),
+          gettext("Quit") => "<Control>q",
+          QuitAction => AppMsg::Quit
+        );
 
         shortcut_register_ws!(
             (app, shortcuts, actions, sender),
