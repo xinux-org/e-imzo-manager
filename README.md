@@ -62,6 +62,8 @@ service.e-imzo.enable = true;
 
 ## Then the MetaInfo file validation can be performed with:
 ```bash
+flatpak install -y flathub org.flatpak.Builder
+
 flatpak run --command=flatpak-builder-lint org.flatpak.Builder appstream %{id}.metainfo.xml
 ```
 
