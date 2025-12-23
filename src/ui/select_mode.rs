@@ -227,7 +227,7 @@ impl AsyncComponent for SelectModePage {
                 let pfx_files_in_folder = return_pfx_files_in_folder();
 
                 // wait enough to wait e-imzo.service activation
-                tokio::time::sleep(Duration::from_millis(1600)).await;
+                tokio::time::sleep(Duration::from_millis(1800)).await;
 
                 // Hmm..., When service active and user launches app then toggle button
                 // changes from gray to green. If user press toggle button in
