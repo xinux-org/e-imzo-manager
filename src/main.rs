@@ -4,7 +4,7 @@ mod ui;
 mod utils;
 
 use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
-use gettextrs::LocaleCategory;
+use gettextrs::{LocaleCategory, gettext};
 use relm4::{
     actions::{AccelsPlus, RelmAction, RelmActionGroup},
     gtk::{self, gio, glib, prelude::*},
@@ -26,7 +26,7 @@ fn main() {
         .with_max_level(tracing::Level::INFO)
         .init();
 
-    glib::set_application_name("E-IMZO-Manager");
+    glib::set_application_name(&gettext("E-IMZO-Manager"));
     gtk::Window::set_default_icon_name(APP_ID);
 
     // setup gettext

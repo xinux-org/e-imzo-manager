@@ -195,7 +195,7 @@ impl SimpleComponent for App {
         let mut shortcuts = vec![];
 
         shortcuts.push(Shortcut {
-            label: "Quit".to_string(),
+            label: gettext("Quit"),
             accelerator: "<Control>q".to_string(),
         });
 

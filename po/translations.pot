@@ -8,16 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-17 12:55+0500\n"
+"POT-Creation-Date: 2025-12-23 17:24+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/uz.xinux.EIMZOManager.desktop.in.in:2
+#: data/uz.xinux.EIMZOManager.desktop.in.in:2 src/main.rs:29
 msgid "E-IMZO-Manager"
 msgstr ""
 
@@ -41,7 +41,7 @@ msgstr ""
 msgid "Window maximized state"
 msgstr ""
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:5
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:5 src/ui/about.rs:19
 msgid "E-IMZO Manager"
 msgstr ""
 
@@ -98,6 +98,10 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+#: src/ui/about.rs:26
+msgid "© 2025 Xinux Developers"
+msgstr ""
+
 #: src/ui/about.rs:56
 msgid ""
 "<p>This release contains new features and fixes:</p>\n"
@@ -107,27 +111,51 @@ msgid ""
 "  </ul>"
 msgstr ""
 
-#: src/ui/window.rs:64
+#: src/ui/window.rs:75
 msgid "Awesome E-IMZO"
 msgstr ""
 
-#: src/ui/window.rs:65
+#: src/ui/window.rs:76
 msgid "Open https://127.0.0.1:64443/"
 msgstr ""
 
-#: src/ui/window.rs:66
+#: src/ui/window.rs:77
 msgid "Keyboard"
 msgstr ""
 
-#: src/ui/window.rs:67
+#: src/ui/window.rs:78
 msgid "About E-IMZO Manager"
 msgstr ""
 
-#: src/ui/window.rs:246
-msgid "E-IMZO service stopped"
+#: src/ui/window.rs:106
+msgid "Add key"
+msgstr ""
+
+#: src/ui/window.rs:172 src/ui/window.rs:285
+msgid "Service is ON - Click to stop"
+msgstr ""
+
+#: src/ui/window.rs:174 src/ui/window.rs:290
+msgid "Service is OFF - Click to start"
+msgstr ""
+
+#: src/ui/window.rs:198
+msgid "Quit"
+msgstr ""
+
+#: src/ui/window.rs:204
+msgid "Start/Stop Service"
+msgstr ""
+
+#: src/ui/window.rs:209
+msgid "Awesome e-imzo"
 msgstr ""
 
 #: src/ui/window.rs:256
+msgid "E-IMZO service stopped"
+msgstr ""
+
+#: src/ui/window.rs:266
 msgid "E-IMZO service started"
 msgstr ""
 
@@ -167,6 +195,26 @@ msgstr ""
 msgid "Loading keys"
 msgstr ""
 
+#: src/ui/select_mode.rs:147
+msgid "Cancel"
+msgstr ""
+
+#: src/ui/select_mode.rs:148
+msgid "Open"
+msgstr ""
+
 #: src/ui/select_mode.rs:206
 msgid "File already exists. You can use it"
+msgstr ""
+
+#: src/ui/select_mode.rs:266
+msgid "Full name"
+msgstr ""
+
+#: src/ui/select_mode.rs:271
+msgid "Seriya raqami"
+msgstr ""
+
+#: src/ui/select_mode.rs:287
+msgid "Sertifikat amal qilish muddati"
 msgstr ""
