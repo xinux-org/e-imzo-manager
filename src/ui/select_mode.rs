@@ -235,75 +235,77 @@ impl AsyncComponent for SelectModePage {
                 // returns unnessary error saying “Connection refused”. Why press grey
                 // button before 1600 mileseconds because user wants deactivate service
                 // very fast when app launched
-                EIMZO::new().map_or_else(
-                    |e| warn!("No connection because service is stopped: {e:?}"),
-                    |mut res| {
-                        res.list_all_certificates().map_or_else(
-                            |e| warn!("Connection not yet established: {e:?}"),
-                            |cer| {
-                                cer.iter()
-                                    .map(|c| (c, c.get_alias()))
-                                    .for_each(|(c, alias)| {
-                                        let file_name = c.name.clone();
+                let mut eimzo = match EIMZO::new() {
+                    Ok(eimzo) => eimzo,
+                    Err(e) => {
+                        warn!("No connection because service is stopped: {e:?}");
+                        return;
+                    }
+                };
+                match eimzo.list_all_certificates() {
+                    Ok(certs) => {
+                        certs
+                            .iter()
+                            .map(|c| (c, c.get_alias()))
+                            .for_each(|(c, alias)| {
+                                let file_name = c.name.clone();
 
-                                        // convert string "2027.07.23 17:44:06" into "23.07.2027"
-                                        let validfrom: Vec<_> =
-                                            alias.get("validfrom").unwrap().split(" ").collect();
-                                        let mut validfrom_dmy: Vec<_> =
-                                            validfrom[0].split(".").collect();
-                                        validfrom_dmy.reverse();
+                                // convert string "2027.07.23 17:44:06" into "23.07.2027"
+                                let validfrom: Vec<_> =
+                                    alias.get("validfrom").unwrap().split(" ").collect();
+                                let mut validfrom_dmy: Vec<_> = validfrom[0].split(".").collect();
+                                validfrom_dmy.reverse();
 
-                                        let validto: Vec<_> =
-                                            alias.get("validto").unwrap().split(" ").collect();
-                                        let mut validto_dmy: Vec<_> =
-                                            validto[0].split(".").collect();
-                                        validto_dmy.reverse();
+                                let validto: Vec<_> =
+                                    alias.get("validto").unwrap().split(" ").collect();
+                                let mut validto_dmy: Vec<_> = validto[0].split(".").collect();
+                                validto_dmy.reverse();
 
-                                        let full_name = format!(
-                                            "Full name: {}",
-                                            alias
-                                                .get("cn")
-                                                .expect("Full name not found")
-                                                .to_uppercase()
-                                        );
-                                        let serial_number = format!(
-                                            "Seriya raqami: {}",
-                                            alias
-                                                .get("serialnumber")
-                                                .expect("Serial number not found")
-                                        );
-                                        let name: String = hide_sensitive_string(
-                                            alias.get("name").unwrap().clone(),
-                                            '*',
-                                            2,
-                                        );
-                                        let surname = hide_sensitive_string(
-                                            alias.get("surname").unwrap().clone(),
-                                            '*',
-                                            2,
-                                        );
-                                        let title = format!("{} {}", name, surname).to_uppercase();
-                                        let validity = format!(
-                                            "Sertifikat amal qilish muddati: {} - {}",
-                                            validfrom_dmy.join("."),
-                                            validto_dmy.join(".")
-                                        );
+                                let full_name = format!(
+                                    "{}: {}",
+                                    gettext("Full name"),
+                                    alias.get("cn").expect("Full name not found").to_uppercase()
+                                );
+                                let serial_number = format!(
+                                    "{}: {}",
+                                    gettext("Seriya raqami"),
+                                    alias.get("serialnumber").expect("Serial number not found")
+                                );
+                                let name: String = hide_sensitive_string(
+                                    alias.get("name").unwrap().clone(),
+                                    '*',
+                                    2,
+                                );
+                                let surname = hide_sensitive_string(
+                                    alias.get("surname").unwrap().clone(),
+                                    '*',
+                                    2,
+                                );
+                                let title = format!("{} {}", name, surname).to_uppercase();
+                                let validity = format!(
+                                    "{}: {} - {}",
+                                    gettext("Sertifikat amal qilish muddati"),
+                                    validfrom_dmy.join("."),
+                                    validto_dmy.join(".")
+                                );
 
-                                        let data = CertificateRow {
-                                            title: title.to_owned(),
-                                            file_name: file_name.to_owned(),
-                                            full_name_line: full_name.to_owned(),
-                                            serial_number_line: serial_number.to_owned(),
-                                            validity_line: validity,
-                                        };
-                                        self.file_list_factory.guard().push_back(data);
-                                    });
-                                // after successfully  load, remove spinner
-                                self.is_file_loaded = true;
-                            },
-                        )
-                    },
-                );
+                                let data = CertificateRow {
+                                    title: title.to_owned(),
+                                    file_name: file_name.to_owned(),
+                                    full_name_line: full_name.to_owned(),
+                                    serial_number_line: serial_number.to_owned(),
+                                    validity_line: validity,
+                                };
+                                self.file_list_factory.guard().push_back(data);
+                            });
+                        // after successfully  load, remove spinner
+                        self.is_file_loaded = true;
+                    }
+                    Err(e) => {
+                        warn!("No connection because service is stopped: {e:?}");
+                        return;
+                    }
+                };
                 // after removeing spinner check files in /media/DSKEYS exists or empty
                 self.is_path_empty = pfx_files_in_folder.is_empty();
             }
