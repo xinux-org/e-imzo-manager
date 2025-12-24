@@ -61,6 +61,7 @@ fn release_notes() -> String {
     <li>Added button click limiter</li>
     <li>Added Scrolled Window to file selection page</li>
     <li>Deleted remove certificate button icon and replaced to the red trash bin icon</li>
+    <li>Made mobile responsive</li>
   </ul>"#,
     )
 }

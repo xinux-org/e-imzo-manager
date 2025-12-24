@@ -209,7 +209,7 @@ impl SimpleComponent for App {
         );
         shortcut_register!(
             (app, shortcuts, actions),
-            gettext("Awesome e-imzo") => "<Control>a",
+            gettext("Awesome E-IMZO") => "<Control>a",
             AwesomeAction => { AwesomeModel::builder().launch(()).detach(); }
         );
 
