@@ -4,7 +4,7 @@ mod ui;
 mod utils;
 
 use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
-use gettextrs::{LocaleCategory, gettext};
+use gettextrs::{gettext, LocaleCategory};
 use relm4::{
     gtk::{self, gio, glib, prelude::*},
     main_application, RelmApp,
@@ -14,8 +14,6 @@ use tracing::{error, info};
 use crate::config::RESOURCES_FILE;
 use gtk::gdk;
 use ui::window::App;
-
-
 
 fn main() {
     gtk::init().unwrap();

@@ -5,7 +5,7 @@ edition = "2021"
 license = "AGPL-3.0"
 description = "E-IMZO for uzbek state web key signing on Linux"
 homepage = "https://github.com/xinux-org"
-repository = "https://github.com/xinux-org/e-imzo"
+repository = "https://github.com/xinux-org/e-imzo-manager"
 authors = ["Xinux Developers <support@oss.uzinfocom.uz>"]
 readme = "README.md"
 
@@ -17,12 +17,19 @@ incremental = true
 strip = true
 opt-level = "z"
 
+[profile.dev]
+opt-level = 1
+lto = "thin"
+
+[profile.dev.package."*"]
+opt-level = 3
+
 [dependencies]
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
 relm4 = { version = "0.10.0", features = ["libadwaita", "gnome_48"] }
 relm4-components = "0.10.0"
-tracing = "0.1.41"
 adw = { version = "0.8.0", package = "libadwaita", features = ["v1_8"] }
+tracing = "0.1.41"
 
 tracing-subscriber = { version = "0.3", default-features = false, features = [
   "fmt",
