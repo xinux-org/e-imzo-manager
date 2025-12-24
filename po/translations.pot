@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-23 17:24+0500\n"
+"POT-Creation-Date: 2025-12-24 11:15+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/uz.xinux.EIMZOManager.desktop.in.in:2 src/main.rs:29
+#: data/uz.xinux.EIMZOManager.desktop.in.in:2 src/main.rs:27
 msgid "E-IMZO-Manager"
 msgstr ""
 
@@ -106,56 +106,58 @@ msgstr ""
 msgid ""
 "<p>This release contains new features and fixes:</p>\n"
 "  <ul>\n"
-"    <li>New area selection UI</li>\n"
-"    <li>Added option to about section of UI</li>\n"
+"    <li>Updated english, uzbek, russian translation</li>\n"
+"    <li>Added hover text on add, toggle buttons</li>\n"
+"    <li>Add factory deque. Remove certificates without refreshing page</li>\n"
+"    <li>Added button click limiter</li>\n"
+"    <li>Added Scrolled Window to file selection page</li>\n"
+"    <li>Deleted remove certificate button icon and replaced to the red trash "
+"bin icon</li>\n"
+"    <li>Made mobile responsive</li>\n"
 "  </ul>"
 msgstr ""
 
-#: src/ui/window.rs:75
+#: src/ui/window.rs:76 src/ui/window.rs:212
 msgid "Awesome E-IMZO"
 msgstr ""
 
-#: src/ui/window.rs:76
+#: src/ui/window.rs:77
 msgid "Open https://127.0.0.1:64443/"
 msgstr ""
 
-#: src/ui/window.rs:77
+#: src/ui/window.rs:78
 msgid "Keyboard"
 msgstr ""
 
-#: src/ui/window.rs:78
+#: src/ui/window.rs:79
 msgid "About E-IMZO Manager"
 msgstr ""
 
-#: src/ui/window.rs:106
+#: src/ui/window.rs:107
 msgid "Add key"
 msgstr ""
 
-#: src/ui/window.rs:172 src/ui/window.rs:285
+#: src/ui/window.rs:173 src/ui/window.rs:288
 msgid "Service is ON - Click to stop"
 msgstr ""
 
-#: src/ui/window.rs:174 src/ui/window.rs:290
+#: src/ui/window.rs:175 src/ui/window.rs:293
 msgid "Service is OFF - Click to start"
 msgstr ""
 
-#: src/ui/window.rs:198
+#: src/ui/window.rs:201
 msgid "Quit"
 msgstr ""
 
-#: src/ui/window.rs:204
+#: src/ui/window.rs:207
 msgid "Start/Stop Service"
 msgstr ""
 
-#: src/ui/window.rs:209
-msgid "Awesome e-imzo"
-msgstr ""
-
-#: src/ui/window.rs:256
+#: src/ui/window.rs:259
 msgid "E-IMZO service stopped"
 msgstr ""
 
-#: src/ui/window.rs:266
+#: src/ui/window.rs:269
 msgid "E-IMZO service started"
 msgstr ""
 
@@ -212,9 +214,9 @@ msgid "Full name"
 msgstr ""
 
 #: src/ui/select_mode.rs:271
-msgid "Seriya raqami"
+msgid "Certificate number"
 msgstr ""
 
 #: src/ui/select_mode.rs:287
-msgid "Sertifikat amal qilish muddati"
+msgid "Certificate validity period"
 msgstr ""

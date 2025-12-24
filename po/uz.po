@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-24 18:20+0500\n"
-"PO-Revision-Date: 2025-11-24 18:26+0500\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2025-12-24 11:13+0500\n"
+"PO-Revision-Date: 2025-12-24 11:16+0500\n"
+"Last-Translator: Baxrom Raxmatov\n"
 "Language-Team: \n"
 "Language: uz\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.6\n"
 
-#: data/uz.xinux.EIMZOManager.desktop.in.in:2
+#: data/uz.xinux.EIMZOManager.desktop.in.in:2 src/main.rs:27
 msgid "E-IMZO-Manager"
 msgstr "E-IMZO Menejer"
 
@@ -42,15 +42,15 @@ msgstr "Ilova balandligi"
 msgid "Window maximized state"
 msgstr "Ilovaning maksimal holati"
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:6
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:5 src/ui/about.rs:19
 msgid "E-IMZO Manager"
 msgstr "E-IMZO Manager"
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:7
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:6
 msgid "Improving E-IMZO support and compatibility for Linux"
 msgstr "Linux uchun E-IMZOni qo'llab-quvvatlash va muvofiqligini yaxshilash"
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:9
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:8
 msgid ""
 "An electronic digital signature certificate is very important for verifying "
 "the time a document was signed and its legal status."
@@ -58,11 +58,11 @@ msgstr ""
 "Elektron raqamli imzo sertifikati hujjat imzolangan vaqt va uning huquqiy "
 "holatini tekshirish uchun juda muhimdir."
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:14
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:13
 msgid "Main window"
 msgstr "Asosiy oyna"
 
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:20
+#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:19
 msgid "Xinux Developers"
 msgstr "Xinux dasturchilari"
 
@@ -81,102 +81,168 @@ msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Chiqish"
 
-#: src/app.rs:62
-msgid "Awesome E-IMZO"
-msgstr "E-IMZO ro‘yxati"
-
-#: src/app.rs:63
-msgid "Open https://127.0.0.1:64443/"
-msgstr "Ochish https://127.0.0.1:64443/"
-
-#: src/app.rs:64
-msgid "Keyboard"
-msgstr "Yorliqlar"
-
-#: src/app.rs:65
-msgid "About E-IMZO Manager"
-msgstr "E-IMZO Manager haqida"
-
-#: src/app.rs:234
-msgid "E-IMZO service stopped"
-msgstr "E-IMZO servisi o‘chirildi"
-
-#: src/app.rs:244
-msgid "E-IMZO service started"
-msgstr "E-IMZO servisi yondi"
-
-#: src/utils.rs:141
-msgid "Full name"
-msgstr "F.I.O"
-
-#: src/utils.rs:152
-msgid "Sertificate number"
-msgstr "Sertifikat raqami"
-
-#: src/utils.rs:163
-msgid "Certificate validity period"
-msgstr "Sertifikatning amal qilish muddati"
-
-#: src/utils.rs:174
-msgid "Delete"
-msgstr "Olib tashlash"
-
-#: src/utils.rs:252
+#: src/utils.rs:140
 msgid "Ok"
 msgstr "Ok"
 
-#: src/utils.rs:269
+#: src/utils.rs:158
 msgid "Are you sure?"
 msgstr "Ishonchingiz komilmi?"
 
-#: src/utils.rs:270
+#: src/utils.rs:159
 msgid "Do you really want to delete this certificate?"
 msgstr "Haqiqatan ham bu sertifikatni olib tashlamoqchimisiz?"
 
-#: src/utils.rs:273
+#: src/utils.rs:162
 msgid "Yes"
 msgstr "Ha"
 
-#: src/utils.rs:273
+#: src/utils.rs:162
 msgid "No"
-msgstr "Yo‘q"
+msgstr "Yoʻq"
 
-#: src/pages/welcome.rs:53
+#: src/ui/about.rs:26
+msgid "© 2025 Xinux Developers"
+msgstr "© 2025 Xinux dasturchilari"
+
+#: src/ui/about.rs:56
+msgid ""
+"<p>This release contains new features and fixes:</p>\n"
+"  <ul>\n"
+"    <li>Updated english, uzbek, russian translation</li>\n"
+"    <li>Added hover text on add, toggle buttons</li>\n"
+"    <li>Add factory deque. Remove certificates without refreshing page</li>\n"
+"    <li>Added button click limiter</li>\n"
+"    <li>Added Scrolled Window to file selection page</li>\n"
+"    <li>Deleted remove certificate button icon and replaced to the red trash "
+"bin icon</li>\n"
+"    <li>Made mobile responsive</li>\n"
+"  </ul>"
+msgstr ""
+"<p>Bu nashrda yangi funksiyalar va tuzatishlar mavjud:</p>\n"
+"<ul>\n"
+"<li>Yangilangan inglizcha, oʻzbekcha, ruscha tarjimasi</li>\n"
+"<li>Qoʻshish, almashtirish tugmalarini</li> ushlab turish matni kiritildi\n"
+"<li>Sertifikatlarni sahifani yangilanishsiz olib tashlash</li>\n"
+"<li>Fayllarni tanlash sahifasiga aylantirilgan oyna qo‘shildi</li>\n"
+"<li>Sertifikatni olib tashlash tugmasi belgisi oʻchirildi va qizil chiqindi "
+"qutisi belgisiga almashtirildi</li>\n"
+"<li>Dastur dizayni mobil ekranlari uchun toʻgʻrilandi</li>\n"
+"</ul>"
+
+#: src/ui/window.rs:76 src/ui/window.rs:212
+msgid "Awesome E-IMZO"
+msgstr "E-IMZO ro‘yxati"
+
+#: src/ui/window.rs:77
+msgid "Open https://127.0.0.1:64443/"
+msgstr "Ochish https://127.0.0.1:64443/"
+
+#: src/ui/window.rs:78
+msgid "Keyboard"
+msgstr "Yorliqlar"
+
+#: src/ui/window.rs:79
+msgid "About E-IMZO Manager"
+msgstr "E-IMZO Manager haqida"
+
+#: src/ui/window.rs:107
+msgid "Add key"
+msgstr "Kalit qoʻshish"
+
+#: src/ui/window.rs:173 src/ui/window.rs:288
+msgid "Service is ON - Click to stop"
+msgstr "Xizmat YONIQ - Toʻxtatish uchun bosing"
+
+#: src/ui/window.rs:175 src/ui/window.rs:293
+msgid "Service is OFF - Click to start"
+msgstr "Xizmat OʻCHIRILGAN - Boshlash uchun bosing"
+
+#: src/ui/window.rs:201
+msgid "Quit"
+msgstr "Chiqish"
+
+#: src/ui/window.rs:207
+msgid "Start/Stop Service"
+msgstr "Xizmatni boshlash/to‘xtatish"
+
+#: src/ui/window.rs:259
+msgid "E-IMZO service stopped"
+msgstr "E-IMZO servisi o‘chirildi"
+
+#: src/ui/window.rs:269
+msgid "E-IMZO service started"
+msgstr "E-IMZO servisi yondi"
+
+#: src/ui/welcome.rs:43
 msgid "Welcome to E-imzo"
 msgstr "E-IMZOga xush kelibsiz"
 
-#: src/pages/welcome.rs:60
+#: src/ui/welcome.rs:50
 msgid "Please click the red button to start e-imzo service"
 msgstr "Iltimos e-imzo servisini yoqish uchun qizil tugmani bosing"
 
-#: src/pages/welcome.rs:65
+#: src/ui/welcome.rs:55
 msgid "Please download e-imzo service and relaunch the app again."
 msgstr "Iltimos, ilovani yuklab oling va qayta ishga tushiring."
 
-#: src/modals/awesome.rs:17
+#: src/ui/awesome.rs:17
 msgid "List of used e-imzo websites"
-msgstr "e-imzo qo‘llanilgan veb-saytlar ro‘yxati"
+msgstr "e-imzo ishlatilgan saytlar roʻyxati"
 
-#: src/pages/select_mode.rs:62
+#: src/ui/select_mode.rs:75
 msgid "No certificates"
-msgstr "Sertifikatlar yo‘q"
+msgstr "Sertifikatlar yoʻq"
 
-#: src/pages/select_mode.rs:63
+#: src/ui/select_mode.rs:76
 msgid "Load some certificates to start using the app."
 msgstr ""
 "Ilovadan foydalanishni boshlash uchun ayrim sertifikatlarni yuklab oling."
 
-#: src/pages/select_mode.rs:71
+#: src/ui/select_mode.rs:84
 msgid "Load .pfx"
 msgstr ".pfx fayl yuklash"
 
-#: src/pages/select_mode.rs:81
+#: src/ui/select_mode.rs:94
 msgid "Loaded keys"
 msgstr "Mavjud kalitlar"
 
-#: src/pages/select_mode.rs:182
+#: src/ui/select_mode.rs:126
+msgid "Loading keys"
+msgstr "Kalitlar yuklanmoqda"
+
+#: src/ui/select_mode.rs:147
+msgid "Cancel"
+msgstr "Bekor qilish"
+
+#: src/ui/select_mode.rs:148
+msgid "Open"
+msgstr "Ochish"
+
+#: src/ui/select_mode.rs:206
 msgid "File already exists. You can use it"
 msgstr "Fayl allaqachon mavjud. Siz e-imzo kalitini foydalanishingiz mumkin"
+
+#: src/ui/select_mode.rs:266
+msgid "Full name"
+msgstr "F.I.O"
+
+#: src/ui/select_mode.rs:271
+msgid "Certificate number"
+msgstr "Sertifikat raqami"
+
+#: src/ui/select_mode.rs:287
+msgid "Certificate validity period"
+msgstr "Sertifikatning amal qilish muddati"
+
+#~ msgid "Seriya raqami"
+#~ msgstr "Seriya raqami"
+
+#~ msgid "Sertifikat amal qilish muddati"
+#~ msgstr "Sertifikatning amal qilish muddati"
+
+#~ msgid "Delete"
+#~ msgstr "Olib tashlash"
 
 #~ msgid ""
 #~ "It seems you <a href=\"appstream://org.gnome.Calculator.desktop\">don't "

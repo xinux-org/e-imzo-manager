@@ -268,7 +268,7 @@ impl AsyncComponent for SelectModePage {
                                 );
                                 let serial_number = format!(
                                     "{}: {}",
-                                    gettext("Seriya raqami"),
+                                    gettext("Certificate number"),
                                     alias.get("serialnumber").expect("Serial number not found")
                                 );
                                 let name: String = hide_sensitive_string(
@@ -284,7 +284,7 @@ impl AsyncComponent for SelectModePage {
                                 let title = format!("{} {}", name, surname).to_uppercase();
                                 let validity = format!(
                                     "{}: {} - {}",
-                                    gettext("Sertifikat amal qilish muddati"),
+                                    gettext("Certificate validity period"),
                                     validfrom_dmy.join("."),
                                     validto_dmy.join(".")
                                 );
