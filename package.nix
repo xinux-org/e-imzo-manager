@@ -23,14 +23,14 @@
 stdenv.mkDerivation (finalAttrs: {
   pname = "e-imzo-manager";
   # todo 
-  version = "1.0.2";
+  version = "1.1.0";
 
   src = fetchFromGitHub {
     owner = "xinux-org";
-    repo = "e-imzo";
+    repo = "e-imzo-mamager";
     tag = finalAttrs.version;
     # todo
-    hash = "sha256-JXALTSgxIULDHdw90RjxlNQiLT+GKrzpkqPlMY0h+8c=";
+    hash = "";
   };
 
   cargoDeps = rustPlatform.fetchCargoVendor {
