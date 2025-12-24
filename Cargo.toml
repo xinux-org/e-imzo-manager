@@ -1,6 +1,6 @@
 [package]
 name = "E-IMZO-Manager"
-version = "1.0.2"
+version = "1.1.0"
 edition = "2021"
 license = "AGPL-3.0"
 description = "E-IMZO for uzbek state web key signing on Linux"

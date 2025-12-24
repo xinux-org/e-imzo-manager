@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-24 11:13+0500\n"
-"PO-Revision-Date: 2025-12-24 11:16+0500\n"
+"PO-Revision-Date: 2025-12-24 11:23+0500\n"
 "Last-Translator: Baxrom Raxmatov\n"
 "Language-Team: \n"
 "Language: uz\n"
@@ -24,7 +24,7 @@ msgstr "E-IMZO Menejer"
 
 #: data/uz.xinux.EIMZOManager.desktop.in.in:3
 msgid "Nix effort for E-IMZO service."
-msgstr "E-IMZO xizmati uchun Nix harakati."
+msgstr "E-IMZO servisi uchun Nix harakati."
 
 #: data/uz.xinux.EIMZOManager.desktop.in.in:9
 msgid "Gnome;GTK;"
@@ -152,11 +152,11 @@ msgstr "Kalit qoʻshish"
 
 #: src/ui/window.rs:173 src/ui/window.rs:288
 msgid "Service is ON - Click to stop"
-msgstr "Xizmat YONIQ - Toʻxtatish uchun bosing"
+msgstr "Servis YONIQ - Toʻxtatish uchun bosing"
 
 #: src/ui/window.rs:175 src/ui/window.rs:293
 msgid "Service is OFF - Click to start"
-msgstr "Xizmat OʻCHIRILGAN - Boshlash uchun bosing"
+msgstr "Servis OʻCHIRILGAN - Boshlash uchun bosing"
 
 #: src/ui/window.rs:201
 msgid "Quit"
@@ -164,7 +164,7 @@ msgstr "Chiqish"
 
 #: src/ui/window.rs:207
 msgid "Start/Stop Service"
-msgstr "Xizmatni boshlash/to‘xtatish"
+msgstr "Servisini boshlash/to‘xtatish"
 
 #: src/ui/window.rs:259
 msgid "E-IMZO service stopped"

@@ -1,7 +1,7 @@
 project(
   'E-IMZO-Manager',
   'rust',
-  version: '1.0.2',
+  version: '1.1.0',
   meson_version: '>= 0.59',
   license: 'MIT',
 )
