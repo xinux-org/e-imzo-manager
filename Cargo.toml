@@ -1,7 +1,7 @@
 [package]
 name = "E-IMZO-Manager"
 version = "1.1.0"
-edition = "2021"
+edition = "2024"
 license = "AGPL-3.0"
 description = "E-IMZO for uzbek state web key signing on Linux"
 homepage = "https://github.com/xinux-org"
@@ -25,21 +25,21 @@ lto = "thin"
 opt-level = 3
 
 [dependencies]
-gettext-rs = { version = "0.7", features = ["gettext-system"] }
+gettext-rs = { version = "0.7.7", features = ["gettext-system"] }
 relm4 = { version = "0.10.0", features = ["libadwaita", "gnome_48"] }
 relm4-components = "0.10.0"
 adw = { version = "0.8.0", package = "libadwaita", features = ["v1_8"] }
-tracing = "0.1.41"
+tracing = "0.1.44"
 
-tracing-subscriber = { version = "0.3", default-features = false, features = [
+tracing-subscriber = { version = "0.3.22", default-features = false, features = [
   "fmt",
 ] }
-tokio = { version = "1.47.1", default-features = false, features = [
+tokio = { version = "1.49.0", default-features = false, features = [
   "process",
   "time",
 ] }
 e-imzo = "0.2.5"
-gio = "0.21.2"
+gio = "0.21.5"
 
 [workspace]
 members = [".", "e-helper"]
