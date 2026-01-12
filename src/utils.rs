@@ -1,9 +1,6 @@
-use gettextrs::gettext;
 use relm4::{
-    adw::{self, prelude::*},
-    gtk::{self},
-    prelude::DynamicIndex,
     AsyncComponentSender,
+    gtk::{self},
 };
 use std::{
     fs, io,
@@ -11,7 +8,6 @@ use std::{
     path::Path,
     process::{Command, ExitStatus},
 };
-use tracing::info;
 
 use crate::{
     config::LIBEXECDIR,
@@ -128,66 +124,4 @@ pub fn ask_password(sender: AsyncComponentSender<SelectModePage>) {
             }
         }
     });
-}
-
-pub fn show_alert_dialog(text: &str) {
-    let dialog = adw::AlertDialog::builder()
-        .heading(text)
-        .default_response("ok")
-        .follows_content_size(true)
-        .build();
-
-    dialog.add_responses(&[("ok", &gettext("Ok"))]);
-
-    dialog.connect_response(None, |dialog, response| {
-        println!("Dialog response: {}", response);
-        dialog.close();
-    });
-
-    if let Some(win) = relm4::main_application().active_window() {
-        dialog.present(Some(&win));
-    }
-}
-
-pub fn show_remove_file_alert_dialog(
-    index: DynamicIndex,
-    file_name: String,
-    sender: AsyncComponentSender<SelectModePage>,
-) {
-    let dialog = adw::AlertDialog::builder()
-        .heading(gettext("Are you sure?"))
-        .body(gettext("Do you really want to delete this certificate?"))
-        .build();
-
-    dialog.add_responses(&[("yes", &gettext("Yes")), ("no", &gettext("No"))]);
-    dialog.set_default_response(Some("no"));
-
-    dialog.set_response_appearance("yes", adw::ResponseAppearance::Destructive);
-    dialog.set_response_appearance("no", adw::ResponseAppearance::Suggested);
-
-    dialog.connect_response(None, {
-        let sender = sender.clone();
-        let file_name = file_name.clone();
-        move |dialog, response| {
-            match response {
-                "yes" => {
-                    sender.input(SelectModeMsg::RemoveCertificates(
-                        index.clone(),
-                        file_name.clone(),
-                    ));
-                }
-                "no" => {
-                    // sender.input(SelectModeMsg::SetFileLoadedState(false));
-                    // sender.input(SelectModeMsg::RefreshCertificates);
-                    info!("User pressed no");
-                    sender.input(SelectModeMsg::None);
-                }
-                _ => {}
-            }
-            dialog.close();
-        }
-    });
-    if let Some(win) = relm4::main_application().active_window() {
-        dialog.present(Some(&win));
-    }
 }

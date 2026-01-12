@@ -1,8 +1,8 @@
+use crate::ui::alert::{RemoveCertificateDialog, RemoveCertificateDialogInit};
 use crate::ui::window::AppMsg;
 use crate::utils::{
     ask_password, check_file_ownership, check_service_active, hide_sensitive_string,
-    return_pfx_files_in_folder, show_alert_dialog, show_remove_file_alert_dialog,
-    tasks_filename_filters,
+    return_pfx_files_in_folder, tasks_filename_filters,
 };
 use e_imzo::EIMZO;
 use gettextrs::gettext;
@@ -37,7 +37,6 @@ pub enum SelectModeMsg {
     OpenFileConfirmed,
     OpenFileResponse(PathBuf),
     // Alerts
-    ShowMessage(String),
     ShowRemoveFileMsg(DynamicIndex, String),
     // File CRUD
     RefreshCertificates,
@@ -202,7 +201,7 @@ impl AsyncComponent for SelectModePage {
                 let copied_file = &path.file_name().unwrap().to_str().unwrap();
 
                 if return_pfx_files_in_folder().contains(&copied_file.to_string()) {
-                    sender.input(SelectModeMsg::ShowMessage(
+                    let _ = sender.output(AppMsg::ShowMessage(
                         gettext("File already exists. You can use it").to_string(),
                     ));
                 } else {
@@ -214,9 +213,14 @@ impl AsyncComponent for SelectModePage {
                 }
             }
             // Alerts
-            SelectModeMsg::ShowMessage(text) => show_alert_dialog(&text),
             SelectModeMsg::ShowRemoveFileMsg(index, file_name) => {
-                show_remove_file_alert_dialog(index, file_name, sender)
+                let dialog = RemoveCertificateDialog::builder()
+                    .launch(RemoveCertificateDialogInit { index, file_name })
+                    .forward(sender.input_sender(), |msg| msg);
+
+                dialog
+                    .widget()
+                    .present(relm4::main_application().active_window().as_ref());
             }
             SelectModeMsg::RefreshCertificates => {
                 // todo: create getting spesific file from e_imzo
@@ -314,6 +318,7 @@ impl AsyncComponent for SelectModePage {
             }
 
             SelectModeMsg::RemoveCertificates(index, file_name) => {
+                println!("REMOVE CESTSRSTSRTRSTRS");
                 let full_path = Path::new("/media/DSKEYS/").join(format!("{}.pfx", file_name));
                 if let Err(e) = fs::remove_file(&full_path) {
                     eprintln!("failed {}: {}", full_path.display(), e);

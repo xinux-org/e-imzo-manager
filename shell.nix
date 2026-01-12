@@ -20,6 +20,7 @@ in
       clippy
       rust-analyzer
       cargo-watch
+      cargo-expand
 
       # Other compile time dependencies
       openssl

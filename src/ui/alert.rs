@@ -1,11 +1,15 @@
+use std::{ops::Deref, rc::Rc};
+
 use gettextrs::gettext;
 use relm4::{
     ComponentParts, ComponentSender, SimpleComponent,
     adw::{self, prelude::*},
     gtk::{self},
+    prelude::DynamicIndex,
 };
+use tracing::debug;
 
-use crate::ui::window::AppMsg;
+use crate::ui::{select_mode::SelectModeMsg, window::AppMsg};
 
 pub struct ToggleServiceDialog {
     heading: String,
@@ -30,7 +34,7 @@ impl SimpleComponent for ToggleServiceDialog {
 
             connect_response: (None, move |_dialog, response| {
                 if response == "ok" {
-                    tracing::info!("User clicked ToggleServiceDialog Ok button")
+                    debug!("User clicked ToggleServiceDialog Ok button")
                 }
             })
         }
@@ -55,100 +59,56 @@ impl SimpleComponent for ToggleServiceDialog {
     }
 }
 
-pub struct RemoveCertificateDialog {
-    heading: String,
-    body: String,
+// --------------------------------------------------
+pub struct RemoveCertificateDialogInit {
+    pub index: DynamicIndex,
+    pub file_name: String,
 }
 
-#[derive(Debug)]
-pub enum RemoveCertificateDialogMsg {
-    SetHeading(String),
-    SetBody(String),
-}
+pub struct RemoveCertificateDialog;
 
 #[relm4::component(pub)]
 impl SimpleComponent for RemoveCertificateDialog {
-    type Init = gtk::Window;
-    type Input = ToggleServiceDialogMsg;
-    type Output = AppMsg;
+    type Init = RemoveCertificateDialogInit;
+    type Input = ();
+    type Output = SelectModeMsg;
 
     view! {
-        adw::AlertDialog {
-            #[watch]
-            set_heading: Some(&model.heading),
-            #[watch]
-            set_body: &model.body,
-            add_response: ("ok", &gettext("Ok")),
-
-            connect_response: (None, move |_dialog, response| {
-                if response == "ok" {
-                    tracing::info!("User clicked ToggleServiceDialog Ok button")
-                }
-                // } else if response "" {
-
-                // }
-            })
+        dialog = adw::AlertDialog {
+            set_heading: Some(&gettext("Are you sure?")),
+            set_body: &gettext("Do you really want to delete this certificate?"),
+            add_response: ("yes", &gettext("Yes")),
+            add_response: ("no", &gettext("No")),
+            set_response_appearance: ("yes", adw::ResponseAppearance::Destructive),
+            set_response_appearance: ("no", adw::ResponseAppearance::Suggested),
         }
     }
 
     fn init(
-        _init: Self::Init,
+        init: Self::Init,
         root: Self::Root,
-        _sender: ComponentSender<Self>,
+        sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let model = RemoveCertificateDialog {
-            heading: String::new(),
-            body: String::new(),
-        };
+        let model = RemoveCertificateDialog {};
         let widgets = view_output!();
+        let init = Rc::new(init);
+
+        widgets
+            .dialog
+            .connect_response(None, move |_dialog, response| match response {
+                "yes" => {
+                    debug!("User clicked yes in SelectModeMsg::RemoveCertificates");
+                    let _ = sender.output(SelectModeMsg::RemoveCertificates(
+                        init.deref().index.clone(),
+                        init.deref().file_name.clone(),
+                    ));
+                }
+                "no" => {
+                    debug!("User pressed no in SelectModeMsg::RemoveCertificates");
+                }
+                _ => (),
+            });
 
         ComponentParts { model, widgets }
     }
-    fn update(&mut self, message: Self::Input, _sender: ComponentSender<Self>) {
-        match message {
-            ToggleServiceDialogMsg::SetHeading(heading) => self.heading = heading,
-        }
-    }
 }
-// pub fn show_remove_file_alert_dialog(
-//     index: DynamicIndex,
-//     file_name: String,
-//     sender: AsyncComponentSender<SelectModePage>,
-// ) {
-//     let dialog = adw::AlertDialog::builder()
-//         .heading(gettext("Are you sure?"))
-//         .body(gettext("Do you really want to delete this certificate?"))
-//         .build();
-
-//     dialog.add_responses(&[("yes", &gettext("Yes")), ("no", &gettext("No"))]);
-//     dialog.set_default_response(Some("no"));
-
-//     dialog.set_response_appearance("yes", adw::ResponseAppearance::Destructive);
-//     dialog.set_response_appearance("no", adw::ResponseAppearance::Suggested);
-
-//     dialog.connect_response(None, {
-//         let sender = sender.clone();
-//         let file_name = file_name.clone();
-//         move |dialog, response| {
-//             match response {
-//                 "yes" => {
-//                     sender.input(SelectModeMsg::RemoveCertificates(
-//                         index.clone(),
-//                         file_name.clone(),
-//                     ));
-//                 }
-//                 "no" => {
-//                     // sender.input(SelectModeMsg::SetFileLoadedState(false));
-//                     // sender.input(SelectModeMsg::RefreshCertificates);
-//                     info!("User pressed no");
-//                     sender.input(SelectModeMsg::None);
-//                 }
-//                 _ => {}
-//             }
-//             dialog.close();
-//         }
-//     });
-//     if let Some(win) = relm4::main_application().active_window() {
-//         dialog.present(Some(&win));
-//     }
-// }

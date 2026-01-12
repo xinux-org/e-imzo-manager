@@ -11,7 +11,7 @@ use crate::{
         shortcuts::{Shortcut, ShortcutsDialog, ShortcutsDialogInit},
         welcome::WelcomeModel,
     },
-    utils::{check_service_active, check_service_installed, show_alert_dialog},
+    utils::{check_service_active, check_service_installed},
 };
 use gettextrs::gettext;
 use relm4::{
