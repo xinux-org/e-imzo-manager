@@ -4,6 +4,7 @@ use crate::{
     shortcut_register, shortcut_register_ws,
     ui::{
         about::AboutDialog,
+        alert::{ToggleServiceDialog, ToggleServiceDialogMsg},
         awesome::AwesomeModel,
         localhost::Localhost,
         select_mode::{SelectModeMsg, SelectModePage},
@@ -13,14 +14,14 @@ use crate::{
     utils::{check_service_active, check_service_installed, show_alert_dialog},
 };
 use gettextrs::gettext;
-use relm4::{actions::AccelsPlus, component::AsyncComponent};
 use relm4::{
-    actions::{RelmAction, RelmActionGroup},
+    Component, ComponentController, ComponentParts, ComponentSender, Controller, SimpleComponent,
+    actions::{AccelsPlus, RelmAction, RelmActionGroup},
     adw::{self, prelude::*},
+    component::AsyncComponent,
     gtk::{self, gio, glib},
     main_application,
-    prelude::AsyncComponentController,
-    Component, ComponentController, ComponentParts, ComponentSender, Controller, SimpleComponent,
+    prelude::{AsyncComponentController, AsyncController},
 };
 use std::{convert::identity, time::Duration};
 
@@ -31,14 +32,15 @@ pub enum Page {
 }
 
 pub struct App {
+    service_active: bool,
     page: Page,
     welcome_page: Controller<WelcomeModel>,
-    select_mode_page: relm4::prelude::AsyncController<SelectModePage>,
-    service_active: bool,
+    select_mode_page: AsyncController<SelectModePage>,
+    toggle_service_dialog: Controller<ToggleServiceDialog>,
+    tooltip_text: String,
     service_installed: bool,
     service: gtk::Button,
     service_limiter: bool,
-    tooltip_text: String,
 }
 
 #[derive(Debug)]
@@ -154,6 +156,17 @@ impl SimpleComponent for App {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
+        let service_active = check_service_active("e-imzo.service");
+        let page: Page = if service_active {
+            Page::SelectMode
+        } else {
+            Page::Welcome
+        };
+
+        let toggle_service_dialog = ToggleServiceDialog::builder()
+            .launch(root.clone().upcast())
+            .forward(sender.input_sender(), identity);
+
         let welcome_page = WelcomeModel::builder()
             .launch(())
             .forward(sender.input_sender(), identity);
@@ -162,13 +175,6 @@ impl SimpleComponent for App {
             .launch(())
             .forward(sender.input_sender(), identity);
 
-        let service_active = check_service_active("e-imzo.service");
-        let page: Page = if service_active {
-            Page::SelectMode
-        } else {
-            Page::Welcome
-        };
-
         let tooltip_text = if service_active {
             gettext("Service is ON - Click to stop")
         } else {
@@ -176,14 +182,15 @@ impl SimpleComponent for App {
         };
 
         let mut model = Self {
+            service_active,
             page,
+            toggle_service_dialog,
             welcome_page,
             select_mode_page,
-            service_active,
+            tooltip_text,
             service_installed: check_service_installed("/etc/systemd/user/e-imzo.service"),
             service: gtk::Button::new(),
             service_limiter: false,
-            tooltip_text,
         };
 
         let widgets = view_output!();
@@ -194,7 +201,6 @@ impl SimpleComponent for App {
         let mut actions = RelmActionGroup::<WindowActionGroup>::new();
         let app = root.application().unwrap();
         let mut shortcuts = vec![];
-
 
         shortcut_register_ws!(
           (app, shortcuts, actions, sender),
@@ -294,7 +300,11 @@ impl SimpleComponent for App {
                 }
             }
             AppMsg::ShowMessage(text) => {
-                show_alert_dialog(&text);
+                self.toggle_service_dialog
+                    .emit(ToggleServiceDialogMsg::SetHeading(text));
+                self.toggle_service_dialog
+                    .widget()
+                    .present(relm4::main_application().active_window().as_ref());
             }
             AppMsg::ServiceLimiter(is_clicable) => self.service_limiter = is_clicable,
         }

@@ -1,4 +1,5 @@
 pub mod about;
+pub mod alert;
 pub mod awesome;
 pub mod localhost;
 pub mod macros;
