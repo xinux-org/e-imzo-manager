@@ -46,13 +46,16 @@ fn main() {
     let app = main_application();
     app.set_resource_base_path(Some("/uz/xinux/EIMZOManager/"));
 
-    let provider = gtk::CssProvider::new();
-    provider.load_from_path("./data/resources/style.css");
-    gtk::style_context_add_provider_for_display(
-        &gdk::Display::default().unwrap(),
-        &provider,
-        gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
-    );
+    #[cfg(debug_assertions)]
+    {
+      let provider = gtk::CssProvider::new();
+      provider.load_from_path("./data/resources/style.css");
+      gtk::style_context_add_provider_for_display(
+          &gdk::Display::default().unwrap(),
+          &provider,
+          gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+      );
+    }
 
     let app = RelmApp::from_app(app);
 

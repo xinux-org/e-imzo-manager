@@ -26,7 +26,7 @@ nix develop
 meson setup build
 
 # build the project
-nix build . --show--trace
+nix build . --show-trace
 
 # Go one folder back and run bin outside of nix-shell. Otherwise polkit cannot ask password to create /media/DSKEYS for e-imzo server
 cd ..
