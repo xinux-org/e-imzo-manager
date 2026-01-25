@@ -20,7 +20,9 @@ use std::{
     path::{Path, PathBuf},
     time::Duration,
 };
-use tracing::warn;
+use tracing::{debug, warn};
+
+const MEDIA_DSKEYS: &str = "/media/DSKEYS";
 
 #[derive(Debug)]
 pub struct SelectModePage {
@@ -188,7 +190,7 @@ impl AsyncComponent for SelectModePage {
     ) {
         match msg {
             SelectModeMsg::OpenFile => {
-                if Path::new("/media/DSKEYS").exists() && check_file_ownership().unwrap() == 1000 {
+                if Path::new(MEDIA_DSKEYS).exists() && check_file_ownership().unwrap() == 1000 {
                     self.open_dialog.emit(OpenDialogMsg::Open);
                 } else {
                     ask_password(sender);
@@ -205,7 +207,8 @@ impl AsyncComponent for SelectModePage {
                         gettext("File already exists. You can use it").to_string(),
                     ));
                 } else {
-                    let _ = fs::copy(&path, format!("/media/DSKEYS/{}", copied_file));
+                    // Copy lesected file to e-imzo path with fileʻs name
+                    let _ = fs::copy(&path, format!("{}/{}", MEDIA_DSKEYS, copied_file));
                     sender.input(SelectModeMsg::SetFileLoadedState(false));
                     // implement adding feature by updating e_imzo crate
                     // self.file_list_factory.guard().push_back(data);
@@ -318,8 +321,8 @@ impl AsyncComponent for SelectModePage {
             }
 
             SelectModeMsg::RemoveCertificates(index, file_name) => {
-                println!("REMOVE CESTSRSTSRTRSTRS");
-                let full_path = Path::new("/media/DSKEYS/").join(format!("{}.pfx", file_name));
+                debug!("REMOVE CESTSRSTSRTRSTRS");
+                let full_path = Path::new(MEDIA_DSKEYS).join(format!("{}.pfx", file_name));
                 if let Err(e) = fs::remove_file(&full_path) {
                     eprintln!("failed {}: {}", full_path.display(), e);
                 } else {
@@ -328,7 +331,7 @@ impl AsyncComponent for SelectModePage {
                     {
                         self.is_path_empty = true;
                     }
-                    println!("deleted: {}", full_path.display());
+                    debug!("deleted: {}", full_path.display());
                 }
             }
             // todo.
