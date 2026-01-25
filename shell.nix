@@ -7,7 +7,7 @@ in
 
     # Compile time dependencies
     nativeBuildInputs = with pkgs; [
-      # Hail the Nix
+      # Nix
       nixd
       statix
       deadnix
@@ -31,15 +31,12 @@ in
       meson
       ninja
       pango
-      parted
       polkit
       gettext
-      vte-gtk4
       pkg-config
       gdk-pixbuf
       libadwaita
       pkg-config
-      libgweather
       gnome-desktop
       wrapGAppsHook4
       desktop-file-utils
