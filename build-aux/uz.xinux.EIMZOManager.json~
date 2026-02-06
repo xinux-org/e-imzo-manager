@@ -6,7 +6,7 @@
     "sdk-extensions" : [
         "org.freedesktop.Sdk.Extension.rust-stable"
     ],
-    "command": "E-IMZO-Manager",
+    "command": "e-imzo-manager",
     "finish-args" : [
         "--share=network",
         "--share=ipc",
@@ -19,7 +19,7 @@
     "build-options" : {
         "append-path" : "/usr/lib/sdk/rust-stable/bin",
         "env" : {
-            "CARGO_HOME": "/run/build/E-IMZO-Manager/cargo"
+            "CARGO_HOME": "/run/build/e-imzo-manager/cargo"
         }
     },
     "cleanup": [
@@ -35,7 +35,7 @@
     ],
     "modules": [
         {
-            "name" : "E-IMZO-Manager",
+            "name" : "e-imzo-manager",
             "run-tests" : true,
             "buildsystem" : "meson",
             "sources" : [

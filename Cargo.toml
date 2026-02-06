@@ -1,5 +1,5 @@
 [package]
-name = "E-IMZO-Manager"
+name = "e-imzo-manager"
 version = "1.1.0"
 edition = "2024"
 license = "AGPL-3.0"

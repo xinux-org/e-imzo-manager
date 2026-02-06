@@ -3,21 +3,6 @@
 version = 4
 
 [[package]]
-name = "E-IMZO-Manager"
-version = "1.1.0"
-dependencies = [
- "e-imzo",
- "gettext-rs",
- "gio",
- "libadwaita",
- "relm4",
- "relm4-components",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "aho-corasick"
 version = "1.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -285,6 +270,21 @@ dependencies = [
  "thiserror",
  "tungstenite",
  "url",
+]
+
+[[package]]
+name = "e-imzo-manager"
+version = "1.1.0"
+dependencies = [
+ "e-imzo",
+ "gettext-rs",
+ "gio",
+ "libadwaita",
+ "relm4",
+ "relm4-components",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
