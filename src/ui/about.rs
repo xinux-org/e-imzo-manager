@@ -54,14 +54,14 @@ impl SimpleComponent for AboutDialog {
 fn release_notes() -> String {
     gettext(
         r#"<p>This release contains new features and fixes:</p>
-  <ul>
-    <li>Updated english, uzbek, russian translation</li>
-    <li>Added hover text on add, toggle buttons</li>
-    <li>Add factory deque. Remove certificates without refreshing page</li>
-    <li>Added button click limiter</li>
-    <li>Added Scrolled Window to file selection page</li>
-    <li>Deleted remove certificate button icon and replaced to the red trash bin icon</li>
-    <li>Made mobile responsive</li>
-  </ul>"#,
+    <ul>
+        <li>Updated english, uzbek, russian translation</li>
+        <li>Added hover text on add, toggle buttons</li>
+        <li>Add factory deque. Remove certificates without refreshing page</li>
+        <li>Added button click limiter</li>
+        <li>Added Scrolled Window to file selection page</li>
+        <li>Deleted remove certificate button icon and replaced to the red trash bin icon</li>
+        <li>Made mobile responsive</li>
+    </ul>"#,
     )
 }

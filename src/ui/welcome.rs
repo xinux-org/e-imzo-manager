@@ -45,16 +45,16 @@ impl SimpleComponent for WelcomeModel {
             },
 
             if check_service_installed("/etc/systemd/user/e-imzo.service") {
-              gtk::Label {
-                  #[watch]
-                  set_label: &gettext("Please click the red button to start e-imzo service"),
-                  set_margin_all: 1,
-              }
+                gtk::Label {
+                    #[watch]
+                    set_label: &gettext("Please click the red button to start e-imzo service"),
+                    set_margin_all: 1,
+                }
             } else {
-              gtk::LinkButton {
-                  set_label: &gettext("Please download e-imzo service and relaunch the app again."),
-                  set_uri: "https://search.nixos.org/packages?channel=25.05&show=e-imzo&from=0&size=50&sort=relevance&type=packages&query=e-imzo",
-              }
+                gtk::LinkButton {
+                    set_label: &gettext("Please download e-imzo service and relaunch the app again."),
+                    set_uri: "https://search.nixos.org/packages?channel=25.05&show=e-imzo&from=0&size=50&sort=relevance&type=packages&query=e-imzo",
+                }
             },
 
             // gtk::Label {

@@ -203,9 +203,9 @@ impl SimpleComponent for App {
         let mut shortcuts = vec![];
 
         shortcut_register_ws!(
-          (app, shortcuts, actions, sender),
-          gettext("Quit") => "<Control>q",
-          QuitAction => AppMsg::Quit
+            (app, shortcuts, actions, sender),
+            gettext("Quit") => "<Control>q",
+            QuitAction => AppMsg::Quit
         );
 
         shortcut_register_ws!(
@@ -220,7 +220,7 @@ impl SimpleComponent for App {
         );
 
         action_register!(actions, ShortcutsAction => {
-          ShortcutsDialog::builder()
+            ShortcutsDialog::builder()
             .launch(ShortcutsDialogInit(shortcuts.clone()))
             .detach();
         });

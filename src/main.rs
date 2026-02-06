@@ -48,13 +48,13 @@ fn main() {
 
     #[cfg(debug_assertions)]
     {
-      let provider = gtk::CssProvider::new();
-      provider.load_from_path("./data/resources/style.css");
-      gtk::style_context_add_provider_for_display(
-          &gdk::Display::default().unwrap(),
-          &provider,
-          gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
-      );
+        let provider = gtk::CssProvider::new();
+        provider.load_from_path("./data/resources/style.css");
+        gtk::style_context_add_provider_for_display(
+            &gdk::Display::default().unwrap(),
+            &provider,
+            gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+        );
     }
 
     let app = RelmApp::from_app(app);
