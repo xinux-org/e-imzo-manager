@@ -30,7 +30,7 @@ nix build . --show-trace
 
 # Go one folder back and run bin outside of nix-shell. Otherwise polkit cannot ask password to create /media/DSKEYS for e-imzo server
 cd ..
-./e-imzo/result/bin/E-IMZO-Manager
+./e-imzo/result/bin/e-imzo-manager
 
 # Optional. Generate translation words from /po/POTFILES.in if needed.
 cd ./po

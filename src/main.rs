@@ -22,7 +22,7 @@ fn main() {
         .with_max_level(tracing::Level::INFO)
         .init();
 
-    glib::set_application_name(&gettext("E-IMZO-Manager"));
+    glib::set_application_name(&gettext("e-imzo-manager"));
     gtk::Window::set_default_icon_name(APP_ID);
 
     // setup gettext
