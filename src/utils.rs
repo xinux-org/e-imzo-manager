@@ -125,3 +125,8 @@ pub fn ask_password(sender: AsyncComponentSender<SelectModePage>) {
         }
     });
 }
+
+// expire
+pub fn has_expired(deadline: &str) -> bool {
+    unimplemented!()
+}

@@ -351,6 +351,7 @@ pub struct CertificateRow {
     pub full_name_line: String,
     pub serial_number_line: String,
     pub validity_line: String,
+    pub is_expired: bool,
 }
 
 #[derive(Debug)]
@@ -396,6 +397,13 @@ impl FactoryComponent for CertificateRow {
                         sender.output(CertificateRowOutput::RemoveRequested(index.clone(), file_name.clone())).unwrap()
                     },
                 },
+            },
+
+            add_row = &adw::ActionRow {
+                add_suffix = &gtk::Label{
+                    add_css_class: if self.is_expired {"warning-badge"} else {"success-badge"},
+                    set_label: &format!("{}", if self.is_expired {"Expired"} else {"Active"}),
+                }
             }
         }
     }
