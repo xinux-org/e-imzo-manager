@@ -57,7 +57,7 @@ environment = {
   ];
 };
 
-service.e-imzo.enable = true;
+services.e-imzo.enable = true;
 ```
 
 ## Then the MetaInfo file validation can be performed with:
