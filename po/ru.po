@@ -273,3 +273,12 @@ msgstr "Срок действия сертификата"
 
 #~ msgid "Bilal Elmoussaoui"
 #~ msgstr "Bilal Elmoussaoui"
+
+
+#: src/ui/select_mode.rs:392
+msgid "Expired"
+msgstr "Срок истек"
+
+#: src/ui/select_mode.rs:392
+msgid "Active"
+msgstr "Активный"

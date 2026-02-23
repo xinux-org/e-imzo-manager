@@ -39,7 +39,7 @@ tokio = { version = "1.49.0", default-features = false, features = [
   "time",
 ] }
 gio = "0.21.5"
-e-imzo = "0.2.5"
+e-imzo = "0.3.0"
 
 [workspace]
 members = [".", "e-helper"]

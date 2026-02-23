@@ -256,15 +256,13 @@ impl AsyncComponent for SelectModePage {
                                 let file_name = c.name.clone();
 
                                 // convert string "2027.07.23 17:44:06" into "23.07.2027"
-                                let validfrom: Vec<_> =
-                                    alias.get("validfrom").unwrap().split(" ").collect();
-                                let mut validfrom_dmy: Vec<_> = validfrom[0].split(".").collect();
-                                validfrom_dmy.reverse();
+                                let validfrom =
+                                    c.valid_from.expect("Couldn't get validity time").clone();
 
-                                let validto: Vec<_> =
-                                    alias.get("validto").unwrap().split(" ").collect();
-                                let mut validto_dmy: Vec<_> = validto[0].split(".").collect();
-                                validto_dmy.reverse();
+                                let validto = c.valid_to.expect("Couldn't get validity time").clone();
+
+                                let is_expired =
+                                    c.is_expired.expect("Couldn't get expired status").clone();
 
                                 let full_name = format!(
                                     "{}: {}",
@@ -290,8 +288,8 @@ impl AsyncComponent for SelectModePage {
                                 let validity = format!(
                                     "{}: {} - {}",
                                     gettext("Certificate validity period"),
-                                    validfrom_dmy.join("."),
-                                    validto_dmy.join(".")
+                                    validfrom.format("%d.%m.%Y").to_string(),
+                                    validto.format("%d.%m.%Y").to_string()
                                 );
 
                                 let data = CertificateRow {
@@ -300,6 +298,7 @@ impl AsyncComponent for SelectModePage {
                                     full_name_line: full_name.to_owned(),
                                     serial_number_line: serial_number.to_owned(),
                                     validity_line: validity,
+                                    is_expired: is_expired,
                                 };
                                 self.file_list_factory.guard().push_back(data);
                             });
@@ -351,6 +350,7 @@ pub struct CertificateRow {
     pub full_name_line: String,
     pub serial_number_line: String,
     pub validity_line: String,
+    pub is_expired: bool,
 }
 
 #[derive(Debug)]
@@ -369,36 +369,43 @@ impl FactoryComponent for CertificateRow {
 
     #[root]
     view! {
-        adw::ExpanderRow {
-            set_use_markup: true,
-            set_title: &self.title,
+            adw::ExpanderRow {
+                set_use_markup: true,
+                set_title: &self.title,
 
 
-            add_row = &adw::ActionRow {
-                set_title: &self.full_name_line,
-            },
+                add_row = &adw::ActionRow {
+                    set_title: &self.full_name_line,
+                },
 
-            add_row = &adw::ActionRow {
-                set_title: &self.serial_number_line,
-            },
+                add_row = &adw::ActionRow {
+                    set_title: &self.serial_number_line,
+                },
 
-            add_row = &adw::ActionRow {
-                set_title: &self.validity_line,
-            },
+                add_row = &adw::ActionRow {
+                    set_title: &self.validity_line,
+                },
 
-            add_row = &adw::ActionRow {
-                add_suffix = &gtk::Button {
-                    set_icon_name: "user-trash-symbolic",
-                    add_css_class: "destructive-action",
-                    set_valign: gtk::Align::Center,
-
-                    connect_clicked[sender, index, file_name = self.file_name.clone()] => move |_| {
-                        sender.output(CertificateRowOutput::RemoveRequested(index.clone(), file_name.clone())).unwrap()
+                add_row = &adw::ActionRow {
+                    add_prefix = &gtk::Label{
+                        add_css_class: if self.is_expired {"warning-badge"} else {"success-badge"},
+                        set_label: &format!("{}", &if self.is_expired { gettext("Expired")} else { gettext("Active")}),
+                        set_valign: gtk::Align::Center,
                     },
+
+                    add_suffix = &gtk::Button {
+                        set_icon_name: "user-trash-symbolic",
+                        add_css_class: "destructive-action",
+                        set_valign: gtk::Align::Center,
+
+                        connect_clicked[sender, index, file_name = self.file_name.clone()] => move |_| {
+                            sender.output(CertificateRowOutput::RemoveRequested(index.clone(), file_name.clone())).unwrap()
+                        },
+                    },
+
                 },
             }
         }
-    }
 
     fn init_model(init: Self::Init, _index: &DynamicIndex, _sender: FactorySender<Self>) -> Self {
         init
