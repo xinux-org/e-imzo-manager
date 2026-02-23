@@ -257,12 +257,12 @@ impl AsyncComponent for SelectModePage {
 
                                 // convert string "2027.07.23 17:44:06" into "23.07.2027"
                                 let validfrom =
-                                    c.valid_from.expect("asdfkja;slkdfj;lajkds").clone();
+                                    c.valid_from.expect("Couldn't get validity time").clone();
 
-                                let validto = c.valid_to.expect("asdfkja;slkdfj;lajkds").clone();
+                                let validto = c.valid_to.expect("Couldn't get validity time").clone();
 
                                 let is_expired =
-                                    c.is_expired.expect("asdfkja;slkdfj;lajkds").clone();
+                                    c.is_expired.expect("Couldn't get expired status").clone();
 
                                 let full_name = format!(
                                     "{}: {}",
@@ -288,8 +288,8 @@ impl AsyncComponent for SelectModePage {
                                 let validity = format!(
                                     "{}: {} - {}",
                                     gettext("Certificate validity period"),
-                                    validfrom.format("%d-%m-%Y").to_string(),
-                                    validto.format("%d-%m-%Y").to_string()
+                                    validfrom.format("%d.%m.%Y").to_string(),
+                                    validto.format("%d.%m.%Y").to_string()
                                 );
 
                                 let data = CertificateRow {
