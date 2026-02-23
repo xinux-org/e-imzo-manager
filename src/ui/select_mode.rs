@@ -389,7 +389,7 @@ impl FactoryComponent for CertificateRow {
                 add_row = &adw::ActionRow {
                     add_prefix = &gtk::Label{
                         add_css_class: if self.is_expired {"warning-badge"} else {"success-badge"},
-                        set_label: &format!("{}", if self.is_expired {"Expired"} else {"Active"}),
+                        set_label: &format!("{}", &if self.is_expired { gettext("Expired")} else { gettext("Active")}),
                         set_valign: gtk::Align::Center,
                     },
 
