@@ -1,16 +1,32 @@
-.title-header{
+.title-header {
   font-size: 36px;
   font-weight: bold;
 }
 
 button.service-button {
-    border-radius: 50%;
+  border-radius: 50%;
 }
 
 button.service-button.on {
-    background: #23bb23;
+  background: #23bb23;
 }
 
 button.service-button.off {
-    background: #d2222d;
+  background: #d2222d;
+}
+
+.warning-badge {
+  padding: 3px 5px;
+  background-color: rgba(234, 179, 8, 0.10);
+  color: rgb(234 179 8);
+  border: 1px rgb(234 179 8) solid;
+  border-radius: 8px;
+}
+
+.success-badge {
+  padding: 3px 5px;
+  background-color: rgba(105, 178, 108, 0.10);
+  color: rgb(105, 178, 108);
+  border: 1px rgb(105, 178, 108) solid;
+  border-radius: 8px;
 }
