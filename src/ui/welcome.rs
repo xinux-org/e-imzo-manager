@@ -53,7 +53,7 @@ impl SimpleComponent for WelcomeModel {
             } else {
                 gtk::LinkButton {
                     set_label: &gettext("Please download e-imzo service and relaunch the app again."),
-                    set_uri: "https://search.nixos.org/packages?channel=25.05&show=e-imzo&from=0&size=50&sort=relevance&type=packages&query=e-imzo",
+                    set_uri: "https://search.nixos.org/packages?channel=25.11&query=e-imzo&show=e-imzo",
                 }
             },
 

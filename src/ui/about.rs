@@ -1,7 +1,7 @@
 use adw::prelude::AdwDialogExt;
 use gettextrs::gettext;
 use gtk::prelude::GtkApplicationExt;
-use relm4::{adw, gtk, ComponentParts, ComponentSender, SimpleComponent};
+use relm4::{ComponentParts, ComponentSender, SimpleComponent, adw, gtk};
 
 use crate::config::{APP_ID, VERSION};
 
@@ -29,6 +29,7 @@ impl SimpleComponent for AboutDialog {
                 "BeMeritus https://github.com/bemeritus",
                 "Domirando https://github.com/Domirando",
                 "let-rec https://github.com/let-rec",
+                "Rafanochi https://github.com/rafanochi",
             ])
             .release_notes_version(VERSION)
             .release_notes(release_notes())

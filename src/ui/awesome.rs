@@ -80,6 +80,14 @@ impl SimpleComponent for AwesomeModel {
                                 .child(&gtk::Image::from_icon_name("document-send-symbolic"))
                                 .build(),
                         },
+
+                        adw::ActionRow {
+                            set_title: "esi.uz",
+                            add_suffix = &gtk::LinkButton::builder()
+                                .uri("https://esi.uz/")
+                                .child(&gtk::Image::from_icon_name("document-send-symbolic"))
+                                .build(),
+                        },
                     }
                 }
             }
