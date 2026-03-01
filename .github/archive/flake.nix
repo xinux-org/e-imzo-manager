@@ -12,23 +12,25 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    flake-utils,
-    ...
-  }:
-    flake-utils.lib.eachDefaultSystem
-    (
-      system: let
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+      ...
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
         pkgs = nixpkgs.legacyPackages.${system};
 
         packages = {
           default = packages.e-imzo;
-          e-imzo = pkgs.callPackage ./. {inherit pkgs;};
-          e-helper = pkgs.callPackage ./helper {inherit pkgs;};
+          e-imzo = pkgs.callPackage ./. { inherit pkgs; };
+          e-helper = pkgs.callPackage ./helper { inherit pkgs; };
         };
-      in {
+      in
+      {
         # Output package
         inherit packages;
 
@@ -36,7 +38,7 @@
         formatter = pkgs.alejandra;
 
         # Development environment
-        devShells.default = import ./shell.nix {inherit pkgs;};
+        devShells.default = import ./shell.nix { inherit pkgs; };
       }
     )
     // {

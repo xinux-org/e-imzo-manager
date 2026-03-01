@@ -64,7 +64,7 @@ stdenv.mkDerivation (finalAttrs: {
     polkit
   ];
 
-  propagatedUserEnvPkgs = [polkit];
+  propagatedUserEnvPkgs = [ polkit ];
 
   postInstall = ''
     gappsWrapperArgs+=(
@@ -72,14 +72,14 @@ stdenv.mkDerivation (finalAttrs: {
     )
   '';
 
-  passthru.updateScript = nix-update-script {};
+  passthru.updateScript = nix-update-script { };
 
   meta = {
     homepage = "https://github.com/xinux-org/e-imzo";
     mainProgram = "E-IMZO-Manager";
     description = "GTK application for managing E-IMZO keys";
-    license = with lib.licenses; [agpl3Plus];
+    license = with lib.licenses; [ agpl3Plus ];
     platforms = lib.platforms.linux;
-    teams = [lib.teams.uzinfocom];
+    teams = [ lib.teams.uzinfocom ];
   };
 })

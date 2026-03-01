@@ -1,9 +1,11 @@
-flake: {
+flake:
+{
   config,
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   # Shortcuts
   cfg = config.services.e-imzo;
   pkg = flake.packages.${pkgs.stdenv.hostPlatform.system}.default;
@@ -11,13 +13,12 @@ flake: {
   # Single name for everything
   name = "e-imzo";
 
-  args = {cfg}: let
-    id =
-      if cfg.id-card
-      then "--id-card"
-      else "";
-  in
-    lib.strings.concatStringsSep " " [id];
+  args =
+    { cfg }:
+    let
+      id = if cfg.id-card then "--id-card" else "";
+    in
+    lib.strings.concatStringsSep " " [ id ];
 
   # Systemd service
   service = lib.mkIf cfg.enable {
@@ -27,22 +28,28 @@ flake: {
       group = name;
     };
 
-    users.groups.${name} = {};
+    users.groups.${name} = { };
 
     systemd.user.services.${name} = {
       enable = true;
       description = "E-IMZO, uzbek state web signing service";
-      documentation = ["https://github.com/xinux-org/e-imzo"];
+      documentation = [ "https://github.com/xinux-org/e-imzo" ];
 
-      after = ["network-online.target" "graphical.target"];
-      wants = ["network-online.target" "graphical.target"];
-      wantedBy = ["default.target"];
+      after = [
+        "network-online.target"
+        "graphical.target"
+      ];
+      wants = [
+        "network-online.target"
+        "graphical.target"
+      ];
+      wantedBy = [ "default.target" ];
 
       serviceConfig = {
         Type = "simple";
         Restart = "always";
         RestartSec = 1;
-        ExecStart = "${lib.getBin cfg.package}/bin/e-imzo ${args {inherit cfg;}}";
+        ExecStart = "${lib.getBin cfg.package}/bin/e-imzo ${args { inherit cfg; }}";
 
         # Hardening
         NoNewPrivileges = true;
@@ -50,7 +57,8 @@ flake: {
       };
     };
   };
-in {
+in
+{
   options = with lib; {
     services.e-imzo = {
       enable = mkEnableOption ''
@@ -87,5 +95,5 @@ in {
     };
   };
 
-  config = lib.mkMerge [service];
+  config = lib.mkMerge [ service ];
 }

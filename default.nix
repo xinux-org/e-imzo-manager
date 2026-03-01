@@ -2,7 +2,8 @@
   pkgs,
   crane,
   ...
-}: let
+}:
+let
   # Helpful nix function
   lib = pkgs.lib;
 
@@ -36,43 +37,43 @@
     buildInputs = commonBuildInputs;
   };
 in
-  craneLib.buildPackage {
-    pname = manifest.name;
-    version = manifest.version;
-    strictDeps = true;
+craneLib.buildPackage {
+  pname = manifest.name;
+  version = manifest.version;
+  strictDeps = true;
 
-    src = pkgs.lib.cleanSource ./.;
+  src = pkgs.lib.cleanSource ./.;
 
-    inherit cargoArtifacts;
+  inherit cargoArtifacts;
 
-    nativeBuildInputs = commonNativeBuildInputs;
-    buildInputs = commonBuildInputs;
+  nativeBuildInputs = commonNativeBuildInputs;
+  buildInputs = commonBuildInputs;
 
-    configurePhase = ''
-      mesonConfigurePhase
-      runHook postConfigure
-    '';
+  configurePhase = ''
+    mesonConfigurePhase
+    runHook postConfigure
+  '';
 
-    buildPhase = ''
-      runHook preBuild
-      ninjaBuildPhase
-      runHook postBuild
-    '';
+  buildPhase = ''
+    runHook preBuild
+    ninjaBuildPhase
+    runHook postBuild
+  '';
 
-    installPhase = ''
-      runHook preInstall
-      mesonInstallPhase
-      runHook postInstall
-    '';
+  installPhase = ''
+    runHook preInstall
+    mesonInstallPhase
+    runHook postInstall
+  '';
 
-    doNotPostBuildInstallCargoBinaries = true;
-    checkPhase = false;
+  doNotPostBuildInstallCargoBinaries = true;
+  checkPhase = false;
 
-    meta = {
-      homepage = manifest.homepage;
-      description = manifest.description;
-      license = with lib.licenses; [agpl3Plus];
-      platforms = lib.platforms.linux;
-      teams = [lib.teams.uzinfocom];
-    };
-  }
+  meta = {
+    homepage = manifest.homepage;
+    description = manifest.description;
+    license = with lib.licenses; [ agpl3Plus ];
+    platforms = lib.platforms.linux;
+    teams = [ lib.teams.uzinfocom ];
+  };
+}

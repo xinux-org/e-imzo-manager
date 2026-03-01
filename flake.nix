@@ -12,29 +12,34 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    flake-utils,
-    crane,
-    ...
-  }:
-  # @ inputs
-    flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = import nixpkgs {inherit system;};
-    in rec {
-      # Nix script formatter
-      formatter = pkgs.alejandra;
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+      crane,
+      ...
+    }:
+    # @ inputs
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+      in
+      rec {
+        # Nix script formatter
+        formatter = pkgs.nixfmt-tree;
 
-      # Development environment
-      devShells.default = import ./shell.nix {inherit pkgs;};
+        # Development environment
+        devShells.default = import ./shell.nix { inherit pkgs; };
 
-      # Output package
-      packages.default = import ./. {inherit crane pkgs;};
-      
-      # When you need hash for new release
-      # packages.default = pkgs.callPackage ./package.nix {};
-    })
+        # Output package
+        packages.default = import ./. { inherit crane pkgs; };
+
+        # When you need hash for new release
+        # packages.default = pkgs.callPackage ./package.nix {};
+      }
+    )
     // {
       # Hydra CI jobs
       hydraJobs = {
