@@ -164,7 +164,7 @@ impl SimpleComponent for App {
         };
 
         let toggle_service_dialog = ToggleServiceDialog::builder()
-            .launch(root.clone().upcast())
+            .launch(root.to_owned().upcast())
             .forward(sender.input_sender(), identity);
 
         let welcome_page = WelcomeModel::builder()
@@ -194,7 +194,7 @@ impl SimpleComponent for App {
         };
 
         let widgets = view_output!();
-        let service = widgets.service.clone();
+        let service = widgets.service.to_owned();
         model.service = service;
         widgets.load_window_size();
 
@@ -221,7 +221,7 @@ impl SimpleComponent for App {
 
         action_register!(actions, ShortcutsAction => {
             ShortcutsDialog::builder()
-            .launch(ShortcutsDialogInit(shortcuts.clone()))
+            .launch(ShortcutsDialogInit(shortcuts.to_owned()))
             .detach();
         });
         action_register!(actions, AboutAction => { AboutDialog::builder().launch(()).detach(); });
@@ -229,7 +229,7 @@ impl SimpleComponent for App {
 
         actions.register_for_widget(&widgets.main_window);
 
-        let sender_clone = sender.clone().input_sender().clone();
+        let sender_clone = sender.input_sender().to_owned();
         glib::timeout_add_seconds_local(1, move || {
             if check_service_installed("/etc/systemd/user/e-imzo.service") {
                 let active = check_service_active("e-imzo.service");

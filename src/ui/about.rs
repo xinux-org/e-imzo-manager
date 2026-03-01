@@ -43,7 +43,7 @@ impl SimpleComponent for AboutDialog {
     ) -> ComponentParts<Self> {
         let model = Self {};
 
-        let widgets = root.clone();
+        let widgets = root;
         widgets.present(Some(&relm4::main_application().windows()[0]));
 
         ComponentParts { model, widgets }

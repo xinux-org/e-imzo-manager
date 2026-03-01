@@ -158,7 +158,7 @@ impl AsyncComponent for SelectModePage {
                 .launch_default()
                 .forward(sender.input_sender(), |msg| match msg {
                     CertificateRowOutput::RemoveRequested(index, file) => {
-                        SelectModeMsg::ShowRemoveFileMsg(index.clone(), file.clone())
+                        SelectModeMsg::ShowRemoveFileMsg(index, file)
                     }
                 });
 
@@ -201,9 +201,9 @@ impl AsyncComponent for SelectModePage {
                 let copied_file = &path.file_name().unwrap().to_str().unwrap();
 
                 if return_pfx_files_in_folder().contains(&copied_file.to_string()) {
-                    let _ = sender.output(AppMsg::ShowMessage(
-                        gettext("File already exists. You can use it").to_string(),
-                    ));
+                    let _ = sender.output(AppMsg::ShowMessage(gettext(
+                        "File already exists. You can use it",
+                    )));
                 } else {
                     // Copy lesected file to e-imzo path with fileʻs name
                     let _ = fs::copy(&path, format!("{}/{}", MEDIA_DSKEYS, copied_file));
@@ -253,16 +253,12 @@ impl AsyncComponent for SelectModePage {
                             .iter()
                             .map(|c| (c, c.get_alias()))
                             .for_each(|(c, alias)| {
-                                let file_name = c.name.clone();
+                                let file_name = &c.name;
 
-                                // convert string "2027.07.23 17:44:06" into "23.07.2027"
-                                let validfrom =
-                                    c.valid_from.expect("Couldn't get validity time").clone();
-
-                                let validto = c.valid_to.expect("Couldn't get validity time").clone();
-
-                                let is_expired =
-                                    c.is_expired.expect("Couldn't get expired status").clone();
+                                // coming time format from certificate: "23.07.2027"
+                                let validfrom = c.valid_from.expect("Couldn't get validity time");
+                                let validto = c.valid_to.expect("Couldn't get validity time");
+                                let is_expired = c.is_expired.expect("Couldn't get expired status");
 
                                 let full_name = format!(
                                     "{}: {}",
@@ -275,12 +271,12 @@ impl AsyncComponent for SelectModePage {
                                     alias.get("serialnumber").expect("Serial number not found")
                                 );
                                 let name: String = hide_sensitive_string(
-                                    alias.get("name").unwrap().clone(),
+                                    alias.get("name").unwrap().to_owned(),
                                     '*',
                                     2,
                                 );
                                 let surname = hide_sensitive_string(
-                                    alias.get("surname").unwrap().clone(),
+                                    alias.get("surname").unwrap().to_owned(),
                                     '*',
                                     2,
                                 );
@@ -288,8 +284,8 @@ impl AsyncComponent for SelectModePage {
                                 let validity = format!(
                                     "{}: {} - {}",
                                     gettext("Certificate validity period"),
-                                    validfrom.format("%d.%m.%Y").to_string(),
-                                    validto.format("%d.%m.%Y").to_string()
+                                    validfrom.format("%d.%m.%Y"),
+                                    validto.format("%d.%m.%Y")
                                 );
 
                                 let data = CertificateRow {
@@ -298,7 +294,7 @@ impl AsyncComponent for SelectModePage {
                                     full_name_line: full_name.to_owned(),
                                     serial_number_line: serial_number.to_owned(),
                                     validity_line: validity,
-                                    is_expired: is_expired,
+                                    is_expired,
                                 };
                                 self.file_list_factory.guard().push_back(data);
                             });
@@ -369,43 +365,43 @@ impl FactoryComponent for CertificateRow {
 
     #[root]
     view! {
-            adw::ExpanderRow {
-                set_use_markup: true,
-                set_title: &self.title,
+        adw::ExpanderRow {
+            set_use_markup: true,
+            set_title: &self.title,
 
 
-                add_row = &adw::ActionRow {
-                    set_title: &self.full_name_line,
+            add_row = &adw::ActionRow {
+                set_title: &self.full_name_line,
+            },
+
+            add_row = &adw::ActionRow {
+                set_title: &self.serial_number_line,
+            },
+
+            add_row = &adw::ActionRow {
+                set_title: &self.validity_line,
+            },
+
+            add_row = &adw::ActionRow {
+                add_prefix = &gtk::Label{
+                    add_css_class: if self.is_expired {"warning-badge"} else {"success-badge"},
+                    set_label: &if self.is_expired { gettext("Expired")} else { gettext("Active")},
+                    set_valign: gtk::Align::Center,
                 },
 
-                add_row = &adw::ActionRow {
-                    set_title: &self.serial_number_line,
-                },
+                add_suffix = &gtk::Button {
+                    set_icon_name: "user-trash-symbolic",
+                    add_css_class: "destructive-action",
+                    set_valign: gtk::Align::Center,
 
-                add_row = &adw::ActionRow {
-                    set_title: &self.validity_line,
-                },
-
-                add_row = &adw::ActionRow {
-                    add_prefix = &gtk::Label{
-                        add_css_class: if self.is_expired {"warning-badge"} else {"success-badge"},
-                        set_label: &format!("{}", &if self.is_expired { gettext("Expired")} else { gettext("Active")}),
-                        set_valign: gtk::Align::Center,
+                    connect_clicked[sender, index, file_name = self.file_name.to_owned()] => move |_| {
+                        sender.output(CertificateRowOutput::RemoveRequested(index.to_owned(), file_name.to_owned())).unwrap()
                     },
-
-                    add_suffix = &gtk::Button {
-                        set_icon_name: "user-trash-symbolic",
-                        add_css_class: "destructive-action",
-                        set_valign: gtk::Align::Center,
-
-                        connect_clicked[sender, index, file_name = self.file_name.clone()] => move |_| {
-                            sender.output(CertificateRowOutput::RemoveRequested(index.clone(), file_name.clone())).unwrap()
-                        },
-                    },
-
                 },
-            }
+
+            },
         }
+    }
 
     fn init_model(init: Self::Init, _index: &DynamicIndex, _sender: FactorySender<Self>) -> Self {
         init
