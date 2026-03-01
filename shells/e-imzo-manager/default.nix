@@ -1,7 +1,7 @@
 { pkgs, ... }:
 let
   # Manifest via Cargo.toml
-  manifest = (pkgs.lib.importTOML ./Cargo.toml).package;
+  manifest = (pkgs.lib.importTOML ../../Cargo.toml).package;
 in
 pkgs.stdenv.mkDerivation {
   name = "${manifest.name}-dev";

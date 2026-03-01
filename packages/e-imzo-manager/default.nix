@@ -1,6 +1,6 @@
 {
   pkgs,
-  crane,
+  inputs,
   ...
 }:
 let
@@ -8,9 +8,9 @@ let
   lib = pkgs.lib;
 
   # Manifest via Cargo.toml
-  manifest = (pkgs.lib.importTOML ./Cargo.toml).package;
+  manifest = (pkgs.lib.importTOML ../../Cargo.toml).package;
 
-  craneLib = crane.mkLib pkgs;
+  craneLib = inputs.crane.mkLib pkgs;
 
   commonBuildInputs = with pkgs; [
     gtk4
@@ -30,7 +30,7 @@ let
   ];
 
   cargoArtifacts = craneLib.buildDepsOnly {
-    src = craneLib.cleanCargoSource ./.;
+    src = craneLib.cleanCargoSource ../..;
     strictDeps = true;
 
     nativeBuildInputs = commonNativeBuildInputs;
@@ -42,7 +42,7 @@ craneLib.buildPackage {
   version = manifest.version;
   strictDeps = true;
 
-  src = pkgs.lib.cleanSource ./.;
+  src = pkgs.lib.cleanSource ../..;
 
   inherit cargoArtifacts;
 
