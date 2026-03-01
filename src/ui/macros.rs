@@ -33,7 +33,7 @@ macro_rules! shortcut_register_ws {
         $app.set_accelerators_for_action::<$action>(&[$accelerator]);
 
         $actions.add_action(RelmAction::<$action>::new_stateless({
-            let sender = $sender.clone();
+            let sender = $sender.to_owned();
             move |_| {
                 sender.input($msg);
             }

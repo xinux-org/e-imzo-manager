@@ -48,7 +48,7 @@ pub fn get_pfx_files_in_folder() -> io::Result<Vec<String>> {
         .filter_map(|entry| {
             let path = entry.ok()?.path();
             if path.is_file() && path.extension()?.to_str()? == "pfx" {
-                path.file_name()?.to_str().map(|s| s.to_owned())
+                path.file_name()?.to_str().map(str::to_string)
             } else {
                 None
             }
@@ -66,7 +66,7 @@ pub fn return_pfx_files_in_folder() -> Vec<String> {
         match get_pfx_files_in_folder() {
             Ok(file_names) => {
                 for file_name in file_names {
-                    certificate.push(file_name.clone());
+                    certificate.push(file_name);
                 }
             }
             Err(e) => tracing::error!(
@@ -124,9 +124,4 @@ pub fn ask_password(sender: AsyncComponentSender<SelectModePage>) {
             }
         }
     });
-}
-
-// expire
-pub fn has_expired(deadline: &str) -> bool {
-    unimplemented!()
 }

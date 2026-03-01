@@ -99,8 +99,8 @@ impl SimpleComponent for RemoveCertificateDialog {
                 "yes" => {
                     debug!("User clicked yes in SelectModeMsg::RemoveCertificates");
                     let _ = sender.output(SelectModeMsg::RemoveCertificates(
-                        init.deref().index.clone(),
-                        init.deref().file_name.clone(),
+                        init.deref().index.to_owned(),
+                        init.deref().file_name.to_owned(),
                     ));
                 }
                 "no" => {

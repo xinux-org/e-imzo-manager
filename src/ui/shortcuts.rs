@@ -34,7 +34,7 @@ impl SimpleComponent for ShortcutsDialog {
         _sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let model = Self {};
-        let widgets = root.clone();
+        let widgets = root;
         let section = adw::ShortcutsSection::new(None);
 
         for Shortcut { label, accelerator } in &init.0 {
