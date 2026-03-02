@@ -4,15 +4,16 @@ mod ui;
 mod utils;
 
 use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
-use gettextrs::{gettext, LocaleCategory};
+use gettextrs::{LocaleCategory, gettext};
 use relm4::{
+    RelmApp,
     gtk::{self, gio, glib, prelude::*},
-    main_application, RelmApp,
+    main_application,
 };
 use tracing::{error, info};
 
 use crate::config::RESOURCES_FILE;
-use gtk::gdk;
+use gtk::gdk::{self};
 use ui::window::App;
 
 fn main() {
