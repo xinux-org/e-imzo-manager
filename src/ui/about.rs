@@ -1,7 +1,7 @@
 use adw::prelude::AdwDialogExt;
 use gettextrs::gettext;
 use gtk::prelude::GtkApplicationExt;
-use relm4::{ComponentParts, ComponentSender, SimpleComponent, adw, gtk};
+use relm4::{adw, gtk, ComponentParts, ComponentSender, SimpleComponent};
 
 use crate::config::{APP_ID, VERSION};
 
@@ -29,7 +29,6 @@ impl SimpleComponent for AboutDialog {
                 "BeMeritus https://github.com/bemeritus",
                 "Domirando https://github.com/Domirando",
                 "let-rec https://github.com/let-rec",
-                "Rafanochi https://github.com/rafanochi",
             ])
             .release_notes_version(VERSION)
             .release_notes(release_notes())
@@ -43,7 +42,7 @@ impl SimpleComponent for AboutDialog {
     ) -> ComponentParts<Self> {
         let model = Self {};
 
-        let widgets = root;
+        let widgets = root.clone();
         widgets.present(Some(&relm4::main_application().windows()[0]));
 
         ComponentParts { model, widgets }
@@ -56,13 +55,7 @@ fn release_notes() -> String {
     gettext(
         r#"<p>This release contains new features and fixes:</p>
     <ul>
-        <li>Updated english, uzbek, russian translation</li>
-        <li>Added hover text on add, toggle buttons</li>
-        <li>Add factory deque. Remove certificates without refreshing page</li>
-        <li>Added button click limiter</li>
-        <li>Added Scrolled Window to file selection page</li>
-        <li>Deleted remove certificate button icon and replaced to the red trash bin icon</li>
-        <li>Made mobile responsive</li>
+        <li>Add expired stratus</li>
     </ul>"#,
     )
 }
