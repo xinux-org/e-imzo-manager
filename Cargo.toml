@@ -26,9 +26,9 @@ opt-level = 3
 
 [dependencies]
 gettext-rs = { version = "0.7.7", features = ["gettext-system"] }
-relm4 = { version = "0.10.0", features = ["libadwaita", "gnome_48"] }
-relm4-components = "0.10.0"
-adw = { version = "0.8.0", package = "libadwaita", features = ["v1_8"] }
+relm4 = { version = "0.10.1", features = ["libadwaita", "gnome_48"] }
+relm4-components = "0.10.1"
+adw = { version = "0.8.1", package = "libadwaita", features = ["v1_8"] }
 tracing = "0.1.44"
 
 tracing-subscriber = { version = "0.3.22", default-features = false, features = [
