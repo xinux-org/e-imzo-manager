@@ -74,6 +74,10 @@ craneLib.buildPackage {
     description = manifest.description;
     license = with lib.licenses; [ agpl3Plus ];
     platforms = lib.platforms.linux;
-    teams = [ lib.teams.uzinfocom ];
+    maintainers = with lib.maintainers; [
+      bahrom04
+      bemeritus
+      orzklv
+    ];
   };
 }
