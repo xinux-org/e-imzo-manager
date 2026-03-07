@@ -50,7 +50,7 @@ craneLib.buildPackage {
   buildInputs = commonBuildInputs;
 
   configurePhase = ''
-    mesonConfigurePhase
+    mesonConfigurePhase -Dunity=on
     runHook postConfigure
   '';
 

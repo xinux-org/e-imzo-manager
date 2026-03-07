@@ -11,11 +11,9 @@ readme = "README.md"
 
 # Optimize release binary as much as possible
 [profile.release]
-lto = true
-codegen-units = 1
+codegen-units = 16
+lto = "thin"
 incremental = true
-strip = true
-opt-level = "z"
 
 [profile.dev]
 opt-level = 1
