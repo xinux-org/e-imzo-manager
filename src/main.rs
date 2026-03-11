@@ -29,9 +29,12 @@ fn main() {
     // setup gettext
     setup_gettext();
 
+        println!("32: ✅");
     if let Ok(res) = gio::Resource::load(RESOURCES_FILE) {
         info!("Resource loaded: {}", RESOURCES_FILE);
         gio::resources_register(&res);
+
+        println!("36: ✅");
 
         let data = res
             .lookup_data(
@@ -39,6 +42,9 @@ fn main() {
                 gio::ResourceLookupFlags::NONE,
             )
             .unwrap();
+
+
+        println!("46: ✅");
         relm4::set_global_css(&glib::GString::from_utf8_checked(data.to_vec()).unwrap());
     } else {
         error!("Failed to load resources");

@@ -32,13 +32,13 @@ pkgs.stdenv.mkDerivation {
     meson
     ninja
     pango
-    polkit
+    # polkit
     gettext
     pkg-config
     gdk-pixbuf
     libadwaita
     pkg-config
-    gnome-desktop
+    # gnome-desktop
     wrapGAppsHook4
     desktop-file-utils
     gobject-introspection
