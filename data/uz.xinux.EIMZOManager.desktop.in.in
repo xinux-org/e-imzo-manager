@@ -11,3 +11,4 @@ Keywords=Gnome;GTK;
 Icon=@icon@
 StartupNotify=true
 StartupWMClass=e-imzo-manager
+SingleMainWindow=true
