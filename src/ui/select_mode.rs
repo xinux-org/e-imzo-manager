@@ -26,10 +26,9 @@ const MEDIA_DSKEYS: &str = "/media/DSKEYS";
 
 #[derive(Debug)]
 pub struct SelectModePage {
-    is_path_empty: bool,
-    is_file_loaded: bool,
     open_dialog: Controller<OpenDialog>,
     file_list_factory: FactoryVecDeque<CertificateRow>,
+    stack: SelectModeStack,
 }
 
 #[derive(Debug)]
@@ -42,10 +41,17 @@ pub enum SelectModeMsg {
     ShowRemoveFileMsg(DynamicIndex, String),
     // File CRUD
     RefreshCertificates,
-    SetFileLoadedState(bool),
+    SetFileLoadedState(SelectModeStack),
     RemoveCertificates(DynamicIndex, String),
     // AddCertificates(CertificateRow),
     None,
+}
+
+#[derive(Debug)]
+pub enum SelectModeStack {
+    Empty,
+    NotEmpty,
+    Loading,
 }
 
 #[relm4::component(pub, async)]
@@ -58,17 +64,17 @@ impl AsyncComponent for SelectModePage {
     view! {
         gtk::Box {
             set_orientation: gtk::Orientation::Vertical,
-
             gtk::ScrolledWindow {
                 set_vexpand: true,
                 set_hexpand: true,
                 set_hscrollbar_policy: gtk::PolicyType::Never,
                 set_vscrollbar_policy: gtk::PolicyType::Automatic,
 
-                if model.is_file_loaded {
-                    gtk::Box {
-                        set_orientation: gtk::Orientation::Vertical,
-                        if model.is_path_empty {
+                #[transition(Crossfade)]
+                match model.stack {
+                    SelectModeStack::Empty => {
+                        gtk::Box {
+                            set_orientation: gtk::Orientation::Vertical,
                             adw::StatusPage {
                                 set_vexpand: true,
                                 set_hexpand: true,
@@ -87,48 +93,50 @@ impl AsyncComponent for SelectModePage {
                                     connect_clicked => SelectModeMsg::OpenFile,
                                 },
                             }
-                        } else {
-                            gtk::Box {
-                                gtk::Label {
-                                    add_css_class: relm4::css::TITLE_2,
-                                    #[watch]
-                                    set_label: &gettext("Loaded keys"),
-                                    set_margin_all: 1,
-                                },
-                                set_spacing: 20,
-                                set_margin_start: 10,
-                                set_margin_end: 10,
-                                set_margin_top: 20,
-                                set_margin_bottom: 10,
-                                set_orientation: gtk::Orientation::Vertical,
-                                set_halign: gtk::Align::Center,
-                                adw::Clamp {
-                                    #[local_ref]
-                                    allbox -> adw::PreferencesGroup {}
-                                }
+                        }
+                    },
+                    SelectModeStack::NotEmpty => {
+                        gtk::Box {
+                            gtk::Label {
+                                add_css_class: relm4::css::TITLE_2,
+                                #[watch]
+                                set_label: &gettext("Loaded keys"),
+                                set_margin_all: 1,
+                            },
+                            set_spacing: 20,
+                            set_margin_start: 10,
+                            set_margin_end: 10,
+                            set_margin_top: 20,
+                            set_margin_bottom: 10,
+                            set_orientation: gtk::Orientation::Vertical,
+                            set_halign: gtk::Align::Center,
+                            adw::Clamp {
+                                #[local_ref]
+                                allbox -> adw::PreferencesGroup {}
                             }
-                        },
-                    }
-                } else {
-                    gtk::Box {
-                        set_vexpand: true,
-                        set_hexpand: true,
-                        set_valign: gtk::Align::Center,
-                        set_halign: gtk::Align::Center,
-                        set_orientation: gtk::Orientation::Vertical,
+                        }
+                    },
+                    SelectModeStack::Loading => {
+                        gtk::Box {
+                            set_vexpand: true,
+                            set_hexpand: true,
+                            set_valign: gtk::Align::Center,
+                            set_halign: gtk::Align::Center,
+                            set_orientation: gtk::Orientation::Vertical,
 
-                        adw::Spinner {
-                            set_width_request: 40,
-                            set_height_request: 40,
-                            set_margin_bottom: 25,
-                        },
+                            adw::Spinner {
+                                set_width_request: 40,
+                                set_height_request: 40,
+                                set_margin_bottom: 25,
+                            },
 
-                        gtk::Label {
-                            set_label: &gettext("Loading keys"),
-                            add_css_class: relm4::css::TITLE_2,
-                        },
+                            gtk::Label {
+                                set_label: &gettext("Loading keys"),
+                                add_css_class: relm4::css::TITLE_2,
+                            },
+                        }
                     }
-                },
+                }
             },
         },
     }
@@ -163,20 +171,23 @@ impl AsyncComponent for SelectModePage {
                 });
 
         let model = SelectModePage {
-            is_path_empty: return_pfx_files_in_folder().is_empty(),
-            is_file_loaded: false,
             open_dialog,
             file_list_factory,
+            stack: if return_pfx_files_in_folder().is_empty() {
+                SelectModeStack::Empty
+            } else {
+                SelectModeStack::NotEmpty
+            },
         };
 
         let allbox = model.file_list_factory.widget();
-        let widgets = view_output!();
-
         // when app started prevent this
         if check_service_active("e-imzo.service") {
+            sender.input(SelectModeMsg::SetFileLoadedState(SelectModeStack::Loading));
             sender.input(SelectModeMsg::RefreshCertificates);
         }
 
+        let widgets = view_output!();
         AsyncComponentParts { model, widgets }
     }
 
@@ -207,7 +218,7 @@ impl AsyncComponent for SelectModePage {
                 } else {
                     // Copy lesected file to e-imzo path with fileʻs name
                     let _ = fs::copy(&path, format!("{}/{}", MEDIA_DSKEYS, copied_file));
-                    sender.input(SelectModeMsg::SetFileLoadedState(false));
+                    sender.input(SelectModeMsg::SetFileLoadedState(SelectModeStack::Loading));
                     // implement adding feature by updating e_imzo crate
                     // self.file_list_factory.guard().push_back(data);
                     sender.input(SelectModeMsg::RefreshCertificates);
@@ -229,8 +240,6 @@ impl AsyncComponent for SelectModePage {
                 // creates new list of PreferenceGroup elements when new file added
                 self.file_list_factory.guard().clear();
 
-                let pfx_files_in_folder = return_pfx_files_in_folder();
-
                 // wait enough to wait e-imzo.service activation
                 tokio::time::sleep(Duration::from_millis(1800)).await;
 
@@ -247,84 +256,80 @@ impl AsyncComponent for SelectModePage {
                         return;
                     }
                 };
-                match eimzo.list_all_certificates() {
-                    Ok(certs) => {
-                        certs
-                            .iter()
-                            .map(|c| (c, c.get_alias()))
-                            .for_each(|(c, alias)| {
-                                let file_name = &c.name;
+                if let Ok(certs) = eimzo.list_all_certificates() {
+                    let row = certs.iter().filter_map(|c| {
+                        let file_name = &c.name;
+                        let alias = c.get_alias();
 
-                                // coming time format from certificate: "23.07.2027"
-                                let validfrom = c.valid_from.expect("Couldn't get validity time");
-                                let validto = c.valid_to.expect("Couldn't get validity time");
-                                let is_expired = c.is_expired.expect("Couldn't get expired status");
+                        // coming time format from certificate: "23.07.2027"
+                        let validfrom = c.valid_from?;
+                        let validto = c.valid_to?;
+                        let is_expired = c.is_expired?;
 
-                                let full_name = format!(
-                                    "{}: {}",
-                                    gettext("Full name"),
-                                    alias.get("cn").expect("Full name not found").to_uppercase()
-                                );
-                                let serial_number = format!(
-                                    "{}: {}",
-                                    gettext("Certificate number"),
-                                    alias.get("serialnumber").expect("Serial number not found")
-                                );
-                                let name: String = hide_sensitive_string(
-                                    alias.get("name").unwrap().to_owned(),
-                                    '*',
-                                    2,
-                                );
-                                let surname = hide_sensitive_string(
-                                    alias.get("surname").unwrap().to_owned(),
-                                    '*',
-                                    2,
-                                );
-                                let title = format!("{} {}", name, surname).to_uppercase();
-                                let validity = format!(
-                                    "{}: {} - {}",
-                                    gettext("Certificate validity period"),
-                                    validfrom.format("%d.%m.%Y"),
-                                    validto.format("%d.%m.%Y")
-                                );
+                        let full_name = format!(
+                            "{}: {}",
+                            gettext("Full name"),
+                            alias.get("cn")?.to_uppercase()
+                        );
+                        let serial_number = format!(
+                            "{}: {}",
+                            gettext("Certificate number"),
+                            alias.get("serialnumber")?
+                        );
+                        let name: String =
+                            hide_sensitive_string(alias.get("name")?.to_owned(), '*', 2);
+                        let surname =
+                            hide_sensitive_string(alias.get("surname")?.to_owned(), '*', 2);
+                        let title = format!("{} {}", name, surname).to_uppercase();
+                        let validity = format!(
+                            "{}: {} - {}",
+                            gettext("Certificate validity period"),
+                            validfrom.format("%d.%m.%Y"),
+                            validto.format("%d.%m.%Y")
+                        );
 
-                                let data = CertificateRow {
-                                    title: title.to_owned(),
-                                    file_name: file_name.to_owned(),
-                                    full_name_line: full_name.to_owned(),
-                                    serial_number_line: serial_number.to_owned(),
-                                    validity_line: validity,
-                                    is_expired,
-                                };
-                                self.file_list_factory.guard().push_back(data);
-                            });
-                        // after successfully  load, remove spinner
-                        self.is_file_loaded = true;
-                    }
-                    Err(e) => {
-                        warn!("No connection because service is stopped: {e:?}");
-                        return;
-                    }
-                };
-                // after removeing spinner check files in /media/DSKEYS exists or empty
-                self.is_path_empty = pfx_files_in_folder.is_empty();
+                        Some(CertificateRow {
+                            title,
+                            file_name: file_name.to_owned(),
+                            full_name_line: full_name,
+                            serial_number_line: serial_number,
+                            validity_line: validity,
+                            is_expired,
+                        })
+                    });
+                    self.file_list_factory.extend(row);
+                }
+                // after removing spinner check files in /media/DSKEYS exists or empty
+                if self.file_list_factory.is_empty() {
+                    sender
+                        .input_sender()
+                        .emit(SelectModeMsg::SetFileLoadedState(SelectModeStack::Empty));
+                } else {
+                    sender
+                        .input_sender()
+                        .emit(SelectModeMsg::SetFileLoadedState(SelectModeStack::NotEmpty));
+                }
             }
-            SelectModeMsg::SetFileLoadedState(is_loaded) => {
-                self.is_file_loaded = is_loaded;
+            SelectModeMsg::SetFileLoadedState(stack) => {
+                self.stack = stack;
             }
-
             SelectModeMsg::RemoveCertificates(index, file_name) => {
                 debug!("REMOVE CESTSRSTSRTRSTRS");
                 let full_path = Path::new(MEDIA_DSKEYS).join(format!("{}.pfx", file_name));
-                if let Err(e) = fs::remove_file(&full_path) {
-                    eprintln!("failed {}: {}", full_path.display(), e);
-                } else {
-                    self.file_list_factory.guard().remove(index.current_index());
-                    if self.file_list_factory.is_empty() && return_pfx_files_in_folder().is_empty()
-                    {
-                        self.is_path_empty = true;
+
+                match fs::remove_file(&full_path) {
+                    Ok(()) => {
+                        self.file_list_factory.guard().remove(index.current_index());
+                        debug!("deleted: {}", full_path.display());
+                        if self.file_list_factory.is_empty() {
+                            sender
+                                .input_sender()
+                                .emit(SelectModeMsg::SetFileLoadedState(SelectModeStack::Empty));
+                        }
                     }
-                    debug!("deleted: {}", full_path.display());
+                    Err(e) => {
+                        eprintln!("failed {}: {}", full_path.display(), e);
+                    }
                 }
             }
             // todo.
@@ -361,7 +366,6 @@ impl FactoryComponent for CertificateRow {
     type Output = CertificateRowOutput;
     type CommandOutput = ();
     type ParentWidget = adw::PreferencesGroup;
-    // type ParentInput = SelectModeMsg;
 
     #[root]
     view! {

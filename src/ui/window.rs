@@ -7,7 +7,7 @@ use crate::{
         alert::{ToggleServiceDialog, ToggleServiceDialogMsg},
         awesome::AwesomeModel,
         localhost::Localhost,
-        select_mode::{SelectModeMsg, SelectModePage},
+        select_mode::{SelectModeMsg, SelectModePage, SelectModeStack},
         shortcuts::{Shortcut, ShortcutsDialog, ShortcutsDialogInit},
         welcome::WelcomeModel,
     },
@@ -276,7 +276,7 @@ impl SimpleComponent for App {
                     ));
 
                     self.select_mode_page
-                        .emit(SelectModeMsg::SetFileLoadedState(false));
+                        .emit(SelectModeMsg::SetFileLoadedState(SelectModeStack::Loading));
 
                     self.select_mode_page
                         .emit(SelectModeMsg::RefreshCertificates);
