@@ -278,13 +278,13 @@ version = "1.2.0"
 dependencies = [
  "e-imzo",
  "gettext-rs",
- "gio",
  "libadwaita",
  "relm4",
  "relm4-components",
  "tokio",
  "tracing",
  "tracing-subscriber",
+ "users",
 ]
 
 [[package]]

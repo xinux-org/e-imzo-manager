@@ -1,9 +1,9 @@
-// use gettextrs::gettext;
-use gio::AppInfo;
-use relm4::gtk;
-use relm4::prelude::*;
+use relm4::{
+    gtk::{self, gio},
+    prelude::*,
+};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct Localhost;
 
 #[relm4::component(pub)]
@@ -26,7 +26,7 @@ impl SimpleComponent for Localhost {
         // let window = relm4::main_application().active_window();
         // root.present(window.as_ref());
 
-        if let Err(err) = AppInfo::launch_default_for_uri(
+        if let Err(err) = gio::AppInfo::launch_default_for_uri(
             "https://127.0.0.1:64443/",
             None::<&gio::AppLaunchContext>,
         ) {
