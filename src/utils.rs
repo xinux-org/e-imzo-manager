@@ -102,7 +102,7 @@ pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
 pub fn ask_password(sender: AsyncComponentSender<SelectModePage>) {
     relm4::spawn(async move {
         let path = MEDIA_DSKEYS;
-        let real_uid = users::get_current_uid();
+        let real_uid = uzers::get_current_uid();
 
         let success = {
             let cmd = format!("mkdir -p {0} && chown {1}:{1} {0}", path, real_uid);
