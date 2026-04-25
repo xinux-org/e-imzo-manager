@@ -2,15 +2,10 @@ use relm4::{
     AsyncComponentSender,
     gtk::{self},
 };
-use std::{
-    fs, io,
-    os::unix::fs::MetadataExt,
-    path::Path,
-    process::{Command, ExitStatus},
-};
+use std::{fs, io, os::unix::fs::MetadataExt, path::Path, process::Command};
 
 use crate::{
-    config::LIBEXECDIR,
+    config::MEDIA_DSKEYS,
     ui::select_mode::{SelectModeMsg, SelectModePage},
 };
 
@@ -41,7 +36,7 @@ pub fn check_service_active(service: &str) -> bool {
 }
 
 pub fn get_pfx_files_in_folder() -> io::Result<Vec<String>> {
-    let path = Path::new("/media/DSKEYS");
+    let path = Path::new(MEDIA_DSKEYS);
     let entries = fs::read_dir(path)?;
 
     let pfx_files: Vec<String> = entries
@@ -61,7 +56,7 @@ pub fn get_pfx_files_in_folder() -> io::Result<Vec<String>> {
 pub fn return_pfx_files_in_folder() -> Vec<String> {
     let mut certificate = Vec::<String>::new();
 
-    let path = Path::new("/media/DSKEYS");
+    let path = Path::new(MEDIA_DSKEYS);
     if path.exists() {
         match get_pfx_files_in_folder() {
             Ok(file_names) => {
@@ -79,7 +74,7 @@ pub fn return_pfx_files_in_folder() -> Vec<String> {
 }
 
 pub fn check_file_ownership() -> Result<u32, Box<dyn std::error::Error>> {
-    let path = Path::new("/media/DSKEYS");
+    let path = Path::new(MEDIA_DSKEYS);
     let metadata = fs::metadata(path)?;
     let uid = metadata.uid();
     Ok(uid)
@@ -106,37 +101,17 @@ pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
 
 pub fn ask_password(sender: AsyncComponentSender<SelectModePage>) {
     relm4::spawn(async move {
-        let path = "/media/DSKEYS";
+        let path = MEDIA_DSKEYS;
         let real_uid = users::get_current_uid();
 
-        let success = match users::get_effective_uid() {
-            // use rust functions to check permission
-            0 => {
-                use users::get_effective_uid;
-
-                println!(
-                    "The ID of the effective user is {}\n\n\n\n\n",
-                    get_effective_uid()
-                );
-                std::fs::create_dir_all(path).is_ok()
-                    && std::os::unix::fs::chown(path, Some(real_uid), Some(real_uid)).is_ok()
-            }
-            // not root? then request via pkexec
-            _ => {
-                use users::get_effective_uid;
-
-                println!(
-                    "The aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa of the effective user is {}\n\n\n\n\n",
-                    get_effective_uid()
-                );
-                let cmd = format!("mkdir -p {0} && chown {1}:{1} {0}", path, real_uid);
-                tokio::process::Command::new("pkexec")
-                    .args(["sh", "-c", &cmd])
-                    .status()
-                    .await
-                    .map(|s| s.success())
-                    .unwrap_or(false)
-            }
+        let success = {
+            let cmd = format!("mkdir -p {0} && chown {1}:{1} {0}", path, real_uid);
+            tokio::process::Command::new("pkexec")
+                .args(["sh", "-c", &cmd])
+                .status()
+                .await
+                .map(|s| s.success())
+                .unwrap_or(false)
         };
 
         if success {

@@ -31,6 +31,8 @@ pkgs.mkShell {
     gnome-desktop
     wrapGAppsHook4
     desktop-file-utils
+    appstream
+    appstream-glib
     gobject-introspection
     rustPlatform.bindgenHook
   ];
