@@ -8,7 +8,7 @@ use e_imzo::EIMZO;
 use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
-    component::{AsyncComponent, AsyncComponentParts, AsyncComponentSender},
+    component::{AsyncComponentParts, AsyncComponentSender},
     factory::*,
     gtk::{self},
     prelude::*,
@@ -55,11 +55,10 @@ pub enum SelectModeStack {
 }
 
 #[relm4::component(pub, async)]
-impl AsyncComponent for SelectModePage {
+impl SimpleAsyncComponent for SelectModePage {
     type Init = ();
     type Input = SelectModeMsg;
     type Output = AppMsg;
-    type CommandOutput = ();
 
     view! {
         gtk::Box {
@@ -191,12 +190,7 @@ impl AsyncComponent for SelectModePage {
         AsyncComponentParts { model, widgets }
     }
 
-    async fn update(
-        &mut self,
-        msg: SelectModeMsg,
-        sender: AsyncComponentSender<Self>,
-        _root: &Self::Root,
-    ) {
+    async fn update(&mut self, msg: SelectModeMsg, sender: AsyncComponentSender<Self>) {
         match msg {
             SelectModeMsg::OpenFile => {
                 if Path::new(MEDIA_DSKEYS).exists() && check_file_ownership().unwrap() == 1000 {

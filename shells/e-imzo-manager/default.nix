@@ -1,18 +1,13 @@
 { pkgs, ... }:
-let
-  # Manifest via Cargo.toml
-  manifest = (pkgs.lib.importTOML ../../Cargo.toml).package;
-in
-pkgs.stdenv.mkDerivation {
-  name = "${manifest.name}-dev";
-
-  # Compile time dependencies
-  nativeBuildInputs = with pkgs; [
+pkgs.mkShell {
+  packages = with pkgs; [
     # Nix
     nixd
     statix
     deadnix
-    alejandra
+    nixfmt
+    just
+    just-lsp
 
     # Rust
     rustc
@@ -22,10 +17,7 @@ pkgs.stdenv.mkDerivation {
     rust-analyzer
     cargo-watch
     cargo-expand
-
-    # Other compile time dependencies
     openssl
-    # libressl
 
     # Gnome related
     gtk4
@@ -35,9 +27,7 @@ pkgs.stdenv.mkDerivation {
     polkit
     gettext
     pkg-config
-    gdk-pixbuf
     libadwaita
-    pkg-config
     gnome-desktop
     wrapGAppsHook4
     desktop-file-utils

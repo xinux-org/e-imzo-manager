@@ -104,24 +104,43 @@ pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
     vec![filename_filter]
 }
 
-// ask password if user has no permission to open /media/DSKEYS folder
 pub fn ask_password(sender: AsyncComponentSender<SelectModePage>) {
     relm4::spawn(async move {
-        let output = tokio::process::Command::new("pkexec")
-            .arg(format!("{}/e-helper", LIBEXECDIR))
-            .output()
-            .await;
-        match output {
-            Ok(output) => {
-                if !ExitStatus::success(&output.status) {
-                    // do nothing if user canceled entering password
-                    return;
-                }
-                sender.input(SelectModeMsg::OpenFileConfirmed);
+        let path = "/media/DSKEYS";
+        let real_uid = users::get_current_uid();
+
+        let success = match users::get_effective_uid() {
+            // use rust functions to check permission
+            0 => {
+                use users::get_effective_uid;
+
+                println!(
+                    "The ID of the effective user is {}\n\n\n\n\n",
+                    get_effective_uid()
+                );
+                std::fs::create_dir_all(path).is_ok()
+                    && std::os::unix::fs::chown(path, Some(real_uid), Some(real_uid)).is_ok()
             }
-            Err(e) => {
-                eprintln!("Failed to execute pkexec: {}", e);
+            // not root? then request via pkexec
+            _ => {
+                use users::get_effective_uid;
+
+                println!(
+                    "The aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa of the effective user is {}\n\n\n\n\n",
+                    get_effective_uid()
+                );
+                let cmd = format!("mkdir -p {0} && chown {1}:{1} {0}", path, real_uid);
+                tokio::process::Command::new("pkexec")
+                    .args(["sh", "-c", &cmd])
+                    .status()
+                    .await
+                    .map(|s| s.success())
+                    .unwrap_or(false)
             }
+        };
+
+        if success {
+            sender.input(SelectModeMsg::OpenFileConfirmed);
         }
     });
 }

@@ -53,18 +53,9 @@ impl SimpleComponent for WelcomeModel {
             } else {
                 gtk::LinkButton {
                     set_label: &gettext("Please download e-imzo service and relaunch the app again."),
-                    set_uri: "https://search.nixos.org/packages?channel=25.11&query=e-imzo&show=e-imzo",
+                    set_uri: "https://search.nixos.org/packages?channel=unstable&query=e-imzo&show=e-imzo",
                 }
             },
-
-            // gtk::Label {
-            //     add_css_class: relm4::css::TITLE_4,
-            //     #[watch]
-            //     set_markup: &gettext("Please download and relaunch the app again."),
-            //     set_use_markup: true,
-            //     set_margin_all: 5,
-            //     set_justify: gtk::Justification::Center,
-            // },
         }
     }
     fn init(
