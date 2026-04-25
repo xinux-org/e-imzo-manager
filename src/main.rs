@@ -10,10 +10,7 @@ use relm4::{
     gtk::{self, gio, glib, prelude::*},
     main_application,
 };
-use tracing::{error, info};
-
 use crate::config::RESOURCES_FILE;
-use gtk::gdk::{self};
 use ui::window::App;
 
 fn main() {
