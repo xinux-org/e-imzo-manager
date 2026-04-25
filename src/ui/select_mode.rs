@@ -1,3 +1,4 @@
+use crate::config::MEDIA_DSKEYS;
 use crate::ui::alert::{RemoveCertificateDialog, RemoveCertificateDialogInit};
 use crate::ui::window::AppMsg;
 use crate::utils::{
@@ -21,8 +22,6 @@ use std::{
     time::Duration,
 };
 use tracing::{debug, warn};
-
-const MEDIA_DSKEYS: &str = "/media/DSKEYS";
 
 #[derive(Debug)]
 pub struct SelectModePage {
