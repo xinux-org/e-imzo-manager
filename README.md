@@ -18,19 +18,23 @@ Since NixOS'es nixpkgs has e-imzo service available under the hood, there's no h
 ## Development
 
 This application has Linux-only dependencies.
+## Build & run
+This application has Linux-only dependencies.
 ```bash
 # download dependencies
-nix develop 
+nix develop
 
-# Initiate meson environment for the first time. This will generate ./src/config.rs
-meson setup build
+just install
+# app run
+just run
 
-# build the project
-nix build . --show-trace
-
-# Go one folder back and run bin outside of nix-shell. Otherwise polkit cannot ask password to create /media/DSKEYS for e-imzo server
+# When you need polkit to avoid devshell
 cd ..
-./e-imzo/result/bin/e-imzo-manager
+./e-imzo-manager/builddir/install/bin/e-imzo-manager
+
+# or with nix when ready for release
+nix build . --show-trace
+./e-imzo-manager/result/bin/e-imzo-manager
 
 # Optional. Generate translation words from /po/POTFILES.in if needed.
 cd ./po
@@ -38,9 +42,7 @@ xgettext --directory=.. --files-from=POTFILES.in --from-code=UTF-8 -kgettext -o 
 ```
 
 ## Building
-
-Building this app requires Linux hosts only with nix. If you are going to only try or use this application, simply run:
-
+If you are going to only try or use this application, simply run:
 ```bash
 # Call the flake via nix. Do not run it inside nix-shell!
 nix run github:xinux-org/e-imzo-manager
@@ -50,7 +52,7 @@ However, if you were planning to tweak this application or hack, follow the [dev
 
 ## Installation
 ```nix
-# add these to your config files or /etc/nixos/configuration.nix 
+# add these to your config files or /etc/nixos/configuration.nix
 environment = {
   systemPackages = with pkgs; [
     e-imzo-manager

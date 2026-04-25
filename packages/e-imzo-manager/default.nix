@@ -1,73 +1,42 @@
 {
   pkgs,
-  inputs,
+  lib,
   ...
 }:
 let
-  # Helpful nix function
-  lib = pkgs.lib;
-
   # Manifest via Cargo.toml
   manifest = (pkgs.lib.importTOML ../../Cargo.toml).package;
+in
+pkgs.stdenv.mkDerivation {
+  pname = manifest.name;
+  version = manifest.version;
 
-  craneLib = inputs.crane.mkLib pkgs;
+  src = pkgs.lib.cleanSource ../..;
+  cargoDeps = pkgs.rustPlatform.importCargoLock {
+    lockFile = ../../Cargo.lock;
+  };
 
-  commonBuildInputs = with pkgs; [
-    gtk4
-    libadwaita
-    openssl
-    polkit
-  ];
-
-  commonNativeBuildInputs = with pkgs; [
+  nativeBuildInputs = with pkgs; [
+    rustc
+    cargo
+    appstream
+    appstream-glib
     desktop-file-utils
     gettext
-    git
     meson
     ninja
     pkg-config
+    polkit
     wrapGAppsHook4
+    rustPlatform.cargoSetupHook
   ];
 
-  cargoArtifacts = craneLib.buildDepsOnly {
-    src = craneLib.cleanCargoSource ../..;
-    strictDeps = true;
-
-    nativeBuildInputs = commonNativeBuildInputs;
-    buildInputs = commonBuildInputs;
-  };
-in
-craneLib.buildPackage {
-  pname = manifest.name;
-  version = manifest.version;
-  strictDeps = true;
-
-  src = pkgs.lib.cleanSource ../..;
-
-  inherit cargoArtifacts;
-
-  nativeBuildInputs = commonNativeBuildInputs;
-  buildInputs = commonBuildInputs;
-
-  configurePhase = ''
-    mesonConfigurePhase -Dunity=on
-    runHook postConfigure
-  '';
-
-  buildPhase = ''
-    runHook preBuild
-    ninjaBuildPhase
-    runHook postBuild
-  '';
-
-  installPhase = ''
-    runHook preInstall
-    mesonInstallPhase
-    runHook postInstall
-  '';
-
-  doNotPostBuildInstallCargoBinaries = true;
-  checkPhase = false;
+  buildInputs = with pkgs; [
+    gtk4
+    gnome-desktop
+    libadwaita
+    openssl
+  ];
 
   meta = {
     homepage = manifest.homepage;

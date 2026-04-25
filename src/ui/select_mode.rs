@@ -1,3 +1,4 @@
+use crate::config::MEDIA_DSKEYS;
 use crate::ui::alert::{RemoveCertificateDialog, RemoveCertificateDialogInit};
 use crate::ui::window::AppMsg;
 use crate::utils::{
@@ -8,7 +9,7 @@ use e_imzo::EIMZO;
 use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
-    component::{AsyncComponent, AsyncComponentParts, AsyncComponentSender},
+    component::{AsyncComponentParts, AsyncComponentSender},
     factory::*,
     gtk::{self},
     prelude::*,
@@ -21,8 +22,6 @@ use std::{
     time::Duration,
 };
 use tracing::{debug, warn};
-
-const MEDIA_DSKEYS: &str = "/media/DSKEYS";
 
 #[derive(Debug)]
 pub struct SelectModePage {
@@ -55,11 +54,10 @@ pub enum SelectModeStack {
 }
 
 #[relm4::component(pub, async)]
-impl AsyncComponent for SelectModePage {
+impl SimpleAsyncComponent for SelectModePage {
     type Init = ();
     type Input = SelectModeMsg;
     type Output = AppMsg;
-    type CommandOutput = ();
 
     view! {
         gtk::Box {
@@ -191,12 +189,7 @@ impl AsyncComponent for SelectModePage {
         AsyncComponentParts { model, widgets }
     }
 
-    async fn update(
-        &mut self,
-        msg: SelectModeMsg,
-        sender: AsyncComponentSender<Self>,
-        _root: &Self::Root,
-    ) {
+    async fn update(&mut self, msg: SelectModeMsg, sender: AsyncComponentSender<Self>) {
         match msg {
             SelectModeMsg::OpenFile => {
                 if Path::new(MEDIA_DSKEYS).exists() && check_file_ownership().unwrap() == 1000 {
