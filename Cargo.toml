@@ -34,5 +34,5 @@ tokio = { version = "1.49.0", default-features = false, features = [
   "process",
   "time",
 ] }
-e-imzo = "0.3.0"
+e-imzo = "0.4.0"
 uzers = "0.12.2"

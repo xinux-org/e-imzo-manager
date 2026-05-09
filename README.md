@@ -1,5 +1,5 @@
 <p align="center">
-    <img src=".github/assets/header.png" alt="Xinux'es {E-IMZO Manager}">
+    <img src=".forgejo/assets/header.png" alt="Xinux'es {E-IMZO Manager}">
 </p>
 
 <p align="center">
@@ -89,8 +89,8 @@ Our main target stays on NixOS and nix package manager. App hosted on nixpkgs an
 Refer to [Flatpak.md](./Flatpak.md)
 ## License
 
-This project is licensed under the CC-BY-4.0 for text documents at [archive](.github/archive) license due to stricted use of [Soliq.uz](https://soliq.uz)'es policy and AGPL for the manager - see the [LICENSE-CCBY](LICENSE-CCBY) and [LICENSE-AGPL](LICENSE-AGPL) files for details.
+This project is licensed under the CC-BY-4.0 for text documents at [archive](.forgejo/archive) license due to stricted use of [Soliq.uz](https://soliq.uz)'es policy and AGPL for the manager - see the [LICENSE-CCBY](LICENSE-CCBY) and [LICENSE-AGPL](LICENSE-AGPL) files for details.
 
 <p align="center">
-    <img src="./.github/assets/footer.png" alt="Xinux'es {E-IMZO Manager}">
+    <img src="./.forgejo/assets/footer.png" alt="Xinux'es {E-IMZO Manager}">
 </p>
