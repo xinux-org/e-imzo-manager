@@ -2,25 +2,27 @@ use crate::ui::window::AppMsg;
 use crate::utils::check_service_installed;
 use gettextrs::gettext;
 use relm4::{
-    gtk::{
-        self,
-        gdk::Texture,
-        gdk_pixbuf::Pixbuf,
-        gio::{Cancellable, MemoryInputStream},
-        glib,
-        prelude::*,
-    },
+    gtk::{self, gdk::Texture, glib, prelude::*},
+    prelude::{AsyncComponent, AsyncComponentParts},
     *,
 };
 
 pub struct WelcomeModel;
 
-#[relm4::component(pub)]
-impl SimpleComponent for WelcomeModel {
+impl WelcomeModel {
+    async fn embedded_logo(&self) -> Texture {
+        let bytes = include_bytes!("../../.forgejo/assets/logo.png");
+        let g_bytes = glib::Bytes::from(&bytes.to_vec());
+        Texture::from_bytes(&g_bytes).unwrap()
+    }
+}
+
+#[relm4::component(pub, async)]
+impl AsyncComponent for WelcomeModel {
     type Init = ();
     type Input = ();
     type Output = AppMsg;
-    type Widgets = AppWidgets;
+    type CommandOutput = ();
 
     view! {
         gtk::Box {
@@ -34,7 +36,7 @@ impl SimpleComponent for WelcomeModel {
 
             gtk::Image {
                 set_pixel_size: 320,
-                set_paintable: Some(&embedded_logo()),
+                set_paintable: Some(&model.embedded_logo().await),
             },
 
             gtk::Label {
@@ -58,22 +60,14 @@ impl SimpleComponent for WelcomeModel {
             },
         }
     }
-    fn init(
+    async fn init(
         _init: Self::Init,
         root: Self::Root,
-        _sender: ComponentSender<Self>,
-    ) -> ComponentParts<Self> {
-        let model = WelcomeModel {};
+        _sender: AsyncComponentSender<Self>,
+    ) -> AsyncComponentParts<Self> {
+        let model = WelcomeModel;
         let widgets = view_output!();
 
-        ComponentParts { model, widgets }
+        AsyncComponentParts { model, widgets }
     }
-}
-
-fn embedded_logo() -> Texture {
-    let bytes = include_bytes!("../../.forgejo/assets/logo.png");
-    let g_bytes = glib::Bytes::from(&bytes.to_vec());
-    let stream = MemoryInputStream::from_bytes(&g_bytes);
-    let pixbuf = Pixbuf::from_stream(&stream, Cancellable::NONE).unwrap();
-    Texture::for_pixbuf(&pixbuf)
 }

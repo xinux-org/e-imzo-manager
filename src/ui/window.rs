@@ -34,7 +34,7 @@ pub enum Page {
 pub struct App {
     service_active: bool,
     page: Page,
-    welcome_page: Controller<WelcomeModel>,
+    welcome_page: AsyncController<WelcomeModel>,
     select_mode_page: AsyncController<SelectModePage>,
     toggle_service_dialog: Controller<ToggleServiceDialog>,
     tooltip_text: String,
@@ -52,18 +52,6 @@ pub enum AppMsg {
     ShowMessage(String),
     ServiceLimiter(bool),
 }
-
-relm4::new_action_group!(pub WindowActionGroup, "win");
-relm4::new_stateless_action!(AwesomeAction, WindowActionGroup, "awesome");
-relm4::new_stateless_action!(pub ShortcutsAction, WindowActionGroup, "show-help-overlay");
-relm4::new_stateless_action!(AboutAction, WindowActionGroup, "about");
-relm4::new_stateless_action!(LocalhostAction, WindowActionGroup, "localhost");
-relm4::new_stateless_action!(
-    StartAndStopServiceAction,
-    WindowActionGroup,
-    "start-and-stop-service"
-);
-relm4::new_stateless_action!(QuitAction, WindowActionGroup, "quit");
 
 #[relm4::component(pub)]
 impl SimpleComponent for App {
@@ -311,7 +299,7 @@ impl SimpleComponent for App {
     }
 
     fn shutdown(&mut self, widgets: &mut Self::Widgets, _output: relm4::Sender<Self::Output>) {
-        widgets.save_window_size().unwrap();
+        widgets.save_window_size();
     }
 }
 
@@ -336,3 +324,15 @@ impl AppWidgets {
         }
     }
 }
+
+relm4::new_action_group!(pub WindowActionGroup, "win");
+relm4::new_stateless_action!(AwesomeAction, WindowActionGroup, "awesome");
+relm4::new_stateless_action!(pub ShortcutsAction, WindowActionGroup, "show-help-overlay");
+relm4::new_stateless_action!(AboutAction, WindowActionGroup, "about");
+relm4::new_stateless_action!(LocalhostAction, WindowActionGroup, "localhost");
+relm4::new_stateless_action!(
+    StartAndStopServiceAction,
+    WindowActionGroup,
+    "start-and-stop-service"
+);
+relm4::new_stateless_action!(QuitAction, WindowActionGroup, "quit");
