@@ -2,8 +2,7 @@ use crate::config::MEDIA_DSKEYS;
 use crate::ui::alert::{RemoveCertificateDialog, RemoveCertificateDialogInit};
 use crate::ui::window::AppMsg;
 use crate::utils::{
-    ask_password, check_file_ownership, check_service_active, hide_sensitive_string,
-    return_pfx_files_in_folder, tasks_filename_filters,
+    ask_password, check_service_active, return_pfx_files_in_folder, tasks_filename_filters,
 };
 use e_imzo::EIMZO;
 use gettextrs::gettext;
@@ -17,7 +16,9 @@ use relm4::{
 };
 use relm4_components::open_dialog::*;
 use std::{
+    collections::HashMap,
     fs,
+    os::unix::fs::MetadataExt,
     path::{Path, PathBuf},
     time::Duration,
 };
@@ -28,6 +29,15 @@ pub struct SelectModePage {
     open_dialog: Controller<OpenDialog>,
     file_list_factory: FactoryVecDeque<CertificateRow>,
     stack: SelectModeStack,
+}
+
+impl SelectModePage {
+    pub fn check_file_ownership(&self) -> Result<u32, Box<dyn std::error::Error>> {
+        let path = Path::new(MEDIA_DSKEYS);
+        let metadata = fs::metadata(path)?;
+        let uid = metadata.uid();
+        Ok(uid)
+    }
 }
 
 #[derive(Debug)]
@@ -54,14 +64,16 @@ pub enum SelectModeStack {
 }
 
 #[relm4::component(pub, async)]
-impl SimpleAsyncComponent for SelectModePage {
+impl AsyncComponent for SelectModePage {
     type Init = ();
     type Input = SelectModeMsg;
     type Output = AppMsg;
+    type CommandOutput = ();
 
     view! {
         gtk::Box {
             set_orientation: gtk::Orientation::Vertical,
+            #[name(asd)]
             gtk::ScrolledWindow {
                 set_vexpand: true,
                 set_hexpand: true,
@@ -189,10 +201,16 @@ impl SimpleAsyncComponent for SelectModePage {
         AsyncComponentParts { model, widgets }
     }
 
-    async fn update(&mut self, msg: SelectModeMsg, sender: AsyncComponentSender<Self>) {
+    async fn update(
+        &mut self,
+        msg: SelectModeMsg,
+        sender: AsyncComponentSender<Self>,
+        _root: &Self::Root,
+    ) {
         match msg {
             SelectModeMsg::OpenFile => {
-                if Path::new(MEDIA_DSKEYS).exists() && check_file_ownership().unwrap() == 1000 {
+                if Path::new(MEDIA_DSKEYS).exists() && self.check_file_ownership().unwrap() == 1000
+                {
                     self.open_dialog.emit(OpenDialogMsg::Open);
                 } else {
                     ask_password(sender);
@@ -251,15 +269,14 @@ impl SimpleAsyncComponent for SelectModePage {
                 };
                 if let Ok(certs) = eimzo.list_all_certificates() {
                     let row = certs.iter().filter_map(|c| {
-                        let file_name = &c.name;
                         let alias = c.get_alias();
-
-                        // coming time format from certificate: "23.07.2027"
+                        // check time output yourself if you arenʻt sure
+                        // from "23.07.2027 11:11:11" to this "23.07.2027"
                         let validfrom = c.valid_from?;
                         let validto = c.valid_to?;
                         let is_expired = c.is_expired?;
 
-                        let full_name = format!(
+                        let full_name_line = format!(
                             "{}: {}",
                             gettext("Full name"),
                             alias.get("cn")?.to_uppercase()
@@ -269,11 +286,6 @@ impl SimpleAsyncComponent for SelectModePage {
                             gettext("Certificate number"),
                             alias.get("serialnumber")?
                         );
-                        let name: String =
-                            hide_sensitive_string(alias.get("name")?.to_owned(), '*', 2);
-                        let surname =
-                            hide_sensitive_string(alias.get("surname")?.to_owned(), '*', 2);
-                        let title = format!("{} {}", name, surname).to_uppercase();
                         let validity = format!(
                             "{}: {} - {}",
                             gettext("Certificate validity period"),
@@ -282,16 +294,19 @@ impl SimpleAsyncComponent for SelectModePage {
                         );
 
                         Some(CertificateRow {
-                            title,
-                            file_name: file_name.to_owned(),
-                            full_name_line: full_name,
+                            name: alias.get("name").cloned(),
+                            surname: alias.get("surname").cloned(),
+                            file_name: c.name.to_owned(),
+                            full_name_line,
                             serial_number_line: serial_number,
                             validity_line: validity,
                             is_expired,
+                            alias: c.get_alias(),
                         })
                     });
                     self.file_list_factory.extend(row);
                 }
+                // self.file_list_factory.guard().drop();
                 // after removing spinner check files in /media/DSKEYS exists or empty
                 if self.file_list_factory.is_empty() {
                     sender
@@ -339,14 +354,35 @@ impl SimpleAsyncComponent for SelectModePage {
 
 #[derive(Debug, Clone)]
 pub struct CertificateRow {
-    pub title: String,
+    pub name: Option<String>,
+    pub surname: Option<String>,
     pub file_name: String,
     pub full_name_line: String,
     pub serial_number_line: String,
     pub validity_line: String,
     pub is_expired: bool,
+    pub alias: HashMap<String, String>,
 }
 
+impl CertificateRow {
+    // Example full name: Jo**** Do****
+    fn hidden_full_name(&self) -> String {
+        match (self.name.clone(), self.surname.clone()) {
+            (Some(name), Some(surname)) => {
+                let hidden_name = self.hide_sensitive_string(name.to_owned(), '*', 2);
+                let hidden_surname = self.hide_sensitive_string(surname.to_owned(), '*', 2);
+                (hidden_name + &hidden_surname).to_uppercase()
+            }
+            _ => gettext("Name not found").to_owned(),
+        }
+    }
+    fn hide_sensitive_string(&self, name: String, symbol: char, range: usize) -> String {
+        name.chars()
+            .enumerate()
+            .map(|(i, c)| if i <= range { c } else { symbol })
+            .collect()
+    }
+}
 #[derive(Debug)]
 pub enum CertificateRowOutput {
     RemoveRequested(DynamicIndex, String),
@@ -364,28 +400,22 @@ impl FactoryComponent for CertificateRow {
     view! {
         adw::ExpanderRow {
             set_use_markup: true,
-            set_title: &self.title,
-
-
+            set_title: &self.hidden_full_name(),
             add_row = &adw::ActionRow {
                 set_title: &self.full_name_line,
             },
-
             add_row = &adw::ActionRow {
                 set_title: &self.serial_number_line,
             },
-
             add_row = &adw::ActionRow {
                 set_title: &self.validity_line,
             },
-
             add_row = &adw::ActionRow {
                 add_prefix = &gtk::Label{
                     add_css_class: if self.is_expired {"warning-badge"} else {"success-badge"},
                     set_label: &if self.is_expired { gettext("Expired")} else { gettext("Active")},
                     set_valign: gtk::Align::Center,
                 },
-
                 add_suffix = &gtk::Button {
                     set_icon_name: "user-trash-symbolic",
                     add_css_class: "destructive-action",
@@ -401,6 +431,15 @@ impl FactoryComponent for CertificateRow {
     }
 
     fn init_model(init: Self::Init, _index: &DynamicIndex, _sender: FactorySender<Self>) -> Self {
-        init
+        Self {
+            name: init.name,
+            surname: init.surname,
+            file_name: init.file_name,
+            full_name_line: init.full_name_line,
+            serial_number_line: init.serial_number_line,
+            validity_line: init.validity_line,
+            is_expired: init.is_expired,
+            alias: init.alias,
+        }
     }
 }

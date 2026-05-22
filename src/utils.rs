@@ -2,19 +2,12 @@ use relm4::{
     AsyncComponentSender,
     gtk::{self},
 };
-use std::{fs, io, os::unix::fs::MetadataExt, path::Path, process::Command};
+use std::{fs, io, path::Path, process::Command};
 
 use crate::{
     config::MEDIA_DSKEYS,
     ui::select_mode::{SelectModeMsg, SelectModePage},
 };
-
-pub fn hide_sensitive_string(name: String, symbol: char, range: usize) -> String {
-    name.chars()
-        .enumerate()
-        .map(|(i, c)| if i <= range { c } else { symbol })
-        .collect()
-}
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
@@ -71,13 +64,6 @@ pub fn return_pfx_files_in_folder() -> Vec<String> {
         }
     }
     certificate
-}
-
-pub fn check_file_ownership() -> Result<u32, Box<dyn std::error::Error>> {
-    let path = Path::new(MEDIA_DSKEYS);
-    let metadata = fs::metadata(path)?;
-    let uid = metadata.uid();
-    Ok(uid)
 }
 
 pub fn check_service_installed(service: &str) -> bool {
