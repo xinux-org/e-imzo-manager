@@ -1,13 +1,13 @@
-use relm4::{
-    AsyncComponentSender,
-    gtk::{self},
-};
-use std::{fs, io, path::Path, process::Command};
-
 use crate::{
     config::MEDIA_DSKEYS,
     ui::select_mode::{SelectModeMsg, SelectModePage},
 };
+use anyhow::Result;
+use relm4::{
+    AsyncComponentSender,
+    gtk::{self},
+};
+use std::{fs, path::Path, process::Command};
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
@@ -28,7 +28,7 @@ pub fn check_service_active(service: &str) -> bool {
     is_service_active(service).unwrap_or_default()
 }
 
-pub fn get_pfx_files_in_folder() -> io::Result<Vec<String>> {
+pub fn get_pfx_files_in_folder() -> Result<Vec<String>> {
     let path = Path::new(MEDIA_DSKEYS);
     let entries = fs::read_dir(path)?;
 
@@ -44,26 +44,6 @@ pub fn get_pfx_files_in_folder() -> io::Result<Vec<String>> {
         .collect();
 
     Ok(pfx_files)
-}
-
-pub fn return_pfx_files_in_folder() -> Vec<String> {
-    let mut certificate = Vec::<String>::new();
-
-    let path = Path::new(MEDIA_DSKEYS);
-    if path.exists() {
-        match get_pfx_files_in_folder() {
-            Ok(file_names) => {
-                for file_name in file_names {
-                    certificate.push(file_name);
-                }
-            }
-            Err(e) => tracing::error!(
-                "Error in Init function eimzo::get_pfx_files_in_folder: {}",
-                e
-            ),
-        }
-    }
-    certificate
 }
 
 pub fn check_service_installed(service: &str) -> bool {

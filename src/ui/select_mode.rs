@@ -2,7 +2,7 @@ use crate::config::MEDIA_DSKEYS;
 use crate::ui::alert::{RemoveCertificateDialog, RemoveCertificateDialogInit};
 use crate::ui::window::AppMsg;
 use crate::utils::{
-    ask_password, check_service_active, return_pfx_files_in_folder, tasks_filename_filters,
+    ask_password, check_service_active, get_pfx_files_in_folder, tasks_filename_filters,
 };
 use e_imzo::EIMZO;
 use gettextrs::gettext;
@@ -183,7 +183,7 @@ impl AsyncComponent for SelectModePage {
         let model = SelectModePage {
             open_dialog,
             file_list_factory,
-            stack: if return_pfx_files_in_folder().is_empty() {
+            stack: if get_pfx_files_in_folder().is_ok_and(|cers| cers.is_empty()) {
                 SelectModeStack::Empty
             } else {
                 SelectModeStack::NotEmpty
@@ -222,13 +222,15 @@ impl AsyncComponent for SelectModePage {
             SelectModeMsg::OpenFileResponse(path) => {
                 let copied_file = &path.file_name().unwrap().to_str().unwrap();
 
-                if return_pfx_files_in_folder().contains(&copied_file.to_string()) {
-                    let _ = sender.output(AppMsg::ShowMessage(gettext(
+                if get_pfx_files_in_folder()
+                    .is_ok_and(|certs| certs.contains(&copied_file.to_string()))
+                {
+                    sender.output_sender().emit(AppMsg::ShowMessage(gettext(
                         "File already exists. You can use it",
                     )));
                 } else {
                     // Copy lesected file to e-imzo path with fileʻs name
-                    let _ = fs::copy(&path, format!("{}/{}", MEDIA_DSKEYS, copied_file));
+                    fs::copy(&path, format!("{}/{}", MEDIA_DSKEYS, copied_file));
                     sender.input(SelectModeMsg::SetFileLoadedState(SelectModeStack::Loading));
                     // implement adding feature by updating e_imzo crate
                     // self.file_list_factory.guard().push_back(data);
@@ -272,8 +274,6 @@ impl AsyncComponent for SelectModePage {
                         let alias = c.get_alias();
                         // check time output yourself if you arenʻt sure
                         // from "23.07.2027 11:11:11" to this "23.07.2027"
-                        let validfrom = c.valid_from?;
-                        let validto = c.valid_to?;
                         let is_expired = c.is_expired?;
 
                         let full_name_line = format!(
@@ -286,6 +286,9 @@ impl AsyncComponent for SelectModePage {
                             gettext("Certificate number"),
                             alias.get("serialnumber")?
                         );
+
+                        let validfrom = c.valid_from?;
+                        let validto = c.valid_to?;
                         let validity = format!(
                             "{}: {} - {}",
                             gettext("Certificate validity period"),
@@ -306,7 +309,6 @@ impl AsyncComponent for SelectModePage {
                     });
                     self.file_list_factory.extend(row);
                 }
-                // self.file_list_factory.guard().drop();
                 // after removing spinner check files in /media/DSKEYS exists or empty
                 if self.file_list_factory.is_empty() {
                     sender
@@ -325,19 +327,16 @@ impl AsyncComponent for SelectModePage {
                 debug!("REMOVE CESTSRSTSRTRSTRS");
                 let full_path = Path::new(MEDIA_DSKEYS).join(format!("{}.pfx", file_name));
 
-                match fs::remove_file(&full_path) {
-                    Ok(()) => {
-                        self.file_list_factory.guard().remove(index.current_index());
-                        debug!("deleted: {}", full_path.display());
-                        if self.file_list_factory.is_empty() {
-                            sender
-                                .input_sender()
-                                .emit(SelectModeMsg::SetFileLoadedState(SelectModeStack::Empty));
-                        }
+                if fs::remove_file(&full_path).is_ok() {
+                    self.file_list_factory.guard().remove(index.current_index());
+                    debug!("deleted: {}", full_path.display());
+                    if self.file_list_factory.is_empty() {
+                        sender
+                            .input_sender()
+                            .emit(SelectModeMsg::SetFileLoadedState(SelectModeStack::Empty));
                     }
-                    Err(e) => {
-                        eprintln!("failed {}: {}", full_path.display(), e);
-                    }
+                } else {
+                    eprintln!("failed {}", full_path.display());
                 }
             }
             // todo.
@@ -422,7 +421,7 @@ impl FactoryComponent for CertificateRow {
                     set_valign: gtk::Align::Center,
 
                     connect_clicked[sender, index, file_name = self.file_name.to_owned()] => move |_| {
-                        sender.output(CertificateRowOutput::RemoveRequested(index.to_owned(), file_name.to_owned())).unwrap()
+                        sender.output_sender().emit(CertificateRowOutput::RemoveRequested(index.to_owned(), file_name.to_owned()))
                     },
                 },
 
