@@ -36,3 +36,4 @@ tokio = { version = "1.49.0", default-features = false, features = [
 ] }
 e-imzo = "0.4.0"
 uzers = "0.12.2"
+anyhow = "1.0.102"
