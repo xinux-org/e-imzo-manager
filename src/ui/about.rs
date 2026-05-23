@@ -1,7 +1,7 @@
 use adw::prelude::AdwDialogExt;
 use gettextrs::gettext;
 use gtk::prelude::GtkApplicationExt;
-use relm4::{adw, gtk, ComponentParts, ComponentSender, SimpleComponent};
+use relm4::{ComponentParts, ComponentSender, SimpleComponent, adw, gtk};
 
 use crate::config::{APP_ID, VERSION};
 
@@ -55,7 +55,9 @@ fn release_notes() -> String {
     gettext(
         r#"<p>This release contains new features and fixes:</p>
     <ul>
-        <li>Add expired stratus</li>
+        <li>Updated GNOME runtime to 50</li>
+        <li>Display error on dialog when occured</li>
+        <li>Added transition animation with loading spinner</li>
     </ul>"#,
     )
 }
