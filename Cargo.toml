@@ -24,13 +24,13 @@ opt-level = 3
 
 [dependencies]
 gettext-rs = { version = "0.7.7", features = ["gettext-system"] }
-relm4 = { version = "0.11.0", features = ["libadwaita", "gnome_49"] }
+relm4 = { version = "0.11.0", features = ["libadwaita", "gnome_50"] }
 relm4-components = "0.11.0"
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.22", default-features = false, features = [
   "fmt",
 ] }
-tokio = { version = "1.49.0", default-features = false, features = [
+tokio = { version = "1.52.3", default-features = false, features = [
   "process",
   "time",
 ] }
