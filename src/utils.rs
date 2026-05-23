@@ -3,10 +3,7 @@ use crate::{
     ui::select_mode::{SelectModeMsg, SelectModePage},
 };
 use anyhow::Result;
-use relm4::{
-    AsyncComponentSender,
-    gtk::{self},
-};
+use relm4::AsyncComponentSender;
 use std::{fs, path::Path, process::Command};
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
@@ -54,15 +51,6 @@ pub fn check_service_installed(service: &str) -> bool {
     }
 
     false
-}
-
-// file selection filter .pfx file
-pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
-    let filename_filter = gtk::FileFilter::default();
-    filename_filter.set_name(Some("PFX (.pfx)"));
-    filename_filter.add_suffix("pfx");
-
-    vec![filename_filter]
 }
 
 pub fn ask_password(sender: AsyncComponentSender<SelectModePage>) {

@@ -1,10 +1,8 @@
 use crate::config::MEDIA_DSKEYS;
 use crate::ui::alert::{RemoveCertificateDialog, RemoveCertificateDialogInit};
 use crate::ui::window::AppMsg;
-use crate::utils::{
-    ask_password, check_service_active, get_pfx_files_in_folder, tasks_filename_filters,
-};
-use e_imzo::EIMZO;
+use crate::utils::{ask_password, check_service_active, get_pfx_files_in_folder};
+use e_imzo::{EIMZO, prelude::Certificate};
 use gettextrs::gettext;
 use relm4::{
     adw::{self, prelude::*},
@@ -22,7 +20,7 @@ use std::{
     path::{Path, PathBuf},
     time::Duration,
 };
-use tracing::{debug, warn};
+use tracing::debug;
 
 #[derive(Debug)]
 pub struct SelectModePage {
@@ -32,11 +30,61 @@ pub struct SelectModePage {
 }
 
 impl SelectModePage {
+    // file selection filter .pfx file
+    pub fn tasks_filename_filters() -> Vec<gtk::FileFilter> {
+        let filename_filter = gtk::FileFilter::default();
+        filename_filter.set_name(Some("PFX (.pfx)"));
+        filename_filter.add_suffix("pfx");
+
+        vec![filename_filter]
+    }
     pub fn check_file_ownership(&self) -> Result<u32, Box<dyn std::error::Error>> {
         let path = Path::new(MEDIA_DSKEYS);
         let metadata = fs::metadata(path)?;
         let uid = metadata.uid();
         Ok(uid)
+    }
+    pub fn certificate_rows(&self, certs: Vec<Certificate>) -> Vec<CertificateRow> {
+        certs
+            .iter()
+            .filter_map(|c| {
+                let alias = c.get_alias();
+                // check time output yourself if you arenʻt sure
+                // from "23.07.2027 11:11:11" to this "23.07.2027"
+                let is_expired = c.is_expired?;
+
+                let full_name_line = format!(
+                    "{}: {}",
+                    gettext("Full name"),
+                    alias.get("cn")?.to_uppercase()
+                );
+                let serial_number = format!(
+                    "{}: {}",
+                    gettext("Certificate number"),
+                    alias.get("serialnumber")?
+                );
+
+                let validfrom = c.valid_from?;
+                let validto = c.valid_to?;
+                let validity = format!(
+                    "{}: {} - {}",
+                    gettext("Certificate validity period"),
+                    validfrom.format("%d.%m.%Y"),
+                    validto.format("%d.%m.%Y")
+                );
+
+                Some(CertificateRow {
+                    name: alias.get("name").cloned(),
+                    surname: alias.get("surname").cloned(),
+                    file_name: c.name.to_owned(),
+                    full_name_line,
+                    serial_number_line: serial_number,
+                    validity_line: validity,
+                    is_expired,
+                    alias: c.get_alias(),
+                })
+            })
+            .collect::<Vec<CertificateRow>>()
     }
 }
 
@@ -50,6 +98,7 @@ pub enum SelectModeMsg {
     ShowRemoveFileMsg(DynamicIndex, String),
     // File CRUD
     RefreshCertificates,
+    CertificatesLoaded(Vec<Certificate>),
     SetFileLoadedState(SelectModeStack),
     RemoveCertificates(DynamicIndex, String),
     // AddCertificates(CertificateRow),
@@ -71,83 +120,79 @@ impl AsyncComponent for SelectModePage {
     type CommandOutput = ();
 
     view! {
-        gtk::Box {
-            set_orientation: gtk::Orientation::Vertical,
-            #[name(asd)]
-            gtk::ScrolledWindow {
-                set_vexpand: true,
-                set_hexpand: true,
-                set_hscrollbar_policy: gtk::PolicyType::Never,
-                set_vscrollbar_policy: gtk::PolicyType::Automatic,
-
-                #[transition(Crossfade)]
-                match model.stack {
-                    SelectModeStack::Empty => {
-                        gtk::Box {
-                            set_orientation: gtk::Orientation::Vertical,
-                            adw::StatusPage {
-                                set_vexpand: true,
-                                set_hexpand: true,
-                                set_icon_name: Some("checkbox-checked-symbolic"),
-                                set_title: &gettext("No certificates"),
-                                set_description: Some(&gettext("Load some certificates to start using the app.")),
-                                gtk::Button {
-                                    set_halign: gtk::Align::Center,
-                                    set_focus_on_click: true,
-                                    set_css_classes: &["pill", "suggested-action"],
-                                    adw::ButtonContent {
-                                        set_icon_name: "folder-documents-symbolic",
-                                        #[watch]
-                                        set_label: &gettext("Load .pfx"),
-                                    },
-                                    connect_clicked => SelectModeMsg::OpenFile,
-                                },
-                            }
-                        }
-                    },
-                    SelectModeStack::NotEmpty => {
-                        gtk::Box {
-                            gtk::Label {
-                                add_css_class: relm4::css::TITLE_2,
-                                #[watch]
-                                set_label: &gettext("Loaded keys"),
-                                set_margin_all: 1,
-                            },
-                            set_spacing: 20,
-                            set_margin_start: 10,
-                            set_margin_end: 10,
-                            set_margin_top: 20,
-                            set_margin_bottom: 10,
-                            set_orientation: gtk::Orientation::Vertical,
-                            set_halign: gtk::Align::Center,
-                            adw::Clamp {
-                                #[local_ref]
-                                allbox -> adw::PreferencesGroup {}
-                            }
-                        }
-                    },
-                    SelectModeStack::Loading => {
-                        gtk::Box {
-                            set_vexpand: true,
-                            set_hexpand: true,
-                            set_valign: gtk::Align::Center,
-                            set_halign: gtk::Align::Center,
-                            set_orientation: gtk::Orientation::Vertical,
-
-                            adw::Spinner {
-                                set_width_request: 40,
-                                set_height_request: 40,
-                                set_margin_bottom: 25,
-                            },
-
-                            gtk::Label {
-                                set_label: &gettext("Loading keys"),
-                                add_css_class: relm4::css::TITLE_2,
-                            },
-                        }
-                    }
-                }
-            },
+      gtk::ScrolledWindow {
+          set_vexpand: true,
+          set_hexpand: true,
+          set_hscrollbar_policy: gtk::PolicyType::Never,
+          set_vscrollbar_policy: gtk::PolicyType::Automatic,
+    
+          #[transition(Crossfade)]
+          match model.stack {
+              SelectModeStack::Empty => {
+                  gtk::Box {
+                      set_orientation: gtk::Orientation::Vertical,
+                      adw::StatusPage {
+                          set_vexpand: true,
+                          set_hexpand: true,
+                          set_icon_name: Some("checkbox-checked-symbolic"),
+                          set_title: &gettext("No certificates"),
+                          set_description: Some(&gettext("Load some certificates to start using the app.")),
+                          gtk::Button {
+                              set_halign: gtk::Align::Center,
+                              set_focus_on_click: true,
+                              set_css_classes: &["pill", "suggested-action"],
+                              adw::ButtonContent {
+                                  set_icon_name: "folder-documents-symbolic",
+                                  #[watch]
+                                  set_label: &gettext("Load .pfx"),
+                              },
+                              connect_clicked => SelectModeMsg::OpenFile,
+                          },
+                      }
+                  }
+              },
+              SelectModeStack::NotEmpty => {
+                  gtk::Box {
+                      gtk::Label {
+                          add_css_class: relm4::css::TITLE_2,
+                          #[watch]
+                          set_label: &gettext("Loaded keys"),
+                          set_margin_all: 1,
+                      },
+                      set_spacing: 20,
+                      set_margin_start: 10,
+                      set_margin_end: 10,
+                      set_margin_top: 20,
+                      set_margin_bottom: 10,
+                      set_orientation: gtk::Orientation::Vertical,
+                      set_halign: gtk::Align::Center,
+                      adw::Clamp {
+                          #[local_ref]
+                          allbox -> adw::PreferencesGroup {}
+                      }
+                  }
+              },
+              SelectModeStack::Loading => {
+                  gtk::Box {
+                      set_vexpand: true,
+                      set_hexpand: true,
+                      set_valign: gtk::Align::Center,
+                      set_halign: gtk::Align::Center,
+                      set_orientation: gtk::Orientation::Vertical,
+    
+                      adw::Spinner {
+                          set_width_request: 40,
+                          set_height_request: 40,
+                          set_margin_bottom: 25,
+                      },
+    
+                      gtk::Label {
+                          set_label: &gettext("Loading keys"),
+                          add_css_class: relm4::css::TITLE_2,
+                      },
+                  }
+              }
+          }
         },
     }
 
@@ -164,7 +209,7 @@ impl AsyncComponent for SelectModePage {
                 cancel_label: gettext("Cancel"),
                 accept_label: gettext("Open"),
                 is_modal: true,
-                filters: tasks_filename_filters(),
+                filters: Self::tasks_filename_filters(),
             })
             .forward(sender.input_sender(), |response| match response {
                 OpenDialogResponse::Accept(path) => SelectModeMsg::OpenFileResponse(path),
@@ -254,7 +299,7 @@ impl AsyncComponent for SelectModePage {
                 self.file_list_factory.guard().clear();
 
                 // wait enough to wait e-imzo.service activation
-                tokio::time::sleep(Duration::from_millis(1800)).await;
+                tokio::time::sleep(Duration::from_millis(2000)).await;
 
                 // Hmm..., When service active and user launches app then toggle button
                 // changes from gray to green. If user press toggle button in
@@ -262,54 +307,36 @@ impl AsyncComponent for SelectModePage {
                 // returns unnessary error saying “Connection refused”. Why press grey
                 // button before 1600 mileseconds because user wants deactivate service
                 // very fast when app launched
-                let mut eimzo = match EIMZO::new() {
-                    Ok(eimzo) => eimzo,
-                    Err(e) => {
-                        warn!("No connection because service is stopped: {e:?}");
-                        return;
-                    }
-                };
-                if let Ok(certs) = eimzo.list_all_certificates() {
-                    let row = certs.iter().filter_map(|c| {
-                        let alias = c.get_alias();
-                        // check time output yourself if you arenʻt sure
-                        // from "23.07.2027 11:11:11" to this "23.07.2027"
-                        let is_expired = c.is_expired?;
+                relm4::spawn(async move {
+                    let mut eimzo = match EIMZO::new() {
+                        Ok(eimzo) => eimzo,
+                        Err(error) => {
+                            sender.output(AppMsg::ShowMessage(format!(
+                                "EIMZO connection: {}",
+                                error
+                            )));
+                            return;
+                        }
+                    };
+                    let certs = match eimzo.list_all_certificates() {
+                        Ok(certs) => certs,
+                        Err(error) => {
+                            sender.output(AppMsg::ShowMessage(format!(
+                                "list_all_certificates: {}",
+                                error
+                            )));
+                            vec![]
+                        }
+                    };
+                    sender.input(SelectModeMsg::CertificatesLoaded(certs));
+                });
+            }
+            SelectModeMsg::CertificatesLoaded(certs) => {
+                let rows = self.certificate_rows(certs);
 
-                        let full_name_line = format!(
-                            "{}: {}",
-                            gettext("Full name"),
-                            alias.get("cn")?.to_uppercase()
-                        );
-                        let serial_number = format!(
-                            "{}: {}",
-                            gettext("Certificate number"),
-                            alias.get("serialnumber")?
-                        );
-
-                        let validfrom = c.valid_from?;
-                        let validto = c.valid_to?;
-                        let validity = format!(
-                            "{}: {} - {}",
-                            gettext("Certificate validity period"),
-                            validfrom.format("%d.%m.%Y"),
-                            validto.format("%d.%m.%Y")
-                        );
-
-                        Some(CertificateRow {
-                            name: alias.get("name").cloned(),
-                            surname: alias.get("surname").cloned(),
-                            file_name: c.name.to_owned(),
-                            full_name_line,
-                            serial_number_line: serial_number,
-                            validity_line: validity,
-                            is_expired,
-                            alias: c.get_alias(),
-                        })
-                    });
-                    self.file_list_factory.extend(row);
+                for row in rows {
+                    self.file_list_factory.guard().push_back(row);
                 }
-                // after removing spinner check files in /media/DSKEYS exists or empty
                 if self.file_list_factory.is_empty() {
                     sender
                         .input_sender()
@@ -428,7 +455,6 @@ impl FactoryComponent for CertificateRow {
             },
         }
     }
-
     fn init_model(init: Self::Init, _index: &DynamicIndex, _sender: FactorySender<Self>) -> Self {
         Self {
             name: init.name,
