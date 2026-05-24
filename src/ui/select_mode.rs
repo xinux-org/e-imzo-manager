@@ -81,7 +81,7 @@ impl SelectModePage {
                     serial_number_line: serial_number,
                     validity_line: validity,
                     is_expired,
-                    alias: c.get_alias(),
+                    alias,
                 })
             })
             .collect::<Vec<CertificateRow>>()
@@ -125,7 +125,7 @@ impl AsyncComponent for SelectModePage {
           set_hexpand: true,
           set_hscrollbar_policy: gtk::PolicyType::Never,
           set_vscrollbar_policy: gtk::PolicyType::Automatic,
-    
+
           #[transition(Crossfade)]
           match model.stack {
               SelectModeStack::Empty => {
@@ -179,13 +179,13 @@ impl AsyncComponent for SelectModePage {
                       set_valign: gtk::Align::Center,
                       set_halign: gtk::Align::Center,
                       set_orientation: gtk::Orientation::Vertical,
-    
+
                       adw::Spinner {
                           set_width_request: 40,
                           set_height_request: 40,
                           set_margin_bottom: 25,
                       },
-    
+
                       gtk::Label {
                           set_label: &gettext("Loading keys"),
                           add_css_class: relm4::css::TITLE_2,
