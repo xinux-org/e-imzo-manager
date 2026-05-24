@@ -184,47 +184,21 @@ impl SimpleComponent for App {
         let widgets = view_output!();
         let service = widgets.service.to_owned();
         model.service = service;
+
         widgets.load_window_size();
+        model.setup_shortcuts(root, &sender, &widgets);
 
-        let mut actions = RelmActionGroup::<WindowActionGroup>::new();
-        let app = root.application().unwrap();
-        let mut shortcuts = vec![];
-
-        shortcut_register_ws!(
-            (app, shortcuts, actions, sender),
-            gettext("Quit") => "<Control>q",
-            QuitAction => AppMsg::Quit
+        glib::timeout_add_seconds_local(
+            2,
+            glib::clone! { #[strong] sender, move || {
+                if check_service_installed("/etc/systemd/user/e-imzo.service") {
+                    let active = check_service_active("e-imzo.service");
+                    sender.input(AppMsg::RefreshService(active));
+                }
+                glib::ControlFlow::Continue
+              }
+            },
         );
-
-        shortcut_register_ws!(
-            (app, shortcuts, actions, sender),
-            gettext("Start/Stop Service") => "<Control>r",
-            StartAndStopServiceAction => AppMsg::StartAndStopService
-        );
-        shortcut_register!(
-            (app, shortcuts, actions),
-            gettext("Awesome E-IMZO") => "<Control>a",
-            AwesomeAction => { AwesomeModel::builder().launch(()).detach(); }
-        );
-
-        action_register!(actions, ShortcutsAction => {
-            ShortcutsDialog::builder()
-            .launch(ShortcutsDialogInit(shortcuts.to_owned()))
-            .detach();
-        });
-        action_register!(actions, AboutAction => { AboutDialog::builder().launch(()).detach(); });
-        action_register!(actions, LocalhostAction => { Localhost::builder().launch(()).detach(); });
-
-        actions.register_for_widget(&widgets.main_window);
-
-        let sender_clone = sender.input_sender().to_owned();
-        glib::timeout_add_seconds_local(1, move || {
-            if check_service_installed("/etc/systemd/user/e-imzo.service") {
-                let active = check_service_active("e-imzo.service");
-                sender_clone.send(AppMsg::RefreshService(active)).ok();
-            }
-            glib::ControlFlow::Continue
-        });
 
         ComponentParts { model, widgets }
     }
@@ -322,6 +296,45 @@ impl AppWidgets {
         if is_maximized {
             self.main_window.maximize();
         }
+    }
+}
+impl App {
+    pub fn setup_shortcuts(
+        &mut self,
+        root: adw::ApplicationWindow,
+        sender: &ComponentSender<Self>,
+        widgets: &<Self as Component>::Widgets,
+    ) {
+        let mut actions = RelmActionGroup::<WindowActionGroup>::new();
+        let app = root.application().unwrap();
+        let mut shortcuts = vec![];
+
+        shortcut_register_ws!(
+            (app, shortcuts, actions, sender),
+            gettext("Quit") => "<Control>q",
+            QuitAction => AppMsg::Quit
+        );
+
+        shortcut_register_ws!(
+            (app, shortcuts, actions, sender),
+            gettext("Start/Stop Service") => "<Control>r",
+            StartAndStopServiceAction => AppMsg::StartAndStopService
+        );
+        shortcut_register!(
+            (app, shortcuts, actions),
+            gettext("Awesome E-IMZO") => "<Control>a",
+            AwesomeAction => { AwesomeModel::builder().launch(()).detach(); }
+        );
+
+        action_register!(actions, ShortcutsAction => {
+            ShortcutsDialog::builder()
+            .launch(ShortcutsDialogInit(shortcuts.to_owned()))
+            .detach();
+        });
+        action_register!(actions, AboutAction => { AboutDialog::builder().launch(()).detach(); });
+        action_register!(actions, LocalhostAction => { Localhost::builder().launch(()).detach(); });
+
+        actions.register_for_widget(&widgets.main_window);
     }
 }
 
