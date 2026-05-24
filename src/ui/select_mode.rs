@@ -46,7 +46,7 @@ impl SelectModePage {
     }
     pub fn certificate_rows(&self, certs: Vec<Certificate>) -> Vec<CertificateRow> {
         certs
-            .iter()
+            .into_iter()
             .filter_map(|c| {
                 let alias = c.get_alias();
                 // check time output yourself if you arenʻt sure
@@ -76,7 +76,7 @@ impl SelectModePage {
                 Some(CertificateRow {
                     name: alias.get("name").cloned(),
                     surname: alias.get("surname").cloned(),
-                    file_name: c.name.to_owned(),
+                    file_name: c.name,
                     full_name_line,
                     serial_number_line: serial_number,
                     validity_line: validity,
