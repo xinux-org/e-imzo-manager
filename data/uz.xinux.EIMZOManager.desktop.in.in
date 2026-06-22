@@ -2,7 +2,7 @@
 Name=e-imzo-manager
 Comment=Nix effort for E-IMZO service.
 Type=Application
-Exec=e-imzo-manager
+Exec=e-imzo-manager %f
 Terminal=false
 Categories=System;
 # Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
@@ -12,3 +12,4 @@ Icon=@icon@
 StartupNotify=true
 StartupWMClass=e-imzo-manager
 SingleMainWindow=true
+MimeType=application/pkcs12

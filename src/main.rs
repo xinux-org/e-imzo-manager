@@ -3,6 +3,7 @@ mod config;
 mod ui;
 mod utils;
 
+use crate::{config::RESOURCES_FILE, utils::copy_pfx_file_to_folder};
 use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
 use gettextrs::{LocaleCategory, gettext};
 use relm4::{
@@ -10,7 +11,7 @@ use relm4::{
     gtk::{self, gio, glib, prelude::*},
     main_application,
 };
-use crate::config::RESOURCES_FILE;
+use std::path::PathBuf;
 use ui::window::App;
 
 fn main() {
@@ -40,8 +41,14 @@ fn main() {
         .unwrap();
     relm4::set_global_css(&glib::GString::from_utf8_checked(data.to_vec()).unwrap());
 
+    if let Some(path) = std::env::args().nth(1) {
+        let _ = copy_pfx_file_to_folder(PathBuf::from(path));
+    }
+
     let app = RelmApp::from_app(app);
-    app.visible_on_activate(true).run::<App>(());
+    app.visible_on_activate(true)
+        .with_args(vec![])
+        .run::<App>(());
 }
 
 fn setup_gettext() {

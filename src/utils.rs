@@ -2,9 +2,13 @@ use crate::{
     config::MEDIA_DSKEYS,
     ui::select_mode::{SelectModeMsg, SelectModePage},
 };
-use anyhow::Result;
+use anyhow::{Result, bail};
 use relm4::AsyncComponentSender;
-use std::{fs, path::Path, process::Command};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+    process::Command,
+};
 
 pub fn is_service_active(service_name: &str) -> Result<bool, String> {
     let output = Command::new("systemctl")
@@ -72,4 +76,18 @@ pub fn ask_password(sender: AsyncComponentSender<SelectModePage>) {
             sender.input(SelectModeMsg::OpenFileConfirmed);
         }
     });
+}
+
+pub fn copy_pfx_file_to_folder(path: PathBuf) -> Result<()> {
+    if path.try_exists()?
+        && path.is_file()
+        && let Some(filename) = path.file_name().and_then(|s| s.to_str())
+        && let Ok(certs) = get_pfx_files_in_folder()
+        && !certs.contains(&filename.to_string())
+    {
+        fs::copy(&path, format!("{}/{}", MEDIA_DSKEYS, filename))?;
+        Ok(())
+    } else {
+        bail!("Can not copy .pfx file to keys folder")
+    }
 }
