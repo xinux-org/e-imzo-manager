@@ -1,7 +1,9 @@
 use crate::config::MEDIA_DSKEYS;
 use crate::ui::alert::{RemoveCertificateDialog, RemoveCertificateDialogInit};
 use crate::ui::window::AppMsg;
-use crate::utils::{ask_password, check_service_active, get_pfx_files_in_folder};
+use crate::utils::{
+    ask_password, check_keys_ownership, check_service_active, get_pfx_files_in_folder,
+};
 use e_imzo::{EIMZO, prelude::Certificate};
 use gettextrs::gettext;
 use relm4::{
@@ -37,12 +39,6 @@ impl SelectModePage {
         filename_filter.add_suffix("pfx");
 
         vec![filename_filter]
-    }
-    pub fn check_file_ownership(&self) -> Result<u32, Box<dyn std::error::Error>> {
-        let path = Path::new(MEDIA_DSKEYS);
-        let metadata = fs::metadata(path)?;
-        let uid = metadata.uid();
-        Ok(uid)
     }
     pub fn certificate_rows(&self, certs: Vec<Certificate>) -> Vec<CertificateRow> {
         certs
@@ -254,8 +250,7 @@ impl AsyncComponent for SelectModePage {
     ) {
         match msg {
             SelectModeMsg::OpenFile => {
-                if Path::new(MEDIA_DSKEYS).exists() && self.check_file_ownership().unwrap() == 1000
-                {
+                if Path::new(MEDIA_DSKEYS).exists() && check_keys_ownership().unwrap() == 1000 {
                     self.open_dialog.emit(OpenDialogMsg::Open);
                 } else {
                     ask_password(sender);

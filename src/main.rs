@@ -3,7 +3,10 @@ mod config;
 mod ui;
 mod utils;
 
-use crate::{config::RESOURCES_FILE, utils::copy_pfx_file_to_folder};
+use crate::{
+    config::{MEDIA_DSKEYS, RESOURCES_FILE},
+    utils::{check_keys_ownership, copy_pfx_file_to_folder, gain_access_to_keys},
+};
 use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
 use gettextrs::{LocaleCategory, gettext};
 use relm4::{
@@ -42,6 +45,11 @@ fn main() {
     relm4::set_global_css(&glib::GString::from_utf8_checked(data.to_vec()).unwrap());
 
     if let Some(path) = std::env::args().nth(1) {
+        if !PathBuf::from(MEDIA_DSKEYS).exists()
+            || !check_keys_ownership().unwrap_or_default() == 1000
+        {
+            let _ = gain_access_to_keys();
+        }
         let _ = copy_pfx_file_to_folder(PathBuf::from(path));
     }
 

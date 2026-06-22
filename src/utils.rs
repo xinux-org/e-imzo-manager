@@ -6,6 +6,7 @@ use anyhow::{Result, bail};
 use relm4::AsyncComponentSender;
 use std::{
     fs,
+    os::unix::fs::MetadataExt,
     path::{Path, PathBuf},
     process::Command,
 };
@@ -59,23 +60,25 @@ pub fn check_service_installed(service: &str) -> bool {
 
 pub fn ask_password(sender: AsyncComponentSender<SelectModePage>) {
     relm4::spawn(async move {
-        let path = MEDIA_DSKEYS;
-        let real_uid = uzers::get_current_uid();
-
-        let success = {
-            let cmd = format!("mkdir -p {0} && chown {1}:{1} {0}", path, real_uid);
-            tokio::process::Command::new("pkexec")
-                .args(["sh", "-c", &cmd])
-                .status()
-                .await
-                .map(|s| s.success())
-                .unwrap_or(false)
-        };
+        let success = gain_access_to_keys().unwrap_or(false);
 
         if success {
             sender.input(SelectModeMsg::OpenFileConfirmed);
         }
     });
+}
+
+pub fn gain_access_to_keys() -> Result<bool> {
+    let path = MEDIA_DSKEYS;
+    let real_uid = uzers::get_current_uid();
+    let cmd = format!("mkdir -p {0} && chown {1}:{1} {0}", path, real_uid);
+
+    Command::new("pkexec")
+        .args(["sh", "-c", &cmd])
+        .status()
+        .map(|s| s.success())?;
+
+    Ok(true)
 }
 
 pub fn copy_pfx_file_to_folder(path: PathBuf) -> Result<()> {
@@ -90,4 +93,11 @@ pub fn copy_pfx_file_to_folder(path: PathBuf) -> Result<()> {
     } else {
         bail!("Can not copy .pfx file to keys folder")
     }
+}
+
+pub fn check_keys_ownership() -> Result<u32> {
+    let path = Path::new(MEDIA_DSKEYS);
+    let metadata = fs::metadata(path)?;
+    let uid = metadata.uid();
+    Ok(uid)
 }
