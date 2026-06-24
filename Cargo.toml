@@ -1,11 +1,11 @@
 [package]
 name = "e-imzo-manager"
-version = "1.2.0"
+version = "1.3.0"
 edition = "2024"
 license = "AGPL-3.0"
-description = "E-IMZO for uzbek state web key signing on Linux"
-homepage = "https://github.com/xinux-org"
-repository = "https://github.com/xinux-org/e-imzo-manager"
+description = "E-IMZO Manager gtk app for uzbek state web key signing on Linux"
+homepage = "https://git.oss.uzinfocom.uz/xinux/e-imzo-manager"
+repository = "https://git.oss.uzinfocom.uz/xinux/e-imzo-manager"
 authors = ["Xinux Developers <support@oss.uzinfocom.uz>"]
 readme = "README.md"
 

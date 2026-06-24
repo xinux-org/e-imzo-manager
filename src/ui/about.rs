@@ -23,12 +23,9 @@ impl SimpleComponent for AboutDialog {
             .issue_url("https://github.com/xinux-org/e-imzo/issues")
             .version(VERSION)
             .translator_credits("translator-credits")
-            .copyright(gettext("© 2025 Xinux Developers"))
+            .copyright(gettext("© 2026 Xinux Developers"))
             .developers(vec![
-                "Baxrom Raxmatov https://github.com/bahrom04",
-                "BeMeritus https://github.com/bemeritus",
-                "Domirando https://github.com/Domirando",
-                "let-rec https://github.com/let-rec",
+                gettext("Contributors https://git.oss.uzinfocom.uz/xinux/e-imzo-manager/activity/contributors"),
             ])
             .release_notes_version(VERSION)
             .release_notes(release_notes())
@@ -53,11 +50,12 @@ impl SimpleComponent for AboutDialog {
 
 fn release_notes() -> String {
     gettext(
-        r#"<p>This release contains new features and fixes:</p>
+        r#"<p>This release contains following changes</p>
     <ul>
         <li>Updated GNOME runtime to 50</li>
         <li>Display error on dialog when occured</li>
         <li>Added transition animation with loading spinner</li>
+        <li>Support opening pkcs12 files from file manager: #10</li>
     </ul>"#,
     )
 }
