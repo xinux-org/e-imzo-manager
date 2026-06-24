@@ -1,41 +1,40 @@
 # https://github.com/snowfallorg/nix-software-center/blob/next/justfile
 builddir := "builddir"
-prefix := justfile_directory() / builddir / "install"
 profile := "development"
 bin := "e-imzo-manager"
+local := "~/.local"
 
-meson_flags := "-Dprofile=" + profile + " -Dprefix=" + prefix
+meson_flags := "-Dprofile=" + profile + " -Dprefix=" + local
 
 # Configure meson build directory
 setup:
-    @if [ ! -f {{builddir}}/build.ninja ]; then \
-        meson setup {{builddir}} {{meson_flags}}; \
-    elif ! meson configure {{builddir}} | grep -q "profile.*{{profile}}"; then \
-        meson setup {{builddir}} --reconfigure {{meson_flags}}; \
+    @if [ ! -f {{ builddir }}/build.ninja ]; then \
+        meson setup {{ builddir }} {{ meson_flags }}; \
+    elif ! meson configure {{ builddir }} | grep -q "profile.*{{ profile }}"; then \
+        meson setup {{ builddir }} --reconfigure {{ meson_flags }}; \
     fi
 
 # Reconfigure existing build directory
 reconfigure:
-    meson setup {{builddir}} --reconfigure {{meson_flags}}
+    meson setup {{ builddir }} --reconfigure {{ meson_flags }}
 
 # Build the project
 build: setup
-    meson compile -C {{builddir}}
+    meson compile -C {{ builddir }}
 
 # Install to local prefix
 install: build
-    meson install -C {{builddir}}
+    meson install -C {{ builddir }}
 
 # Build, install, and run the app
 run: install
-    RUST_LOG={{bin}}=DEBUG \
-    GSETTINGS_SCHEMA_DIR={{prefix}}/share/glib-2.0/schemas \
-    XDG_DATA_DIRS="{{prefix}}/share:${XDG_DATA_DIRS}" \
-    {{prefix}}/bin/{{bin}}
+    RUST_LOG={{ bin }}=DEBUG \
+    {{ local }}/bin/{{ bin }}
 
 # Clean build directory
 clean:
-    rm -rf {{builddir}}
+    rm -rf {{ builddir }} \
+    ~/.local/bin/{{ bin }}
 
 # Watch for changes and rebuild
 watch:
