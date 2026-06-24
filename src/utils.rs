@@ -58,27 +58,23 @@ pub fn check_service_installed(service: &str) -> bool {
     false
 }
 
+pub fn set_folder_permission() -> bool {
+    let real_uid = uzers::get_current_uid();
+    let cmd = format!("mkdir -p {0} && chown {1}:{1} {0}", MEDIA_DSKEYS, real_uid);
+    let status = Command::new("pkexec")
+        .args(["sh", "-c", &cmd])
+        .status()
+        .map(|s| s.success());
+
+    status.unwrap_or(false)
+}
+
 pub fn ask_password(sender: AsyncComponentSender<SelectModePage>) {
     relm4::spawn(async move {
-        let success = gain_access_to_keys().unwrap_or(false);
-
-        if success {
+        if set_folder_permission() {
             sender.input(SelectModeMsg::OpenFileConfirmed);
         }
     });
-}
-
-pub fn gain_access_to_keys() -> Result<bool> {
-    let path = MEDIA_DSKEYS;
-    let real_uid = uzers::get_current_uid();
-    let cmd = format!("mkdir -p {0} && chown {1}:{1} {0}", path, real_uid);
-
-    Command::new("pkexec")
-        .args(["sh", "-c", &cmd])
-        .status()
-        .map(|s| s.success())?;
-
-    Ok(true)
 }
 
 pub fn copy_pfx_file_to_folder(path: PathBuf) -> Result<()> {

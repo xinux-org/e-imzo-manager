@@ -5,7 +5,7 @@ mod utils;
 
 use crate::{
     config::{MEDIA_DSKEYS, RESOURCES_FILE},
-    utils::{check_keys_ownership, copy_pfx_file_to_folder, gain_access_to_keys},
+    utils::{check_keys_ownership, copy_pfx_file_to_folder, set_folder_permission},
 };
 use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
 use gettextrs::{LocaleCategory, gettext};
@@ -44,13 +44,14 @@ fn main() {
         .unwrap();
     relm4::set_global_css(&glib::GString::from_utf8_checked(data.to_vec()).unwrap());
 
+    // Opening files from single file arguments
     if let Some(path) = std::env::args().nth(1) {
         if !PathBuf::from(MEDIA_DSKEYS).exists()
             || !check_keys_ownership().unwrap_or_default() == 1000
         {
-            let _ = gain_access_to_keys();
+            set_folder_permission();
         }
-        let _ = copy_pfx_file_to_folder(PathBuf::from(path));
+        copy_pfx_file_to_folder(PathBuf::from(path));
     }
 
     let app = RelmApp::from_app(app);
