@@ -17,7 +17,6 @@ use relm4::{
     *,
 };
 use relm4_components::open_dialog::*;
-use std::cell::RefCell;
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -45,32 +44,28 @@ impl SelectModePage {
         certs
             .into_iter()
             .filter_map(|c| {
-                let alias = RefCell::new(c.get_alias());
-
+                let mut alias = c.get_alias();
                 let full_name_line = format!(
                     "{}: {}",
                     gettext("Full name"),
-                    alias.borrow().get("cn")?.to_uppercase()
+                    alias.get("cn")?.to_uppercase()
                 );
                 let serial_number = format!(
                     "{}: {}",
                     gettext("Certificate number"),
-                    alias.borrow().get("serialnumber")?
+                    alias.get("serialnumber")?
                 );
-
                 // check time output yourself if you arenʻt sure
                 // from "23.07.2027 11:11:11" to this "23.07.2027"
-                let validfrom = c.valid_from?;
-                let validto = c.valid_to?;
                 let validity = format!(
                     "{}: {} - {}",
                     gettext("Certificate validity period"),
-                    validfrom.format("%d.%m.%Y"),
-                    validto.format("%d.%m.%Y")
+                    c.valid_from?.format("%d.%m.%Y"),
+                    c.valid_to?.format("%d.%m.%Y")
                 );
                 Some(CertificateRow {
-                    name: alias.borrow_mut().remove("name"),
-                    surname: alias.borrow_mut().remove("surname"),
+                    name: alias.remove("name"),
+                    surname: alias.remove("surname"),
                     file_name: c.name,
                     full_name_line,
                     serial_number_line: serial_number,
