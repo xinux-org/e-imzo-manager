@@ -15,6 +15,7 @@ use relm4::{
     *,
 };
 use relm4_components::open_dialog::*;
+use std::cell::RefCell;
 use std::{
     collections::HashMap,
     fs,
@@ -44,22 +45,21 @@ impl SelectModePage {
         certs
             .into_iter()
             .filter_map(|c| {
-                let alias = c.get_alias();
-                // check time output yourself if you arenʻt sure
-                // from "23.07.2027 11:11:11" to this "23.07.2027"
-                let is_expired = c.is_expired?;
+                let alias = RefCell::new(c.get_alias());
 
                 let full_name_line = format!(
                     "{}: {}",
                     gettext("Full name"),
-                    alias.get("cn")?.to_uppercase()
+                    alias.borrow().get("cn")?.to_uppercase()
                 );
                 let serial_number = format!(
                     "{}: {}",
                     gettext("Certificate number"),
-                    alias.get("serialnumber")?
+                    alias.borrow().get("serialnumber")?
                 );
 
+                // check time output yourself if you arenʻt sure
+                // from "23.07.2027 11:11:11" to this "23.07.2027"
                 let validfrom = c.valid_from?;
                 let validto = c.valid_to?;
                 let validity = format!(
@@ -68,16 +68,14 @@ impl SelectModePage {
                     validfrom.format("%d.%m.%Y"),
                     validto.format("%d.%m.%Y")
                 );
-
                 Some(CertificateRow {
-                    name: alias.get("name").cloned(),
-                    surname: alias.get("surname").cloned(),
+                    name: alias.borrow_mut().remove("name"),
+                    surname: alias.borrow_mut().remove("surname"),
                     file_name: c.name,
                     full_name_line,
                     serial_number_line: serial_number,
                     validity_line: validity,
-                    is_expired,
-                    alias,
+                    is_expired: c.is_expired?,
                 })
             })
             .collect::<Vec<CertificateRow>>()
@@ -382,7 +380,6 @@ pub struct CertificateRow {
     pub serial_number_line: String,
     pub validity_line: String,
     pub is_expired: bool,
-    pub alias: HashMap<String, String>,
 }
 
 impl CertificateRow {
@@ -459,7 +456,6 @@ impl FactoryComponent for CertificateRow {
             serial_number_line: init.serial_number_line,
             validity_line: init.validity_line,
             is_expired: init.is_expired,
-            alias: init.alias,
         }
     }
 }
