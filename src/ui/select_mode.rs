@@ -1,8 +1,10 @@
-use crate::config::MEDIA_DSKEYS;
-use crate::ui::alert::{RemoveCertificateDialog, RemoveCertificateDialogInit};
-use crate::ui::window::AppMsg;
-use crate::utils::{
-    ask_password, check_keys_ownership, check_service_active, get_pfx_files_in_folder,
+use crate::{
+    config::MEDIA_DSKEYS,
+    ui::{
+        alert::{RemoveCertificateDialog, RemoveCertificateDialogInit},
+        window::AppMsg,
+    },
+    utils::{ask_password, check_keys_ownership, check_service_active, get_pfx_files_in_folder},
 };
 use e_imzo::{EIMZO, prelude::Certificate};
 use gettextrs::gettext;
@@ -17,9 +19,7 @@ use relm4::{
 use relm4_components::open_dialog::*;
 use std::cell::RefCell;
 use std::{
-    collections::HashMap,
     fs,
-    os::unix::fs::MetadataExt,
     path::{Path, PathBuf},
     time::Duration,
 };
@@ -119,7 +119,6 @@ impl AsyncComponent for SelectModePage {
           set_hexpand: true,
           set_hscrollbar_policy: gtk::PolicyType::Never,
           set_vscrollbar_policy: gtk::PolicyType::Automatic,
-
           #[transition(Crossfade)]
           match model.stack {
               SelectModeStack::Empty => {
@@ -173,13 +172,11 @@ impl AsyncComponent for SelectModePage {
                       set_valign: gtk::Align::Center,
                       set_halign: gtk::Align::Center,
                       set_orientation: gtk::Orientation::Vertical,
-
                       adw::Spinner {
                           set_width_request: 40,
                           set_height_request: 40,
                           set_margin_bottom: 25,
                       },
-
                       gtk::Label {
                           set_label: &gettext("Loading keys"),
                           add_css_class: relm4::css::TITLE_2,
@@ -189,7 +186,6 @@ impl AsyncComponent for SelectModePage {
           }
         },
     }
-
     async fn init(
         _init: Self::Init,
         root: Self::Root,
@@ -304,10 +300,8 @@ impl AsyncComponent for SelectModePage {
                     let mut eimzo = match EIMZO::new() {
                         Ok(eimzo) => eimzo,
                         Err(error) => {
-                            sender.output(AppMsg::ShowMessage(format!(
-                                "EIMZO connection: {}",
-                                error
-                            )));
+                            sender
+                                .output(AppMsg::ShowMessage(format!("EIMZO connection: {error}")));
                             return;
                         }
                     };
@@ -315,8 +309,7 @@ impl AsyncComponent for SelectModePage {
                         Ok(certs) => certs,
                         Err(error) => {
                             sender.output(AppMsg::ShowMessage(format!(
-                                "list_all_certificates: {}",
-                                error
+                                "list_all_certificates: {error}"
                             )));
                             vec![]
                         }
@@ -401,6 +394,7 @@ impl CertificateRow {
             .collect()
     }
 }
+
 #[derive(Debug)]
 pub enum CertificateRowOutput {
     RemoveRequested(DynamicIndex, String),
