@@ -48,14 +48,18 @@ pub fn get_pfx_files_in_folder() -> Result<Vec<String>> {
     Ok(pfx_files)
 }
 
-pub fn check_service_installed(service: &str) -> bool {
-    let path = Path::new(service);
+pub fn check_service_installed(service_name: &str) -> bool {
+    let output = Command::new("systemctl")
+        .args(["--user", "is-enabled", service_name])
+        .output()
+        .ok();
 
-    if path.exists() {
-        return true;
-    }
+    let status = match output {
+        Some(output) => String::from_utf8_lossy(&output.stdout).trim().to_string(),
+        None => return false,
+    };
 
-    false
+    matches!(status.as_str(), "enabled")
 }
 
 pub fn set_folder_permission() -> bool {
