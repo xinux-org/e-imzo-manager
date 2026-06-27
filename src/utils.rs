@@ -11,23 +11,34 @@ use std::{
     process::Command,
 };
 
-pub fn is_service_active(service_name: &str) -> Result<bool, String> {
+const SERVICE_NAME: &str = "e-imzo.service";
+
+pub fn is_service_installed() -> bool {
     let output = Command::new("systemctl")
-        .args(["--user", "is-active", service_name])
+        .args(["--user", "is-enabled", SERVICE_NAME])
         .output()
-        .map_err(|e| format!("Failed to run systemctl: {}", e))?;
+        .ok();
 
-    let status = String::from_utf8_lossy(&output.stdout).trim().to_string();
+    let status = match output {
+        Some(output) => String::from_utf8_lossy(&output.stdout).trim().to_string(),
+        None => return false,
+    };
 
-    match status.as_str() {
-        "active" => Ok(true),
-        "inactive" | "failed" | "activating" | "deactivating" | "unknown" => Ok(false),
-        _ => Err(format!("Unexpected status: {}", status)),
-    }
+    matches!(status.as_str(), "enabled")
 }
 
-pub fn check_service_active(service: &str) -> bool {
-    is_service_active(service).unwrap_or_default()
+pub fn is_service_active() -> bool {
+    let output = Command::new("systemctl")
+        .args(["--user", "is-active", SERVICE_NAME])
+        .output()
+        .ok();
+
+    let status = match output {
+        Some(output) => String::from_utf8_lossy(&output.stdout).trim().to_string(),
+        None => return false,
+    };
+
+    matches!(status.as_str(), "active")
 }
 
 pub fn get_pfx_files_in_folder() -> Result<Vec<String>> {
@@ -46,20 +57,6 @@ pub fn get_pfx_files_in_folder() -> Result<Vec<String>> {
         .collect();
 
     Ok(pfx_files)
-}
-
-pub fn check_service_installed(service_name: &str) -> bool {
-    let output = Command::new("systemctl")
-        .args(["--user", "is-enabled", service_name])
-        .output()
-        .ok();
-
-    let status = match output {
-        Some(output) => String::from_utf8_lossy(&output.stdout).trim().to_string(),
-        None => return false,
-    };
-
-    matches!(status.as_str(), "enabled")
 }
 
 pub fn set_folder_permission() -> bool {

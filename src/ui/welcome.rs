@@ -1,5 +1,5 @@
 use crate::ui::window::AppMsg;
-use crate::utils::check_service_installed;
+use crate::utils::is_service_installed;
 use gettextrs::gettext;
 use relm4::{
     gtk::{self, gdk::Texture, glib, prelude::*},
@@ -46,7 +46,7 @@ impl AsyncComponent for WelcomeModel {
                 set_margin_all: 1,
             },
 
-            if check_service_installed("/etc/systemd/user/e-imzo.service") {
+            if is_service_installed() {
                 gtk::Label {
                     #[watch]
                     set_label: &gettext("Please click the red button to start e-imzo service"),

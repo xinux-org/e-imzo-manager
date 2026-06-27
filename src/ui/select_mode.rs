@@ -4,7 +4,7 @@ use crate::{
         alert::{RemoveCertificateDialog, RemoveCertificateDialogInit},
         window::AppMsg,
     },
-    utils::{ask_password, check_keys_ownership, check_service_active, get_pfx_files_in_folder},
+    utils::{ask_password, check_keys_ownership, is_service_active, get_pfx_files_in_folder},
 };
 use e_imzo::{EIMZO, prelude::Certificate};
 use gettextrs::gettext;
@@ -222,7 +222,7 @@ impl AsyncComponent for SelectModePage {
 
         let allbox = model.file_list_factory.widget();
         // when app started prevent this
-        if check_service_active("e-imzo.service") {
+        if is_service_active() {
             sender.input(SelectModeMsg::SetFileLoadedState(SelectModeStack::Loading));
             sender.input(SelectModeMsg::RefreshCertificates);
         }

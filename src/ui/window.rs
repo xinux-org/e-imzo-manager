@@ -11,7 +11,7 @@ use crate::{
         shortcuts::{Shortcut, ShortcutsDialog, ShortcutsDialogInit},
         welcome::WelcomeModel,
     },
-    utils::{check_service_active, check_service_installed},
+    utils::{is_service_active, is_service_installed},
 };
 use gettextrs::gettext;
 use relm4::{
@@ -144,7 +144,7 @@ impl SimpleComponent for App {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let service_active = check_service_active("e-imzo.service");
+        let service_active = is_service_active();
         let page: Page = if service_active {
             Page::SelectMode
         } else {
@@ -176,7 +176,7 @@ impl SimpleComponent for App {
             welcome_page,
             select_mode_page,
             tooltip_text,
-            service_installed: check_service_installed("/etc/systemd/user/e-imzo.service"),
+            service_installed: is_service_installed(),
             service: gtk::Button::new(),
             service_limiter: false,
         };
@@ -191,8 +191,8 @@ impl SimpleComponent for App {
         glib::timeout_add_seconds_local(
             2,
             glib::clone! { #[strong] sender, move || {
-                if check_service_installed("/etc/systemd/user/e-imzo.service") {
-                    let active = check_service_active("e-imzo.service");
+                if is_service_installed() {
+                    let active = is_service_active();
                     sender.input(AppMsg::RefreshService(active));
                 }
                 glib::ControlFlow::Continue
