@@ -8,7 +8,7 @@ pkgs.mkShell {
     nixfmt
     just
     just-lsp
-
+    systemd
     # Rust
     rustc
     cargo
@@ -18,7 +18,6 @@ pkgs.mkShell {
     cargo-watch
     cargo-expand
     openssl
-
     # Gnome related
     gtk4
     meson
