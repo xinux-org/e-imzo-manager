@@ -9,6 +9,7 @@ let
 in
 pkgs.stdenv.mkDerivation {
   pname = manifest.name;
+  name = manifest.name;
   version = manifest.version;
 
   src = pkgs.lib.cleanSource ../..;
@@ -43,7 +44,7 @@ pkgs.stdenv.mkDerivation {
     description = manifest.description;
     license = with lib.licenses; [ agpl3Plus ];
     platforms = lib.platforms.linux;
-    meta.mainProgram = manifest.name;
+    mainProgram = manifest.name;
     maintainers = with lib.maintainers; [
       bahrom04
       bemeritus
