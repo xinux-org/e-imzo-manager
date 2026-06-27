@@ -8,10 +8,14 @@
       url = "git+https://git.oss.uzinfocom.uz/xinux/lib?ref=main&shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-appimage = {
+      url = "github:ralismark/nix-appimage";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    inputs:
+    { ... }@inputs:
     inputs.xinux-lib.mkFlake {
       inherit inputs;
       alias.packages.default = "e-imzo-manager";
