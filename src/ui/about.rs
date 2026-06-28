@@ -20,7 +20,7 @@ impl SimpleComponent for AboutDialog {
             .application_icon(APP_ID)
             .license_type(gtk::License::Apache20)
             .website("https://xinux.uz/")
-            .issue_url("https://github.com/xinux-org/e-imzo/issues")
+            .issue_url("https://git.oss.uzinfocom.uz/xinux/e-imzo-manager/issues")
             .version(VERSION)
             .translator_credits("translator-credits")
             .copyright(gettext("© 2026 Xinux Developers"))
