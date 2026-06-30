@@ -8,19 +8,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-24 11:13+0500\n"
-"PO-Revision-Date: 2025-12-24 11:15+0500\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2026-06-28 10:50+0500\n"
+"PO-Revision-Date: 2026-06-30 14:55+0500\n"
+"Last-Translator: Baxrom Raxmatov\n"
 "Language-Team: \n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.9\n"
 
-#: data/uz.xinux.EIMZOManager.desktop.in.in:2 src/main.rs:27
-msgid "E-IMZO-Manager"
-msgstr "О менеджере E-IMZO"
+#: data/uz.xinux.EIMZOManager.desktop.in.in:2 src/main.rs:30
+msgid "e-imzo-manager"
+msgstr "e-imzo-manager"
 
 #: data/uz.xinux.EIMZOManager.desktop.in.in:3
 msgid "Nix effort for E-IMZO service."
@@ -81,95 +81,88 @@ msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Выйти"
 
-#: src/utils.rs:140
-msgid "Ok"
-msgstr "Хорошо"
-
-#: src/utils.rs:158
-msgid "Are you sure?"
-msgstr "Вы уверены?"
-
-#: src/utils.rs:159
-msgid "Do you really want to delete this certificate?"
-msgstr "Вы действительно хотите удалить этот сертификат?"
-
-#: src/utils.rs:162
-msgid "Yes"
-msgstr "Да"
-
-#: src/utils.rs:162
-msgid "No"
-msgstr "Нет"
-
 #: src/ui/about.rs:26
-msgid "© 2025 Xinux Developers"
-msgstr "© 2025 Разработчики Xinux"
+msgid "© 2026 Xinux Developers"
+msgstr "© 2026 Разработчики Xinux"
 
-#: src/ui/about.rs:56
+#: src/ui/about.rs:28
 msgid ""
-"<p>This release contains new features and fixes:</p>\n"
+"Contributors https://git.oss.uzinfocom.uz/xinux/e-imzo-manager/activity/"
+"contributors"
+msgstr ""
+"Контрибьюторы https://git.oss.uzinfocom.uz/xinux/e-imzo-manager/activity/"
+"contributors"
+
+#: src/ui/about.rs:53
+msgid ""
+"<p>This release contains following changes</p>\n"
 "    <ul>\n"
-"        <li>Add expired stratus</li>\n"
+"        <li>Updated GNOME runtime to 50</li>\n"
+"        <li>Display error on dialog when occured</li>\n"
+"        <li>Added transition animation with loading spinner</li>\n"
+"        <li>Support opening pkcs12 files from file manager: #10</li>\n"
 "    </ul>"
 msgstr ""
-"<p>Эта версия содержит новые функции и исправления:</p>\n"
 "<ul>\n"
-"<li>Статус активности добавлен</li>\n"
+"  <li>Обновлено время работы GNOME до 50</li>\n"
+"  <li>Отображение ошибки в диалоговом окне при возникновении</li>\n"
+"  <li>Добавлена анимация перехода с загрузкой спиннера</li>\n"
+"  <li>Поддержка открытия файлов pkcs12 из файлового менеджера: #10</li>\n"
 "</ul>"
 
-#: src/ui/window.rs:76 src/ui/window.rs:212
+#: src/ui/window.rs:66 src/ui/window.rs:325
 msgid "Awesome E-IMZO"
 msgstr "Список E-IMZO"
 
-#: src/ui/window.rs:77
+#: src/ui/window.rs:67
 msgid "Open https://127.0.0.1:64443/"
 msgstr "Открыть https://127.0.0.1:64443/"
 
-#: src/ui/window.rs:78
+#: src/ui/window.rs:68
 msgid "Keyboard"
 msgstr "Клавиатура"
 
-#: src/ui/window.rs:79
+#: src/ui/window.rs:69
 msgid "About E-IMZO Manager"
 msgstr "О менеджере E-IMZO"
 
-#: src/ui/window.rs:107
+#: src/ui/window.rs:97
 msgid "Add key"
 msgstr "Добавить ключ"
 
-#: src/ui/window.rs:173 src/ui/window.rs:288
+#: src/ui/window.rs:167 src/ui/window.rs:256
 msgid "Service is ON - Click to stop"
 msgstr "Сервис ВКЛЮЧЕН - Нажмите, чтобы остановить"
 
-#: src/ui/window.rs:175 src/ui/window.rs:293
+#: src/ui/window.rs:169 src/ui/window.rs:261
 msgid "Service is OFF - Click to start"
 msgstr "Сервис ОТКЛЮЧЕН - Нажмите, чтобы начать"
 
-#: src/ui/window.rs:201
-msgid "Quit"
-msgstr "Выйти"
-
-#: src/ui/window.rs:207
-msgid "Start/Stop Service"
-msgstr "Запуск/Остановка сервиса"
-
-#: src/ui/window.rs:259
+#: src/ui/window.rs:227
 msgid "E-IMZO service stopped"
 msgstr "Сервис E-IMZO остановлен"
 
-#: src/ui/window.rs:269
+#: src/ui/window.rs:237
 msgid "E-IMZO service started"
 msgstr "Сервис E-IMZO запущен"
 
-#: src/ui/welcome.rs:43
+#: src/ui/window.rs:314
+msgid "Quit"
+msgstr "Выйти"
+
+#: src/ui/window.rs:320
+msgid "Start/Stop Service"
+msgstr "Запуск/Остановка сервиса"
+
+#: src/ui/welcome.rs:45
 msgid "Welcome to E-imzo"
 msgstr "Добро пожаловать в E-imzo"
 
-#: src/ui/welcome.rs:50
+#: src/ui/welcome.rs:52
 msgid "Please click the red button to start e-imzo service"
 msgstr "Нажмите красную кнопку, чтобы запустить услугу e-imzo"
 
-#: src/ui/welcome.rs:55
+#: src/ui/welcome.rs:57
 msgid "Please download e-imzo service and relaunch the app again."
 msgstr "Пожалуйста, скачайте услугу e-imzo и перезапустите приложение."
 
@@ -177,50 +170,91 @@ msgstr "Пожалуйста, скачайте услугу e-imzo и перез
 msgid "List of used e-imzo websites"
 msgstr "Список использованных сайтов e-imzo"
 
-#: src/ui/select_mode.rs:75
+#: src/ui/select_mode.rs:50
+msgid "Full name"
+msgstr "Полное имя"
+
+#: src/ui/select_mode.rs:55
+msgid "Certificate number"
+msgstr "Номер сертификата"
+
+#: src/ui/select_mode.rs:62
+msgid "Certificate validity period"
+msgstr "Срок действия сертификата"
+
+#: src/ui/select_mode.rs:126
 msgid "No certificates"
 msgstr "Сертификатов нет"
 
-#: src/ui/select_mode.rs:76
+#: src/ui/select_mode.rs:127
 msgid "Load some certificates to start using the app."
 msgstr ""
 "Загрузите несколько сертификатов, чтобы начать использовать приложение."
 
-#: src/ui/select_mode.rs:84
+#: src/ui/select_mode.rs:135
 msgid "Load .pfx"
 msgstr "Загрузить .pfx"
 
-#: src/ui/select_mode.rs:94
+#: src/ui/select_mode.rs:147
 msgid "Loaded keys"
 msgstr "Загруженные ключи"
 
-#: src/ui/select_mode.rs:126
+#: src/ui/select_mode.rs:176
 msgid "Loading keys"
 msgstr "Ключи загружаются"
 
-#: src/ui/select_mode.rs:147
+#: src/ui/select_mode.rs:194
 msgid "Cancel"
 msgstr "Отменить"
 
-#: src/ui/select_mode.rs:148
+#: src/ui/select_mode.rs:195
 msgid "Open"
 msgstr "Открытый"
 
-#: src/ui/select_mode.rs:206
+#: src/ui/select_mode.rs:258
 msgid "File already exists. You can use it"
 msgstr "Файл уже существует. Вы можете его использовать"
 
-#: src/ui/select_mode.rs:266
-msgid "Full name"
-msgstr "Полное имя"
+#: src/ui/select_mode.rs:382
+msgid "Name not found"
+msgstr "Имя не найдено"
 
-#: src/ui/select_mode.rs:271
-msgid "Certificate number"
-msgstr "Номер сертификата"
+#: src/ui/select_mode.rs:423
+msgid "Expired"
+msgstr "Срок истек"
 
-#: src/ui/select_mode.rs:287
-msgid "Certificate validity period"
-msgstr "Срок действия сертификата"
+#: src/ui/select_mode.rs:423
+msgid "Active"
+msgstr "Активный"
+
+#~ msgid "E-IMZO-Manager"
+#~ msgstr "О менеджере E-IMZO"
+
+#~ msgid "Ok"
+#~ msgstr "Хорошо"
+
+#~ msgid "Are you sure?"
+#~ msgstr "Вы уверены?"
+
+#~ msgid "Do you really want to delete this certificate?"
+#~ msgstr "Вы действительно хотите удалить этот сертификат?"
+
+#~ msgid "Yes"
+#~ msgstr "Да"
+
+#~ msgid "No"
+#~ msgstr "Нет"
+
+#~ msgid ""
+#~ "<p>This release contains new features and fixes:</p>\n"
+#~ "    <ul>\n"
+#~ "        <li>Add expired stratus</li>\n"
+#~ "    </ul>"
+#~ msgstr ""
+#~ "<p>Эта версия содержит новые функции и исправления:</p>\n"
+#~ "<ul>\n"
+#~ "<li>Статус активности добавлен</li>\n"
+#~ "</ul>"
 
 #~ msgid "Seriya raqami"
 #~ msgstr "Номер серии"
@@ -258,12 +292,3 @@ msgstr "Срок действия сертификата"
 
 #~ msgid "Bilal Elmoussaoui"
 #~ msgstr "Bilal Elmoussaoui"
-
-
-#: src/ui/select_mode.rs:392
-msgid "Expired"
-msgstr "Срок истек"
-
-#: src/ui/select_mode.rs:392
-msgid "Active"
-msgstr "Активный"

@@ -8,20 +8,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unnamed project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-24 11:13+0500\n"
-"PO-Revision-Date: 2026-03-02 15:38+0500\n"
-"Last-Translator: Baxrom Raxmatov <>\n"
+"POT-Creation-Date: 2026-06-28 10:50+0500\n"
+"PO-Revision-Date: 2026-06-30 14:36+0500\n"
+"Last-Translator: Baxrom Raxmatov\n"
 "Language-Team: Uzbek (Latin) <support@floss.uz>\n"
 "Language: uz\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Gtranslator 49.0\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.9\n"
 
-#: data/uz.xinux.EIMZOManager.desktop.in.in:2 src/main.rs:27
-msgid "E-IMZO-Manager"
-msgstr "E-IMZO Menejer"
+#: data/uz.xinux.EIMZOManager.desktop.in.in:2 src/main.rs:30
+msgid "e-imzo-manager"
+msgstr "e-imzo-manager"
 
 #: data/uz.xinux.EIMZOManager.desktop.in.in:3
 msgid "Nix effort for E-IMZO service."
@@ -82,95 +82,89 @@ msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Chiqish"
 
-#: src/utils.rs:140
-msgid "Ok"
-msgstr "Ok"
-
-#: src/utils.rs:158
-msgid "Are you sure?"
-msgstr "Ishonchingiz komilmi?"
-
-#: src/utils.rs:159
-msgid "Do you really want to delete this certificate?"
-msgstr "Haqiqatan ham bu sertifikatni olib tashlamoqchimisiz?"
-
-#: src/utils.rs:162
-msgid "Yes"
-msgstr "Ha"
-
-#: src/utils.rs:162
-msgid "No"
-msgstr "Yoʻq"
-
 #: src/ui/about.rs:26
-msgid "© 2025 Xinux Developers"
-msgstr "© 2025 Xinux dasturchilari"
+msgid "© 2026 Xinux Developers"
+msgstr "© 2026 Xinux dasturchilari"
 
-#: src/ui/about.rs:56
+#: src/ui/about.rs:28
 msgid ""
-"<p>This release contains new features and fixes:</p>\n"
+"Contributors https://git.oss.uzinfocom.uz/xinux/e-imzo-manager/activity/"
+"contributors"
+msgstr ""
+"Hissa qoʻshganlar https://git.oss.uzinfocom.uz/xinux/e-imzo-manager/"
+"activity/contributors"
+
+#: src/ui/about.rs:53
+msgid ""
+"<p>This release contains following changes</p>\n"
 "    <ul>\n"
-"        <li>Add expired stratus</li>\n"
+"        <li>Updated GNOME runtime to 50</li>\n"
+"        <li>Display error on dialog when occured</li>\n"
+"        <li>Added transition animation with loading spinner</li>\n"
+"        <li>Support opening pkcs12 files from file manager: #10</li>\n"
 "    </ul>"
 msgstr ""
-"<p>Bu nashrda yangi funksiyalar va tuzatishlar mavjud:</p>\n"
 "<ul>\n"
-"<li>Faollik statusi qo'shildi</li>\n"
+"  <li>GNOME 50 SDK ga yangilandi</li>\n"
+"  <li>Xatolik yuz berganda dialog oynasida batafsil koʻrsatish qoʻshildi</"
+"li>\n"
+"  <li>Kalitlar yuklaniyotganida spinner uchun animatsiya qoʻshildi</li>\n"
+"  <li>Pkcs12(.pfx) fayllarini fayl menejeridan ochish qoʻshildi: #10</li>\n"
 "</ul>"
 
-#: src/ui/window.rs:76 src/ui/window.rs:212
+#: src/ui/window.rs:66 src/ui/window.rs:325
 msgid "Awesome E-IMZO"
 msgstr "E-IMZO ro‘yxati"
 
-#: src/ui/window.rs:77
+#: src/ui/window.rs:67
 msgid "Open https://127.0.0.1:64443/"
 msgstr "Ochish https://127.0.0.1:64443/"
 
-#: src/ui/window.rs:78
+#: src/ui/window.rs:68
 msgid "Keyboard"
 msgstr "Yorliqlar"
 
-#: src/ui/window.rs:79
+#: src/ui/window.rs:69
 msgid "About E-IMZO Manager"
 msgstr "E-IMZO Manager haqida"
 
-#: src/ui/window.rs:107
+#: src/ui/window.rs:97
 msgid "Add key"
 msgstr "Kalit qoʻshish"
 
-#: src/ui/window.rs:173 src/ui/window.rs:288
+#: src/ui/window.rs:167 src/ui/window.rs:256
 msgid "Service is ON - Click to stop"
 msgstr "Servis YONIQ - Toʻxtatish uchun bosing"
 
-#: src/ui/window.rs:175 src/ui/window.rs:293
+#: src/ui/window.rs:169 src/ui/window.rs:261
 msgid "Service is OFF - Click to start"
 msgstr "Servis OʻCHIRILGAN - Boshlash uchun bosing"
 
-#: src/ui/window.rs:201
-msgid "Quit"
-msgstr "Chiqish"
-
-#: src/ui/window.rs:207
-msgid "Start/Stop Service"
-msgstr "Servisini boshlash/to‘xtatish"
-
-#: src/ui/window.rs:259
+#: src/ui/window.rs:227
 msgid "E-IMZO service stopped"
 msgstr "E-IMZO servisi o‘chirildi"
 
-#: src/ui/window.rs:269
+#: src/ui/window.rs:237
 msgid "E-IMZO service started"
 msgstr "E-IMZO servisi yondi"
 
-#: src/ui/welcome.rs:43
+#: src/ui/window.rs:314
+msgid "Quit"
+msgstr "Chiqish"
+
+#: src/ui/window.rs:320
+msgid "Start/Stop Service"
+msgstr "Servisini boshlash/to‘xtatish"
+
+#: src/ui/welcome.rs:45
 msgid "Welcome to E-imzo"
 msgstr "E-IMZOga xush kelibsiz"
 
-#: src/ui/welcome.rs:50
+#: src/ui/welcome.rs:52
 msgid "Please click the red button to start e-imzo service"
 msgstr "Iltimos e-imzo servisini yoqish uchun qizil tugmani bosing"
 
-#: src/ui/welcome.rs:55
+#: src/ui/welcome.rs:57
 msgid "Please download e-imzo service and relaunch the app again."
 msgstr "Iltimos, ilovani yuklab oling va qayta ishga tushiring."
 
@@ -178,55 +172,88 @@ msgstr "Iltimos, ilovani yuklab oling va qayta ishga tushiring."
 msgid "List of used e-imzo websites"
 msgstr "e-imzo ishlatilgan saytlar roʻyxati"
 
-#: src/ui/select_mode.rs:75
+#: src/ui/select_mode.rs:50
+msgid "Full name"
+msgstr "F.I.O"
+
+#: src/ui/select_mode.rs:55
+msgid "Certificate number"
+msgstr "Sertifikat raqami"
+
+#: src/ui/select_mode.rs:62
+msgid "Certificate validity period"
+msgstr "Sertifikatning amal qilish muddati"
+
+#: src/ui/select_mode.rs:126
 msgid "No certificates"
 msgstr "Sertifikatlar yoʻq"
 
-#: src/ui/select_mode.rs:76
+#: src/ui/select_mode.rs:127
 msgid "Load some certificates to start using the app."
 msgstr ""
 "Ilovadan foydalanishni boshlash uchun ayrim sertifikatlarni yuklab oling."
 
-#: src/ui/select_mode.rs:84
+#: src/ui/select_mode.rs:135
 msgid "Load .pfx"
 msgstr ".pfx fayl yuklash"
 
-#: src/ui/select_mode.rs:94
+#: src/ui/select_mode.rs:147
 msgid "Loaded keys"
 msgstr "Mavjud kalitlar"
 
-#: src/ui/select_mode.rs:126
+#: src/ui/select_mode.rs:176
 msgid "Loading keys"
 msgstr "Kalitlar yuklanmoqda"
 
-#: src/ui/select_mode.rs:147
+#: src/ui/select_mode.rs:194
 msgid "Cancel"
 msgstr "Bekor qilish"
 
-#: src/ui/select_mode.rs:148
+#: src/ui/select_mode.rs:195
 msgid "Open"
 msgstr "Ochish"
 
-#: src/ui/select_mode.rs:206
+#: src/ui/select_mode.rs:258
 msgid "File already exists. You can use it"
 msgstr "Fayl allaqachon mavjud. Siz e-imzo kalitini foydalanishingiz mumkin"
 
-#: src/ui/select_mode.rs:266
-msgid "Full name"
-msgstr "F.I.O"
+#: src/ui/select_mode.rs:382
+msgid "Name not found"
+msgstr "Ism topilmadi"
 
-#: src/ui/select_mode.rs:271
-msgid "Certificate number"
-msgstr "Sertifikat raqami"
-
-#: src/ui/select_mode.rs:287
-msgid "Certificate validity period"
-msgstr "Sertifikatning amal qilish muddati"
-
-#: src/ui/select_mode.rs:392
+#: src/ui/select_mode.rs:423
 msgid "Expired"
 msgstr "Yaroqsiz"
 
-#: src/ui/select_mode.rs:392
+#: src/ui/select_mode.rs:423
 msgid "Active"
 msgstr "Amalda"
+
+#~ msgid "E-IMZO-Manager"
+#~ msgstr "E-IMZO Menejer"
+
+#~ msgid "Ok"
+#~ msgstr "Ok"
+
+#~ msgid "Are you sure?"
+#~ msgstr "Ishonchingiz komilmi?"
+
+#~ msgid "Do you really want to delete this certificate?"
+#~ msgstr "Haqiqatan ham bu sertifikatni olib tashlamoqchimisiz?"
+
+#~ msgid "Yes"
+#~ msgstr "Ha"
+
+#~ msgid "No"
+#~ msgstr "Yoʻq"
+
+#~ msgid ""
+#~ "<p>This release contains new features and fixes:</p>\n"
+#~ "    <ul>\n"
+#~ "        <li>Add expired stratus</li>\n"
+#~ "    </ul>"
+#~ msgstr ""
+#~ "<p>Bu nashrda yangi funksiyalar va tuzatishlar mavjud:</p>\n"
+#~ "<ul>\n"
+#~ "<li>Faollik statusi qo'shildi</li>\n"
+#~ "</ul>"

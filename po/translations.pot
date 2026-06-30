@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-02 15:28+0500\n"
+"POT-Creation-Date: 2026-06-28 10:50+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/uz.xinux.EIMZOManager.desktop.in.in:2 src/main.rs:26
+#: data/uz.xinux.EIMZOManager.desktop.in.in:2 src/main.rs:30
 msgid "e-imzo-manager"
 msgstr ""
 
@@ -79,78 +79,79 @@ msgid "Quit"
 msgstr ""
 
 #: src/ui/about.rs:26
-msgid "© 2025 Xinux Developers"
+msgid "© 2026 Xinux Developers"
 msgstr ""
 
-#: src/ui/about.rs:57
+#: src/ui/about.rs:28
 msgid ""
-"<p>This release contains new features and fixes:</p>\n"
+"Contributors https://git.oss.uzinfocom.uz/xinux/e-imzo-manager/activity/"
+"contributors"
+msgstr ""
+
+#: src/ui/about.rs:53
+msgid ""
+"<p>This release contains following changes</p>\n"
 "    <ul>\n"
-"        <li>Updated english, uzbek, russian translation</li>\n"
-"        <li>Added hover text on add, toggle buttons</li>\n"
-"        <li>Add factory deque. Remove certificates without refreshing page</"
-"li>\n"
-"        <li>Added button click limiter</li>\n"
-"        <li>Added Scrolled Window to file selection page</li>\n"
-"        <li>Deleted remove certificate button icon and replaced to the red "
-"trash bin icon</li>\n"
-"        <li>Made mobile responsive</li>\n"
+"        <li>Updated GNOME runtime to 50</li>\n"
+"        <li>Display error on dialog when occured</li>\n"
+"        <li>Added transition animation with loading spinner</li>\n"
+"        <li>Support opening pkcs12 files from file manager: #10</li>\n"
 "    </ul>"
 msgstr ""
 
-#: src/ui/window.rs:78 src/ui/window.rs:218
+#: src/ui/window.rs:66 src/ui/window.rs:325
 msgid "Awesome E-IMZO"
 msgstr ""
 
-#: src/ui/window.rs:79
+#: src/ui/window.rs:67
 msgid "Open https://127.0.0.1:64443/"
 msgstr ""
 
-#: src/ui/window.rs:80
+#: src/ui/window.rs:68
 msgid "Keyboard"
 msgstr ""
 
-#: src/ui/window.rs:81
+#: src/ui/window.rs:69
 msgid "About E-IMZO Manager"
 msgstr ""
 
-#: src/ui/window.rs:109
+#: src/ui/window.rs:97
 msgid "Add key"
 msgstr ""
 
-#: src/ui/window.rs:179 src/ui/window.rs:294
+#: src/ui/window.rs:167 src/ui/window.rs:256
 msgid "Service is ON - Click to stop"
 msgstr ""
 
-#: src/ui/window.rs:181 src/ui/window.rs:299
+#: src/ui/window.rs:169 src/ui/window.rs:261
 msgid "Service is OFF - Click to start"
 msgstr ""
 
-#: src/ui/window.rs:207
-msgid "Quit"
-msgstr ""
-
-#: src/ui/window.rs:213
-msgid "Start/Stop Service"
-msgstr ""
-
-#: src/ui/window.rs:265
+#: src/ui/window.rs:227
 msgid "E-IMZO service stopped"
 msgstr ""
 
-#: src/ui/window.rs:275
+#: src/ui/window.rs:237
 msgid "E-IMZO service started"
 msgstr ""
 
-#: src/ui/welcome.rs:43
+#: src/ui/window.rs:314
+msgid "Quit"
+msgstr ""
+
+#: src/ui/window.rs:320
+msgid "Start/Stop Service"
+msgstr ""
+
+#: src/ui/welcome.rs:45
 msgid "Welcome to E-imzo"
 msgstr ""
 
-#: src/ui/welcome.rs:50
+#: src/ui/welcome.rs:52
 msgid "Please click the red button to start e-imzo service"
 msgstr ""
 
-#: src/ui/welcome.rs:55
+#: src/ui/welcome.rs:57
 msgid "Please download e-imzo service and relaunch the app again."
 msgstr ""
 
@@ -158,54 +159,58 @@ msgstr ""
 msgid "List of used e-imzo websites"
 msgstr ""
 
-#: src/ui/select_mode.rs:76
-msgid "No certificates"
-msgstr ""
-
-#: src/ui/select_mode.rs:77
-msgid "Load some certificates to start using the app."
-msgstr ""
-
-#: src/ui/select_mode.rs:85
-msgid "Load .pfx"
-msgstr ""
-
-#: src/ui/select_mode.rs:95
-msgid "Loaded keys"
-msgstr ""
-
-#: src/ui/select_mode.rs:127
-msgid "Loading keys"
-msgstr ""
-
-#: src/ui/select_mode.rs:146
-msgid "Cancel"
-msgstr ""
-
-#: src/ui/select_mode.rs:147
-msgid "Open"
-msgstr ""
-
-#: src/ui/select_mode.rs:205
-msgid "File already exists. You can use it"
-msgstr ""
-
-#: src/ui/select_mode.rs:265
+#: src/ui/select_mode.rs:50
 msgid "Full name"
 msgstr ""
 
-#: src/ui/select_mode.rs:270
+#: src/ui/select_mode.rs:55
 msgid "Certificate number"
 msgstr ""
 
-#: src/ui/select_mode.rs:286
+#: src/ui/select_mode.rs:62
 msgid "Certificate validity period"
 msgstr ""
 
-#: src/ui/select_mode.rs:388
+#: src/ui/select_mode.rs:126
+msgid "No certificates"
+msgstr ""
+
+#: src/ui/select_mode.rs:127
+msgid "Load some certificates to start using the app."
+msgstr ""
+
+#: src/ui/select_mode.rs:135
+msgid "Load .pfx"
+msgstr ""
+
+#: src/ui/select_mode.rs:147
+msgid "Loaded keys"
+msgstr ""
+
+#: src/ui/select_mode.rs:176
+msgid "Loading keys"
+msgstr ""
+
+#: src/ui/select_mode.rs:194
+msgid "Cancel"
+msgstr ""
+
+#: src/ui/select_mode.rs:195
+msgid "Open"
+msgstr ""
+
+#: src/ui/select_mode.rs:258
+msgid "File already exists. You can use it"
+msgstr ""
+
+#: src/ui/select_mode.rs:382
+msgid "Name not found"
+msgstr ""
+
+#: src/ui/select_mode.rs:423
 msgid "Expired"
 msgstr ""
 
-#: src/ui/select_mode.rs:388
+#: src/ui/select_mode.rs:423
 msgid "Active"
 msgstr ""
