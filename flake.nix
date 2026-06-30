@@ -2,10 +2,10 @@
   description = "A beginning of an awesome project bootstrapped with github:bleur-org/templates";
 
   inputs = {
-    nixpkgs.url = "git+https://git.oss.uzinfocom.uz/xinux/nixpkgs?ref=nixos-unstable&shallow=1";
+    nixpkgs.url = "git+https://git.oss.uzinfocom.uz/xinux/nixpkgs?ref=nixos-26.05&shallow=1";
 
     xinux-lib = {
-      url = "git+https://git.oss.uzinfocom.uz/xinux/lib?ref=main&shallow=1";
+      url = "git+https://git.oss.uzinfocom.uz/xinux/lib?ref=release-26.05&shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-appimage = {
