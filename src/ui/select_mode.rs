@@ -114,70 +114,69 @@ impl AsyncComponent for SelectModePage {
           set_hexpand: true,
           set_hscrollbar_policy: gtk::PolicyType::Never,
           set_vscrollbar_policy: gtk::PolicyType::Automatic,
-          #[transition(Crossfade)]
-          match model.stack {
-              SelectModeStack::Empty => {
-                  gtk::Box {
-                      set_orientation: gtk::Orientation::Vertical,
-                      adw::StatusPage {
-                          set_vexpand: true,
-                          set_hexpand: true,
-                          set_icon_name: Some("checkbox-checked-symbolic"),
-                          set_title: &gettext("No certificates"),
-                          set_description: Some(&gettext("Load some certificates to start using the app.")),
-                          gtk::Button {
-                              set_halign: gtk::Align::Center,
-                              set_focus_on_click: true,
-                              set_css_classes: &["pill", "suggested-action"],
-                              adw::ButtonContent {
-                                  set_icon_name: "folder-documents-symbolic",
-                                  #[watch]
-                                  set_label: &gettext("Load .pfx"),
-                              },
-                              connect_clicked => SelectModeMsg::OpenFile,
-                          },
-                      }
-                  }
+          gtk::Stack {
+              set_transition_type: gtk::StackTransitionType::Crossfade,
+              #[watch]
+              set_visible_child_name: match model.stack {
+                  SelectModeStack::Empty => "empty",
+                  SelectModeStack::NotEmpty => "not_empty",
+                  SelectModeStack::Loading => "loading",
               },
-              SelectModeStack::NotEmpty => {
-                  gtk::Box {
-                      gtk::Label {
-                          add_css_class: relm4::css::TITLE_2,
-                          #[watch]
-                          set_label: &gettext("Loaded keys"),
-                          set_margin_all: 1,
-                      },
-                      set_spacing: 20,
-                      set_margin_start: 10,
-                      set_margin_end: 10,
-                      set_margin_top: 20,
-                      set_margin_bottom: 10,
-                      set_orientation: gtk::Orientation::Vertical,
-                      set_halign: gtk::Align::Center,
-                      adw::Clamp {
-                          #[local_ref]
-                          allbox -> adw::PreferencesGroup {}
-                      }
-                  }
-              },
-              SelectModeStack::Loading => {
-                  gtk::Box {
-                      set_vexpand: true,
-                      set_hexpand: true,
-                      set_valign: gtk::Align::Center,
-                      set_halign: gtk::Align::Center,
-                      set_orientation: gtk::Orientation::Vertical,
-                      adw::Spinner {
-                          set_width_request: 40,
-                          set_height_request: 40,
-                          set_margin_bottom: 25,
-                      },
-                      gtk::Label {
-                          set_label: &gettext("Loading keys"),
-                          add_css_class: relm4::css::TITLE_2,
-                      },
-                  }
-              }
+
+              add_child = &adw::StatusPage {
+                    set_vexpand: true,
+                    set_hexpand: true,
+                    set_icon_name: Some("checkbox-checked-symbolic"),
+                    set_title: &gettext("No certificates"),
+                    set_description: Some(&gettext("Load some certificates to start using the app.")),
+                    gtk::Button {
+                        set_halign: gtk::Align::Center,
+                        set_focus_on_click: true,
+                        set_css_classes: &["pill", "suggested-action"],
+                        adw::ButtonContent {
+                            set_icon_name: "folder-documents-symbolic",
+                            #[watch]
+                            set_label: &gettext("Load .pfx"),
+                        },
+                        connect_clicked => SelectModeMsg::OpenFile,
+                    },
+              } -> { set_name: "empty", },
+
+              add_child = &gtk::Box {
+                  gtk::Label {
+                      add_css_class: relm4::css::TITLE_2,
+                      #[watch]
+                      set_label: &gettext("Loaded keys"),
+                      set_margin_all: 1,
+                  },
+                  set_spacing: 20,
+                  set_margin_start: 10,
+                  set_margin_end: 10,
+                  set_margin_top: 20,
+                  set_margin_bottom: 10,
+                  set_orientation: gtk::Orientation::Vertical,
+                  set_halign: gtk::Align::Center,
+                  #[local_ref]
+                  allbox -> adw::PreferencesGroup {},
+                  
+              } -> { set_name: "not_empty", },
+
+              add_child = &gtk::Box {
+                  set_vexpand: true,
+                  set_hexpand: true,
+                  set_valign: gtk::Align::Center,
+                  set_halign: gtk::Align::Center,
+                  set_orientation: gtk::Orientation::Vertical,
+                  adw::Spinner {
+                      set_width_request: 40,
+                      set_height_request: 40,
+                      set_margin_bottom: 25,
+                  },
+                  gtk::Label {
+                      set_label: &gettext("Loading keys"),
+                      add_css_class: relm4::css::TITLE_2,
+                  },
+              } -> { set_name: "loading", }
           }
         },
     }
