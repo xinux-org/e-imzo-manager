@@ -48,7 +48,20 @@ impl SimpleComponent for AwesomeModel {
         let widgets: AwesomeModelWidgets = view_output!();
         let toast_overlay = widgets.toast_overlay.clone();
         let awesome_list = widgets.awesome_list.clone();
+        model.setup_awesome_list(awesome_list, &toast_overlay);
 
+        let window: Option<gtk::Window> = relm4::main_application().active_window();
+        root.present(window.as_ref());
+        ComponentParts { model, widgets }
+    }
+}
+
+impl AwesomeModel {
+    fn setup_awesome_list(
+        self,
+        awesome_list: adw::PreferencesGroup,
+        toast_overlay: &adw::ToastOverlay,
+    ) {
         let sites: HashMap<&str, &str> = HashMap::from([
             ("my.gov.uz", "https://my.gov.uz/uz"),
             ("ahost.uz", "https://clients.ahost.uz/login"),
@@ -70,7 +83,7 @@ impl SimpleComponent for AwesomeModel {
                             set_tooltip_text: Some("Copy URL"),
                             add_css_class: "flat",
                             connect_clicked[toast_overlay] => move |_| {
-                                copy_to_clipboard(url, &toast_overlay);
+                                self.copy_to_clipboard(url, &toast_overlay);
                             },
                         },
                         append = &gtk::Label {
@@ -85,7 +98,7 @@ impl SimpleComponent for AwesomeModel {
                             add_css_class: "flat",
                             set_valign: gtk::Align::Center,
                             connect_clicked[toast_overlay] => move |_| {
-                                open_uri(url, &toast_overlay);
+                                self.open_uri(url, &toast_overlay);
                             }
                         }
                     }
@@ -93,31 +106,26 @@ impl SimpleComponent for AwesomeModel {
             };
             awesome_list.add(&row);
         }
-        let window: Option<gtk::Window> = relm4::main_application().active_window();
-        root.present(window.as_ref());
-        ComponentParts { model, widgets }
     }
-}
-
-fn open_uri(uri: &str, toast_overlay: &adw::ToastOverlay) {
-    if gio::AppInfo::launch_default_for_uri(uri, None::<&AppLaunchContext>).is_ok() {
-    } else {
-        let toast: adw::Toast = adw::Toast::new("Cannot open website in Browser");
-        toast.set_timeout(2);
-        toast_overlay.add_toast(toast);
+    fn open_uri(&self, uri: &str, toast_overlay: &adw::ToastOverlay) {
+        if gio::AppInfo::launch_default_for_uri(uri, None::<&AppLaunchContext>).is_ok() {
+        } else {
+            let toast: adw::Toast = adw::Toast::new("Cannot open website in Browser");
+            toast.set_timeout(2);
+            toast_overlay.add_toast(toast);
+        }
     }
-}
-
-fn copy_to_clipboard(url: &str, toast_overlay: &adw::ToastOverlay) {
-    if let Some(display) = gtk::gdk::Display::default() {
-        display.clipboard().set_text(url);
-        let toast: adw::Toast = adw::Toast::new("Copied to clipboard");
-        toast.set_timeout(2);
-        toast_overlay.add_toast(toast);
-    } else {
-        let toast: adw::Toast = adw::Toast::new("Cannot copy URL to your clipboard");
-        toast.set_timeout(2);
-        toast_overlay.add_toast(toast);
+    fn copy_to_clipboard(&self, url: &str, toast_overlay: &adw::ToastOverlay) {
+        if let Some(display) = gtk::gdk::Display::default() {
+            display.clipboard().set_text(url);
+            let toast: adw::Toast = adw::Toast::new("Copied to clipboard");
+            toast.set_timeout(2);
+            toast_overlay.add_toast(toast);
+        } else {
+            let toast: adw::Toast = adw::Toast::new("Cannot copy URL to your clipboard");
+            toast.set_timeout(2);
+            toast_overlay.add_toast(toast);
+        }
     }
 }
 
