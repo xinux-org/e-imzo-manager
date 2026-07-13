@@ -1,7 +1,13 @@
 use gettextrs::gettext;
-use relm4::adw::prelude::*;
-use relm4::gtk::{self, gio::{self, AppLaunchContext}};
-use relm4::prelude::*;
+use relm4::{
+    adw::prelude::*,
+    gtk::{
+        self,
+        gio::{self, AppLaunchContext},
+    },
+};
+use relm4::{prelude::*, view};
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, Copy)]
 pub struct AwesomeModel;
@@ -17,257 +23,16 @@ impl SimpleComponent for AwesomeModel {
             set_title: &gettext("List of used e-imzo websites"),
             set_follows_content_size: true,
             set_presentation_mode: adw::DialogPresentationMode::Floating,
-
             #[wrap(Some)]
             set_child = &adw::ToolbarView {
                 add_top_bar = &adw::HeaderBar,
-
                 #[wrap(Some)]
-                #[name = "toast_overlay"]
+                #[name(toast_overlay)]
                 set_content = &adw::ToastOverlay {
                     #[wrap(Some)]
                     set_child = &adw::PreferencesPage {
-                        adw::PreferencesGroup {
-                            adw::ActionRow {
-                                set_title: "my.gov.uz",
-                                add_suffix = &gtk::Box {
-                                    set_valign: gtk::Align::Center,
-                                    append = &gtk::Button {
-                                        set_icon_name: "edit-copy-symbolic",
-                                        set_tooltip_text: Some("Copy URL"),
-                                        add_css_class: "flat",
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            copy_to_clipboard("https://my.gov.uz/uz", &toast_overlay);
-                                        },
-                                    },
-                                    append = &gtk::Label {
-                                        set_label: "|",
-                                        add_css_class: "dim-label",
-                                        set_margin_start: 4,
-                                        set_margin_end: 4,
-                                    },
-                                    append = &gtk::Button {
-                                        set_icon_name: "external-link-symbolic",
-                                        set_tooltip_text: Some("Open in Browser"),
-                                        add_css_class: "flat",
-                                        set_valign: gtk::Align::Center,
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            open_uri("https://my.gov.uz/uz", &toast_overlay);
-                                        }
-                                    }
-                                }
-                            },
-
-                            adw::ActionRow {
-                                set_title: "ahost.uz",
-                                add_suffix = &gtk::Box {
-                                    set_valign: gtk::Align::Center,
-                                    append = &gtk::Button {
-                                        set_icon_name: "edit-copy-symbolic",
-                                        set_tooltip_text: Some("Copy URL"),
-                                        add_css_class: "flat",
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            copy_to_clipboard("https://clients.ahost.uz/login", &toast_overlay);
-                                        },
-                                    },
-                                    append = &gtk::Label {
-                                        set_label: "|",
-                                        add_css_class: "dim-label",
-                                        set_margin_start: 4,
-                                         set_margin_end: 4,
-                                    },
-                                    append = &gtk::Button {
-                                        set_icon_name: "external-link-symbolic",
-                                        set_tooltip_text: Some("Open in Browser"),
-                                        add_css_class: "flat",
-                                        set_valign: gtk::Align::Center,
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            open_uri("https://clients.ahost.uz/login", &toast_overlay);
-                                        }
-                                    }
-                                }
-                            },
-
-                            adw::ActionRow {
-                                set_title: "id.egov.uz",
-                                add_suffix = &gtk::Box {
-                                    set_valign: gtk::Align::Center,
-                                    append = &gtk::Button {
-                                        set_icon_name: "edit-copy-symbolic",
-                                        set_tooltip_text: Some("Copy URL"),
-                                        add_css_class: "flat",
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            copy_to_clipboard("https://id.egov.uz/oz", &toast_overlay);
-                                        },
-                                    },
-                                    append = &gtk::Label {
-                                        set_label: "|",
-                                        add_css_class: "dim-label",
-                                        set_margin_start: 4,
-                                        set_margin_end: 4,
-                                    },
-                                    append = &gtk::Button {
-                                        set_icon_name: "external-link-symbolic",
-                                        set_tooltip_text: Some("Open in Browser"),
-                                        add_css_class: "flat",
-                                        set_valign: gtk::Align::Center,
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            open_uri("https://id.egov.uz/oz", &toast_overlay);
-                                        }
-                                    }
-                                }
-                            },
-
-                            adw::ActionRow {
-                                set_title: "didox.uz",
-                                add_suffix = &gtk::Box {
-                                    set_valign: gtk::Align::Center,
-                                    append = &gtk::Button {
-                                        set_icon_name: "edit-copy-symbolic",
-                                        set_tooltip_text: Some("Copy URL"),
-                                        add_css_class: "flat",
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            copy_to_clipboard("https://didox.uz/login_with_signature", &toast_overlay);
-                                        },
-                                    },
-                                    append = &gtk::Label {
-                                        set_label: "|",
-                                        add_css_class: "dim-label",
-                                        set_margin_start: 4,
-                                        set_margin_end: 4,
-                                    },
-                                    append = &gtk::Button {
-                                        set_icon_name: "external-link-symbolic",
-                                        set_tooltip_text: Some("Open in Browser"),
-                                        add_css_class: "flat",
-                                        set_valign: gtk::Align::Center,
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            open_uri("https://didox.uz/login_with_signature", &toast_overlay);
-                                        }
-                                    }
-                                }
-                            },
-
-                            adw::ActionRow {
-                                set_title: "birdarcha.uz",
-                                add_suffix = &gtk::Box {
-                                    set_valign: gtk::Align::Center,
-                                    append = &gtk::Button {
-                                        set_icon_name: "edit-copy-symbolic",
-                                        set_tooltip_text: Some("Copy URL"),
-                                        add_css_class: "flat",
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            copy_to_clipboard("https://new.birdarcha.uz/login", &toast_overlay);
-                                        },
-                                    },
-                                    append = &gtk::Label {
-                                        set_label: "|",
-                                        add_css_class: "dim-label",
-                                        set_margin_start: 4,
-                                        set_margin_end: 4,
-                                    },
-                                    append = &gtk::Button {
-                                        set_icon_name: "external-link-symbolic",
-                                        set_tooltip_text: Some("Open in Browser"),
-                                        add_css_class: "flat",
-                                        set_valign: gtk::Align::Center,
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            open_uri("https://new.birdarcha.uz/login", &toast_overlay);
-                                        }
-                                    }
-                                }
-                            },
-
-                            adw::ActionRow {
-                                set_title: "e-invoice.uz",
-                                add_suffix = &gtk::Box {
-                                    set_valign: gtk::Align::Center,
-                                    append = &gtk::Button {
-                                        set_icon_name: "edit-copy-symbolic",
-                                        set_tooltip_text: Some("Copy URL"),
-                                        add_css_class: "flat",
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            copy_to_clipboard("https://e-invoice.uz/register/", &toast_overlay);
-                                        },
-                                    },
-                                    append = &gtk::Label {
-                                        set_label: "|",
-                                        add_css_class: "dim-label",
-                                        set_margin_start: 4,
-                                        set_margin_end: 4,
-                                    },
-                                    append = &gtk::Button {
-                                        set_icon_name: "external-link-symbolic",
-                                        set_tooltip_text: Some("Open in Browser"),
-                                        add_css_class: "flat",
-                                        set_valign: gtk::Align::Center,
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            open_uri("https://e-invoice.uz/register/", &toast_overlay);
-                                        }
-                                    }
-                                }
-                            },
-
-                            adw::ActionRow {
-                                set_title: "my.mehnat.uz",
-                                add_suffix = &gtk::Box {
-                                    set_valign: gtk::Align::Center,
-                                    append = &gtk::Button {
-                                        set_icon_name: "edit-copy-symbolic",
-                                        set_tooltip_text: Some("Copy URL"),
-                                        add_css_class: "flat",
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            copy_to_clipboard("https://my.mehnat.uz/login#", &toast_overlay);
-                                        },
-                                    },
-                                    append = &gtk::Label {
-                                        set_label: "|",
-                                        add_css_class: "dim-label",
-                                        set_margin_start: 4,
-                                        set_margin_end: 4,
-                                    },
-                                    append = &gtk::Button {
-                                        set_icon_name: "external-link-symbolic",
-                                        set_tooltip_text: Some("Open in Browser"),
-                                        add_css_class: "flat",
-                                        set_valign: gtk::Align::Center,
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            open_uri("https://my.mehnat.uz/login#", &toast_overlay);
-                                        }
-                                    }
-                                }
-                            },
-
-                            adw::ActionRow {
-                                set_title: "esi.uz",
-                                add_suffix = &gtk::Box {
-                                    set_valign: gtk::Align::Center,
-                                    append = &gtk::Button {
-                                        set_icon_name: "edit-copy-symbolic",
-                                        set_tooltip_text: Some("Copy URL"),
-                                        add_css_class: "flat",
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            copy_to_clipboard("https://esi.uz/", &toast_overlay);
-                                        },
-                                    },
-                                    append = &gtk::Label {
-                                        set_label: "|",
-                                        add_css_class: "dim-label",
-                                        set_margin_start: 4,
-                                        set_margin_end: 4,
-                                    },
-                                    append = &gtk::Button {
-                                        set_icon_name: "external-link-symbolic",
-                                        set_tooltip_text: Some("Open in Browser"),
-                                        add_css_class: "flat",
-                                        set_valign: gtk::Align::Center,
-                                        connect_clicked[toast_overlay] => move |_| {
-                                            open_uri("https://esi.uz/", &toast_overlay);
-                                        }
-                                    }
-                                }
-                            },
-                        }
+                        #[name(awesome_list)]
+                        adw::PreferencesGroup { }
                     }
                 }
             }
@@ -281,15 +46,61 @@ impl SimpleComponent for AwesomeModel {
     ) -> ComponentParts<Self> {
         let model: AwesomeModel = Self;
         let widgets: AwesomeModelWidgets = view_output!();
+        let toast_overlay = widgets.toast_overlay.clone();
+        let awesome_list = widgets.awesome_list.clone();
+
+        let sites: HashMap<&str, &str> = HashMap::from([
+            ("my.gov.uz", "https://my.gov.uz/uz"),
+            ("ahost.uz", "https://clients.ahost.uz/login"),
+            ("id.egov.uz", "https://id.egov.uz/oz"),
+            ("didox.uz", "https://didox.uz/login_with_signature"),
+            ("birdarcha.uz", "https://new.birdarcha.uz/login"),
+            ("e-invoice.uz", "https://e-invoice.uz/register/"),
+            ("my.mehnat.uz", "https://my.mehnat.uz/login#"),
+            ("esi.uz", "https://esi.uz/"),
+        ]);
+        for (site, url) in sites {
+            view! {
+                row = adw::ActionRow {
+                    set_title: site,
+                    add_suffix = &gtk::Box {
+                        set_valign: gtk::Align::Center,
+                        append = &gtk::Button {
+                            set_icon_name: "edit-copy-symbolic",
+                            set_tooltip_text: Some("Copy URL"),
+                            add_css_class: "flat",
+                            connect_clicked[toast_overlay] => move |_| {
+                                copy_to_clipboard(url, &toast_overlay);
+                            },
+                        },
+                        append = &gtk::Label {
+                            set_label: "|",
+                            add_css_class: "dim-label",
+                            set_margin_start: 4,
+                            set_margin_end: 4,
+                        },
+                        append = &gtk::Button {
+                            set_icon_name: "external-link-symbolic",
+                            set_tooltip_text: Some("Open in Browser"),
+                            add_css_class: "flat",
+                            set_valign: gtk::Align::Center,
+                            connect_clicked[toast_overlay] => move |_| {
+                                open_uri(url, &toast_overlay);
+                            }
+                        }
+                    }
+                },
+            };
+            awesome_list.add(&row);
+        }
         let window: Option<gtk::Window> = relm4::main_application().active_window();
         root.present(window.as_ref());
-
         ComponentParts { model, widgets }
     }
 }
 
 fn open_uri(uri: &str, toast_overlay: &adw::ToastOverlay) {
-    if let _ = gio::AppInfo::launch_default_for_uri(uri, None::<&AppLaunchContext>) {
+    if gio::AppInfo::launch_default_for_uri(uri, None::<&AppLaunchContext>).is_ok() {
     } else {
         let toast: adw::Toast = adw::Toast::new("Cannot open website in Browser");
         toast.set_timeout(2);
@@ -305,7 +116,7 @@ fn copy_to_clipboard(url: &str, toast_overlay: &adw::ToastOverlay) {
         toast_overlay.add_toast(toast);
     } else {
         let toast: adw::Toast = adw::Toast::new("Cannot copy URL to your clipboard");
-        toast.set_timeout(2);   
+        toast.set_timeout(2);
         toast_overlay.add_toast(toast);
     }
 }
@@ -318,14 +129,13 @@ fn copy_to_clipboard(url: &str, toast_overlay: &adw::ToastOverlay) {
 //     //     display,
 //     //     None
 //     // );
-    
+
 //     let toast: adw::Toast = adw::Toast::new("Cannot copy URL to your clipboard");
 //     toast.set_timeout(2);
 //     // assert_eq!(toast.title(), Some("Cannot copy URL to your clipboard".into()));
-    
+
 //     let toast_overlay = adw::ToastOverlay::default();
 //     toast_overlay.add_toast(toast);
-
 
 //     // let toogle_group = adw::ToggleGroup::default();
 
