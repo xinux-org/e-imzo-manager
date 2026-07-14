@@ -24,7 +24,7 @@ pub fn is_service_installed() -> bool {
         None => return false,
     };
 
-    matches!(status.as_str(), "enabled")
+    matches!(status.as_str(), "enabled" | "static")
 }
 
 pub fn is_service_active() -> bool {
