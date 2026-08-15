@@ -282,7 +282,7 @@ impl AsyncComponent for SelectModePage {
                 self.file_list_factory.guard().clear();
 
                 // wait enough to wait e-imzo.service activation
-                tokio::time::sleep(Duration::from_millis(2000)).await;
+                tokio::time::sleep(Duration::from_millis(2500)).await;
 
                 // Hmm..., When service active and user launches app then toggle button
                 // changes from gray to green. If user press toggle button in
