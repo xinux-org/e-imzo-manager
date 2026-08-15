@@ -23,7 +23,6 @@ pkgs.mkShell {
     meson
     ninja
     pango
-    polkit
     gettext
     pkg-config
     libadwaita
@@ -39,4 +38,5 @@ pkgs.mkShell {
   # Set Environment Variables
   RUST_BACKTRACE = "full";
   RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
+  PKG_CONFIG_PATH = "${pkgs.polkit.dev}/lib/pkgconfig";
 }
