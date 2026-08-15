@@ -28,17 +28,13 @@ just install
 # app run
 just run
 
-# When you need polkit to avoid devshell
-cd ..
-./e-imzo-manager/builddir/install/bin/e-imzo-manager
-
 # or with nix when ready for release
 nix build . --show-trace
+# When you need polkit to avoid devshell
 ./e-imzo-manager/result/bin/e-imzo-manager
 
 # Optional. Generate translation words from /po/POTFILES.in if needed.
-cd ./po
-xgettext --directory=.. --files-from=POTFILES.in --from-code=UTF-8 -kgettext -o translations.pot
+just trans
 ```
 
 ## Building

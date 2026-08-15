@@ -17,4 +17,5 @@ result*
 repo
 *.swp
 *.mo
+*po~ 
 .cargo
