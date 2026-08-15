@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-28 10:50+0500\n"
+"POT-Creation-Date: 2026-08-15 11:58+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,65 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/uz.xinux.EIMZOManager.desktop.in.in:2 src/main.rs:30
+#: src/main.rs:30
 msgid "e-imzo-manager"
 msgstr ""
 
-#: data/uz.xinux.EIMZOManager.desktop.in.in:3
-msgid "Nix effort for E-IMZO service."
-msgstr ""
-
-#: data/uz.xinux.EIMZOManager.desktop.in.in:9
-msgid "Gnome;GTK;"
-msgstr ""
-
-#: data/uz.xinux.EIMZOManager.gschema.xml.in:6
-msgid "Window width"
-msgstr ""
-
-#: data/uz.xinux.EIMZOManager.gschema.xml.in:10
-msgid "Window height"
-msgstr ""
-
-#: data/uz.xinux.EIMZOManager.gschema.xml.in:14
-msgid "Window maximized state"
-msgstr ""
-
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:5 src/ui/about.rs:19
+#: src/ui/about.rs:19
 msgid "E-IMZO Manager"
-msgstr ""
-
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:6
-msgid "Improving E-IMZO support and compatibility for Linux"
-msgstr ""
-
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:8
-msgid ""
-"An electronic digital signature certificate is very important for verifying "
-"the time a document was signed and its legal status."
-msgstr ""
-
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:13
-msgid "Main window"
-msgstr ""
-
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:19
-msgid "Xinux Developers"
-msgstr ""
-
-#: data/resources/ui/shortcuts.ui:11
-msgctxt "shortcut window"
-msgid "General"
-msgstr ""
-
-#: data/resources/ui/shortcuts.ui:14
-msgctxt "shortcut window"
-msgid "Show Shortcuts"
-msgstr ""
-
-#: data/resources/ui/shortcuts.ui:20
-msgctxt "shortcut window"
-msgid "Quit"
 msgstr ""
 
 #: src/ui/about.rs:26
@@ -155,7 +102,7 @@ msgstr ""
 msgid "Please download e-imzo service and relaunch the app again."
 msgstr ""
 
-#: src/ui/awesome.rs:17
+#: src/ui/awesome.rs:23
 msgid "List of used e-imzo websites"
 msgstr ""
 
@@ -171,19 +118,19 @@ msgstr ""
 msgid "Certificate validity period"
 msgstr ""
 
-#: src/ui/select_mode.rs:126
+#: src/ui/select_mode.rs:130
 msgid "No certificates"
 msgstr ""
 
-#: src/ui/select_mode.rs:127
+#: src/ui/select_mode.rs:131
 msgid "Load some certificates to start using the app."
 msgstr ""
 
-#: src/ui/select_mode.rs:135
+#: src/ui/select_mode.rs:139
 msgid "Load .pfx"
 msgstr ""
 
-#: src/ui/select_mode.rs:147
+#: src/ui/select_mode.rs:149
 msgid "Loaded keys"
 msgstr ""
 
@@ -191,26 +138,26 @@ msgstr ""
 msgid "Loading keys"
 msgstr ""
 
-#: src/ui/select_mode.rs:194
+#: src/ui/select_mode.rs:193
 msgid "Cancel"
 msgstr ""
 
-#: src/ui/select_mode.rs:195
+#: src/ui/select_mode.rs:194
 msgid "Open"
 msgstr ""
 
-#: src/ui/select_mode.rs:258
+#: src/ui/select_mode.rs:257
 msgid "File already exists. You can use it"
 msgstr ""
 
-#: src/ui/select_mode.rs:382
+#: src/ui/select_mode.rs:381
 msgid "Name not found"
 msgstr ""
 
-#: src/ui/select_mode.rs:423
+#: src/ui/select_mode.rs:422
 msgid "Expired"
 msgstr ""
 
-#: src/ui/select_mode.rs:423
+#: src/ui/select_mode.rs:422
 msgid "Active"
 msgstr ""

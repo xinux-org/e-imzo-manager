@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-28 10:50+0500\n"
+"POT-Creation-Date: 2026-08-15 11:58+0500\n"
 "PO-Revision-Date: 2026-06-30 14:55+0500\n"
 "Last-Translator: Baxrom Raxmatov\n"
 "Language-Team: \n"
@@ -18,68 +18,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.9\n"
 
-#: data/uz.xinux.EIMZOManager.desktop.in.in:2 src/main.rs:30
+#: src/main.rs:30
 msgid "e-imzo-manager"
 msgstr "e-imzo-manager"
 
-#: data/uz.xinux.EIMZOManager.desktop.in.in:3
-msgid "Nix effort for E-IMZO service."
-msgstr "Усилия в Linux для сервиса E-IMZO."
-
-#: data/uz.xinux.EIMZOManager.desktop.in.in:9
-msgid "Gnome;GTK;"
-msgstr "Gnome;GTK;"
-
-#: data/uz.xinux.EIMZOManager.gschema.xml.in:6
-msgid "Window width"
-msgstr "Ширина окна"
-
-#: data/uz.xinux.EIMZOManager.gschema.xml.in:10
-msgid "Window height"
-msgstr "Высота окна"
-
-#: data/uz.xinux.EIMZOManager.gschema.xml.in:14
-msgid "Window maximized state"
-msgstr "Состояние окна развернуто"
-
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:5 src/ui/about.rs:19
+#: src/ui/about.rs:19
 msgid "E-IMZO Manager"
 msgstr "О менеджере E-IMZO"
-
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:6
-msgid "Improving E-IMZO support and compatibility for Linux"
-msgstr "Улучшение поддержки и совместимости E-IMZO для Linux"
-
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:8
-msgid ""
-"An electronic digital signature certificate is very important for verifying "
-"the time a document was signed and its legal status."
-msgstr ""
-"Сертификат электронной цифровой подписи очень важен для проверки времени "
-"подписания документа и его юридического статуса."
-
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:13
-msgid "Main window"
-msgstr "Главное окно"
-
-#: data/uz.xinux.EIMZOManager.metainfo.xml.in.in:19
-msgid "Xinux Developers"
-msgstr "Разработчики Xinux"
-
-#: data/resources/ui/shortcuts.ui:11
-msgctxt "shortcut window"
-msgid "General"
-msgstr "Общий"
-
-#: data/resources/ui/shortcuts.ui:14
-msgctxt "shortcut window"
-msgid "Show Shortcuts"
-msgstr "Показать ярлыки"
-
-#: data/resources/ui/shortcuts.ui:20
-msgctxt "shortcut window"
-msgid "Quit"
-msgstr "Выйти"
 
 #: src/ui/about.rs:26
 msgid "© 2026 Xinux Developers"
@@ -166,7 +111,7 @@ msgstr "Нажмите красную кнопку, чтобы запустит�
 msgid "Please download e-imzo service and relaunch the app again."
 msgstr "Пожалуйста, скачайте услугу e-imzo и перезапустите приложение."
 
-#: src/ui/awesome.rs:17
+#: src/ui/awesome.rs:23
 msgid "List of used e-imzo websites"
 msgstr "Список использованных сайтов e-imzo"
 
@@ -182,20 +127,20 @@ msgstr "Номер сертификата"
 msgid "Certificate validity period"
 msgstr "Срок действия сертификата"
 
-#: src/ui/select_mode.rs:126
+#: src/ui/select_mode.rs:130
 msgid "No certificates"
 msgstr "Сертификатов нет"
 
-#: src/ui/select_mode.rs:127
+#: src/ui/select_mode.rs:131
 msgid "Load some certificates to start using the app."
 msgstr ""
 "Загрузите несколько сертификатов, чтобы начать использовать приложение."
 
-#: src/ui/select_mode.rs:135
+#: src/ui/select_mode.rs:139
 msgid "Load .pfx"
 msgstr "Загрузить .pfx"
 
-#: src/ui/select_mode.rs:147
+#: src/ui/select_mode.rs:149
 msgid "Loaded keys"
 msgstr "Загруженные ключи"
 
@@ -203,29 +148,72 @@ msgstr "Загруженные ключи"
 msgid "Loading keys"
 msgstr "Ключи загружаются"
 
-#: src/ui/select_mode.rs:194
+#: src/ui/select_mode.rs:193
 msgid "Cancel"
 msgstr "Отменить"
 
-#: src/ui/select_mode.rs:195
+#: src/ui/select_mode.rs:194
 msgid "Open"
 msgstr "Открытый"
 
-#: src/ui/select_mode.rs:258
+#: src/ui/select_mode.rs:257
 msgid "File already exists. You can use it"
 msgstr "Файл уже существует. Вы можете его использовать"
 
-#: src/ui/select_mode.rs:382
+#: src/ui/select_mode.rs:381
 msgid "Name not found"
 msgstr "Имя не найдено"
 
-#: src/ui/select_mode.rs:423
+#: src/ui/select_mode.rs:422
 msgid "Expired"
 msgstr "Срок истек"
 
-#: src/ui/select_mode.rs:423
+#: src/ui/select_mode.rs:422
 msgid "Active"
 msgstr "Активный"
+
+#~ msgid "Nix effort for E-IMZO service."
+#~ msgstr "Усилия в Linux для сервиса E-IMZO."
+
+#~ msgid "Gnome;GTK;"
+#~ msgstr "Gnome;GTK;"
+
+#~ msgid "Window width"
+#~ msgstr "Ширина окна"
+
+#~ msgid "Window height"
+#~ msgstr "Высота окна"
+
+#~ msgid "Window maximized state"
+#~ msgstr "Состояние окна развернуто"
+
+#~ msgid "Improving E-IMZO support and compatibility for Linux"
+#~ msgstr "Улучшение поддержки и совместимости E-IMZO для Linux"
+
+#~ msgid ""
+#~ "An electronic digital signature certificate is very important for "
+#~ "verifying the time a document was signed and its legal status."
+#~ msgstr ""
+#~ "Сертификат электронной цифровой подписи очень важен для проверки времени "
+#~ "подписания документа и его юридического статуса."
+
+#~ msgid "Main window"
+#~ msgstr "Главное окно"
+
+#~ msgid "Xinux Developers"
+#~ msgstr "Разработчики Xinux"
+
+#~ msgctxt "shortcut window"
+#~ msgid "General"
+#~ msgstr "Общий"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Show Shortcuts"
+#~ msgstr "Показать ярлыки"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Quit"
+#~ msgstr "Выйти"
 
 #~ msgid "E-IMZO-Manager"
 #~ msgstr "О менеджере E-IMZO"
