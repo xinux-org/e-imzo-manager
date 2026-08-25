@@ -18,4 +18,4 @@ repo
 *.swp
 *.mo
 *po~ 
-.cargo
+.cargo.pre-commit-config.yaml
