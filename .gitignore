@@ -19,3 +19,4 @@ repo
 *.mo
 *po~ 
 .cargo
+pre-commit-config.yaml
