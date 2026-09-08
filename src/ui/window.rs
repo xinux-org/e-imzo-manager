@@ -133,6 +133,8 @@ impl SimpleComponent for App {
                         set_hexpand: true,
                         append: model.select_mode_page.widget()
                     },
+                }  -> {
+                  set_transition_type: gtk::StackTransitionType::SlideLeftRight,
                 },
             },
         },
