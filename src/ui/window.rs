@@ -120,7 +120,6 @@ impl SimpleComponent for App {
                     }
                 },
 
-                #[transition(SlideLeftRight)]
                 match model.page {
                     Page::Welcome => gtk::Box {
                         set_orientation: gtk::Orientation::Vertical,
