@@ -15,8 +15,10 @@ pkgs.stdenv.mkDerivation {
   src = pkgs.lib.cleanSource ../..;
   cargoDeps = pkgs.rustPlatform.importCargoLock {
     lockFile = ../../Cargo.lock;
+    outputHashes = {
+      "relm4-0.11.0" = "sha256-jOEOP/mHVP0KmuCb1lKlRHJ/fN3wf88x4MJx08ckDeU=";
+    };
   };
-
   nativeBuildInputs = with pkgs; [
     rustc
     cargo

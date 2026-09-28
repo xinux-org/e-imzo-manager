@@ -1437,8 +1437,7 @@ checksum = "d6f6ff9a378485b298a5286656da665ba74413d36db0979633275d2e708145d4"
 [[package]]
 name = "relm4"
 version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6420f090f0545e9ec9656469d139a4e1b66ff9c30b808fe2247892724f71a198"
+source = "git+https://github.com/Relm4/Relm4?rev=233314aa522ca65f213523b143a3cce74a415e36#233314aa522ca65f213523b143a3cce74a415e36"
 dependencies = [
  "flume",
  "fragile",
@@ -1466,14 +1465,12 @@ dependencies = [
 [[package]]
 name = "relm4-css"
 version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f3b81d263f784b103c815afa29124486b59741eca069ce7a5999efb14f13c368"
+source = "git+https://github.com/Relm4/Relm4?rev=233314aa522ca65f213523b143a3cce74a415e36#233314aa522ca65f213523b143a3cce74a415e36"
 
 [[package]]
 name = "relm4-macros"
 version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "36c9dbf50a60c82375e66b61d522c936b187a11b25c0a42e91c516326ad24a4f"
+source = "git+https://github.com/Relm4/Relm4?rev=233314aa522ca65f213523b143a3cce74a415e36#233314aa522ca65f213523b143a3cce74a415e36"
 dependencies = [
  "proc-macro2",
  "quote",
