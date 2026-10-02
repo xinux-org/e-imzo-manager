@@ -17,6 +17,6 @@ result*
 repo
 *.swp
 *.mo
-*po~ 
+*po~
 .cargo
-pre-commit-config.yaml
+.pre-commit-config.yaml
