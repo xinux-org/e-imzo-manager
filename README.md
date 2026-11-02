@@ -30,8 +30,6 @@ just run
 
 # or with nix when ready for release
 nix build . --show-trace
-# When you need polkit to avoid devshell
-./e-imzo-manager/result/bin/e-imzo-manager
 
 # Optional. Generate translation words from /po/POTFILES.in if needed.
 just trans
