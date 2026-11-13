@@ -34,7 +34,7 @@ tokio = { version = "1.54.1", default-features = false, features = [
   "process",
   "time",
 ] }
-e-imzo = "0.4.1"
+e-imzo = "0.4.2"
 uzers = "0.12.2"
 anyhow = "1.0.104"
 [patch.crates-io]
