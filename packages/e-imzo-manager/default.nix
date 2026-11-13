@@ -13,16 +13,9 @@ pkgs.stdenv.mkDerivation {
   version = manifest.version;
 
   src = pkgs.lib.cleanSource ../..;
-  # cargoDeps = pkgs.rustPlatform.importCargoLock {
-  #   lockFile = ../../Cargo.lock;
-  #   outputHashes = {
-  #     "relm4-0.11.0" = "sha256-jOEOP/mHVP0KmuCb1lKlRHJ/fN3wf88x4MJx08ckDeU=";
-  #   };
-  # };
-
   cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
-    src = ../../Cargo.lock;
-    hash = "sha256-T7OcrvGfhq3sDXjHFLGqOSzigEOWYBk2RZhKzJmKLLw=";
+    src = ../..;
+    hash = "sha256-HCDyVHBi7u19e6vdVzBTnM/gE/Cpqjf1Tzwp6jOQS6c=";
   };
 
   nativeBuildInputs = with pkgs; [
