@@ -13,12 +13,18 @@ pkgs.stdenv.mkDerivation {
   version = manifest.version;
 
   src = pkgs.lib.cleanSource ../..;
-  cargoDeps = pkgs.rustPlatform.importCargoLock {
-    lockFile = ../../Cargo.lock;
-    outputHashes = {
-      "relm4-0.11.0" = "sha256-jOEOP/mHVP0KmuCb1lKlRHJ/fN3wf88x4MJx08ckDeU=";
-    };
+  # cargoDeps = pkgs.rustPlatform.importCargoLock {
+  #   lockFile = ../../Cargo.lock;
+  #   outputHashes = {
+  #     "relm4-0.11.0" = "sha256-jOEOP/mHVP0KmuCb1lKlRHJ/fN3wf88x4MJx08ckDeU=";
+  #   };
+  # };
+
+  cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
+    src = ../../Cargo.lock;
+    hash = "sha256-T7OcrvGfhq3sDXjHFLGqOSzigEOWYBk2RZhKzJmKLLw=";
   };
+
   nativeBuildInputs = with pkgs; [
     rustc
     cargo
@@ -50,7 +56,6 @@ pkgs.stdenv.mkDerivation {
     mainProgram = manifest.name;
     maintainers = with lib.maintainers; [
       bahrom04
-      bemeritus
       orzklv
     ];
   };
